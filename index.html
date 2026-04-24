@@ -1,0 +1,1527 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LinkGuard · Protegé a tu familia del fraude digital</title>
+<meta name="description" content="Verificá mensajes, links, capturas de pantalla y publicidades sospechosas. Protección contra phishing y estafas en Uruguay.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FAFAF7;--bg-alt:#F2F0EB;--card:#FFF;--text:#1A1A2E;--text-soft:#6B6B80;
+  --accent:#2D5A3D;--accent-hover:#234A30;--accent-light:#E8F0EB;
+  --red:#C0392B;--red-light:#FDECEA;--yellow:#D4A017;--yellow-light:#FFF8E1;
+  --green:#27884A;--green-light:#E8F5E9;--border:#E5E2DB;--dark:#1A1A2E;
+  --shadow:0 2px 20px rgba(0,0,0,0.05);--shadow-lg:0 12px 48px rgba(0,0,0,0.08);
+  --radius:16px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);overflow-x:hidden;}
+section[id]{scroll-margin-top:70px;}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 32px;display:flex;align-items:center;justify-content:space-between;background:rgba(250,250,247,0.85);backdrop-filter:blur(20px);border-bottom:1px solid transparent;transition:border-color .3s;}
+.nav.scrolled{border-bottom-color:var(--border);}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text);}
+.nav-logo-icon{width:36px;height:36px;background:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;}
+.nav-logo-icon svg{width:20px;height:20px;fill:#fff;}
+.nav-logo-text{font-family:'Fraunces',serif;font-size:20px;font-weight:700;}
+.nav-links{display:flex;gap:8px;align-items:center;}
+.nav-link{padding:8px 16px;font-size:14px;font-weight:500;color:var(--text-soft);text-decoration:none;border-radius:8px;transition:all .2s;}
+.nav-link:hover{color:var(--text);background:var(--bg-alt);}
+.nav-cta{padding:8px 20px;background:var(--accent);color:#fff;border-radius:10px;font-size:14px;font-weight:600;text-decoration:none;transition:all .2s;}
+.nav-cta:hover{background:var(--accent-hover);transform:translateY(-1px);}
+@media(max-width:700px){.nav-links{display:none;}.nav{padding:14px 20px;}}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:120px 24px 80px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:-200px;right:-200px;width:600px;height:600px;background:radial-gradient(circle,rgba(45,90,61,.08) 0%,transparent 70%);border-radius:50%;}
+.hero-inner{max-width:720px;text-align:center;position:relative;z-index:1;}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;background:var(--accent-light);border-radius:20px;font-size:13px;font-weight:600;color:var(--accent);margin-bottom:28px;animation:fadeInDown .6s ease;}
+.hero-badge-dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:pulse-dot 2s infinite;}
+@keyframes pulse-dot{0%,100%{opacity:1;}50%{opacity:.3;}}
+.hero h1{font-family:'Fraunces',serif;font-size:clamp(36px,6vw,60px);font-weight:700;line-height:1.15;margin-bottom:20px;letter-spacing:-1px;animation:fadeInDown .6s ease .1s both;}
+.hero h1 span{color:var(--accent);}
+.hero-sub{font-size:clamp(16px,2.5vw,20px);color:var(--text-soft);line-height:1.6;max-width:560px;margin:0 auto 40px;animation:fadeInDown .6s ease .2s both;}
+.hero-cta-group{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;animation:fadeInDown .6s ease .3s both;}
+.btn-primary{padding:16px 36px;background:var(--accent);color:#fff;border:none;border-radius:14px;font-family:'DM Sans',sans-serif;font-size:17px;font-weight:600;cursor:pointer;transition:all .25s;box-shadow:0 4px 16px rgba(45,90,61,.25);text-decoration:none;display:inline-flex;align-items:center;gap:8px;}
+.btn-primary:hover{background:var(--accent-hover);transform:translateY(-2px);box-shadow:0 8px 24px rgba(45,90,61,.3);}
+.btn-primary svg{width:20px;height:20px;fill:#fff;}
+.btn-secondary{padding:16px 36px;background:transparent;color:var(--text);border:2px solid var(--border);border-radius:14px;font-family:'DM Sans',sans-serif;font-size:17px;font-weight:600;cursor:pointer;transition:all .25s;text-decoration:none;}
+.btn-secondary:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-light);}
+@keyframes fadeInDown{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+
+/* TOOL SECTION */
+.tool-section{padding:80px 24px;background:var(--bg-alt);position:relative;}
+.tool-section::before{content:'';position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;}
+.tool-inner{max-width:540px;margin:0 auto;position:relative;z-index:1;}
+.section-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--accent);text-align:center;margin-bottom:12px;}
+.section-heading{font-family:'Fraunces',serif;font-size:clamp(24px,4vw,36px);font-weight:700;text-align:center;margin-bottom:32px;line-height:1.2;}
+
+/* Tool Card */
+.tool-card{background:var(--card);border-radius:20px;padding:32px 28px;box-shadow:var(--shadow-lg);border:1px solid var(--border);}
+
+/* Input mode tabs */
+.input-tabs{display:flex;gap:6px;margin-bottom:20px;background:var(--bg-alt);border-radius:12px;padding:4px;}
+.input-tab{flex:1;padding:12px 8px;border:none;border-radius:10px;background:transparent;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--text-soft);cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.input-tab.active{background:var(--card);color:var(--accent);box-shadow:0 2px 8px rgba(0,0,0,.06);}
+.input-tab:hover:not(.active){color:var(--text);}
+.tab-icon{font-size:20px;}
+.tab-label{font-size:11px;line-height:1.2;}
+
+/* Input areas */
+.input-area{display:none;}
+.input-area.active{display:block;}
+.tool-input-label{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--text-soft);margin-bottom:6px;}
+.tool-hint{font-size:13px;color:var(--text-soft);margin-bottom:14px;line-height:1.5;}
+.tool-textarea{width:100%;border:2px solid var(--border);border-radius:14px;padding:16px;font-family:'DM Sans',sans-serif;font-size:16px;color:var(--text);background:var(--bg);outline:none;transition:border-color .2s;resize:vertical;min-height:110px;line-height:1.5;}
+.tool-textarea::placeholder{color:#B8B5B0;}
+.tool-textarea:focus{border-color:var(--accent);}
+
+/* Image upload area */
+.upload-zone{border:2px dashed var(--border);border-radius:14px;padding:40px 20px;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg);position:relative;}
+.upload-zone:hover,.upload-zone.dragover{border-color:var(--accent);background:var(--accent-light);}
+.upload-zone-icon{font-size:40px;margin-bottom:12px;display:block;}
+.upload-zone-text{font-size:15px;color:var(--text-soft);margin-bottom:4px;}
+.upload-zone-hint{font-size:12px;color:var(--text-soft);opacity:.6;}
+.upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;}
+
+/* Image preview */
+.img-preview{display:none;position:relative;margin-bottom:14px;}
+.img-preview.active{display:block;}
+.img-preview img{width:100%;border-radius:12px;border:2px solid var(--border);}
+.img-remove{position:absolute;top:8px;right:8px;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.6);border:none;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;}
+.img-remove:hover{background:var(--red);}
+
+/* Analyze button */
+.tool-btn{width:100%;margin-top:16px;padding:16px;background:var(--accent);color:#fff;border:none;border-radius:14px;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:600;cursor:pointer;transition:all .2s;box-shadow:0 4px 14px rgba(45,90,61,.2);display:flex;align-items:center;justify-content:center;gap:8px;}
+.tool-btn:hover{background:var(--accent-hover);transform:translateY(-1px);}
+.tool-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.tool-btn svg{width:20px;height:20px;fill:#fff;}
+
+/* Demo pills */
+.demo-row{display:flex;gap:6px;margin-top:16px;flex-wrap:wrap;justify-content:center;}
+.demo-pill{padding:7px 12px;border:1px solid var(--border);border-radius:20px;background:var(--card);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;color:var(--text-soft);cursor:pointer;transition:all .2s;}
+.demo-pill:hover{border-color:var(--accent);color:var(--accent);}
+
+/* Loading */
+.tool-loading{display:none;text-align:center;padding:36px 20px;margin-top:20px;background:var(--card);border-radius:16px;border:1px solid var(--border);}
+.tool-loading.active{display:block;}
+.tool-spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;margin:0 auto 14px;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.tool-loading-text{font-size:14px;color:var(--text-soft);}
+
+/* Result card */
+.tool-result{display:none;margin-top:20px;border-radius:16px;padding:28px 24px;border:2px solid;animation:slideUp .4s ease;}
+.tool-result.active{display:block;}
+.tool-result.danger{background:var(--red-light);border-color:var(--red);}
+.tool-result.warning{background:var(--yellow-light);border-color:var(--yellow);}
+.tool-result.safe{background:var(--green-light);border-color:var(--green);}
+@keyframes slideUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+.result-header{display:flex;align-items:center;gap:14px;margin-bottom:18px;}
+.result-icon-circle{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.danger .result-icon-circle{background:var(--red);}
+.warning .result-icon-circle{background:var(--yellow);}
+.safe .result-icon-circle{background:var(--green);}
+.result-icon-circle svg{width:24px;height:24px;fill:#fff;}
+.result-title{font-family:'Fraunces',serif;font-size:22px;font-weight:700;}
+.danger .result-title{color:var(--red);}
+.warning .result-title{color:var(--yellow);}
+.safe .result-title{color:var(--green);}
+.result-subtitle{font-size:14px;color:var(--text-soft);margin-top:2px;}
+.signal-item{padding:10px 12px;border-radius:10px;margin-bottom:6px;font-size:14px;line-height:1.5;display:flex;align-items:flex-start;gap:10px;}
+.danger .signal-item{background:rgba(192,57,43,.07);}
+.warning .signal-item{background:rgba(212,160,23,.07);}
+.safe .signal-item{background:rgba(39,136,74,.07);}
+.signal-badge{flex-shrink:0;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:700;text-transform:uppercase;margin-top:2px;}
+.danger .signal-badge{background:var(--red);color:#fff;}
+.warning .signal-badge{background:var(--yellow);color:#fff;}
+.safe .signal-badge{background:var(--green);color:#fff;}
+.result-advice{margin-top:14px;padding:14px;border-radius:10px;font-size:15px;line-height:1.6;font-weight:500;}
+.danger .result-advice{background:rgba(192,57,43,.08);color:var(--red);}
+.warning .result-advice{background:rgba(212,160,23,.08);color:#8B6914;}
+.safe .result-advice{background:rgba(39,136,74,.08);color:var(--green);}
+.result-ai-badge{display:inline-flex;align-items:center;gap:5px;margin-top:12px;padding:4px 10px;background:rgba(0,0,0,.04);border-radius:8px;font-size:11px;color:var(--text-soft);}
+.result-share-btn{width:100%;margin-top:14px;padding:12px;border:2px dashed var(--border);border-radius:10px;background:transparent;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--text-soft);cursor:pointer;transition:all .2s;}
+.result-share-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-light);}
+
+/* HOW IT WORKS */
+.how-section{padding:100px 24px;}
+.how-inner{max-width:960px;margin:0 auto;}
+.how-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:48px;}
+@media(max-width:800px){.how-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:500px){.how-grid{grid-template-columns:1fr;}}
+.how-card{text-align:center;padding:32px 20px;border-radius:20px;background:var(--card);border:1px solid var(--border);transition:transform .3s,box-shadow .3s;}
+.how-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);}
+.how-icon-wrap{width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:28px;}
+.how-icon-wrap.green{background:var(--green-light);}
+.how-icon-wrap.blue{background:#E8EEF5;}
+.how-icon-wrap.yellow{background:var(--yellow-light);}
+.how-icon-wrap.red{background:var(--red-light);}
+.how-card h3{font-family:'Fraunces',serif;font-size:17px;font-weight:700;margin-bottom:8px;}
+.how-card p{font-size:13px;color:var(--text-soft);line-height:1.6;}
+
+/* STATS */
+.stats-section{padding:80px 24px;background:var(--dark);color:#fff;position:relative;overflow:hidden;}
+.stats-section::before{content:'';position:absolute;top:-100px;right:-100px;width:400px;height:400px;background:radial-gradient(circle,rgba(45,90,61,.2) 0%,transparent 70%);border-radius:50%;}
+.stats-inner{max-width:900px;margin:0 auto;position:relative;z-index:1;}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:32px;text-align:center;}
+@media(max-width:700px){.stats-grid{grid-template-columns:repeat(2,1fr);gap:24px;}}
+.stat-number{font-family:'Fraunces',serif;font-size:clamp(32px,5vw,48px);font-weight:700;color:var(--green);line-height:1;margin-bottom:8px;}
+.stat-label{font-size:14px;color:rgba(255,255,255,.6);line-height:1.4;}
+
+/* TIPS */
+.tips-section{padding:100px 24px;}
+.tips-inner{max-width:700px;margin:0 auto;}
+.tips-grid{display:grid;gap:16px;margin-top:40px;}
+.tip-card{display:flex;align-items:flex-start;gap:18px;padding:24px;background:var(--card);border-radius:16px;border:1px solid var(--border);transition:transform .2s,box-shadow .2s;}
+.tip-card:hover{transform:translateY(-2px);box-shadow:var(--shadow);}
+.tip-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:24px;}
+.tip-icon.red{background:var(--red-light);}
+.tip-icon.yellow{background:var(--yellow-light);}
+.tip-icon.green{background:var(--green-light);}
+.tip-icon.blue{background:#E8EEF5;}
+.tip-card h3{font-size:16px;font-weight:700;margin-bottom:4px;}
+.tip-card p{font-size:14px;color:var(--text-soft);line-height:1.6;}
+
+/* CTA */
+.cta-section{padding:100px 24px;background:var(--accent);text-align:center;position:relative;overflow:hidden;}
+.cta-section::before{content:'';position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");pointer-events:none;}
+.cta-inner{max-width:600px;margin:0 auto;position:relative;z-index:1;}
+.cta-section h2{font-family:'Fraunces',serif;font-size:clamp(28px,5vw,42px);font-weight:700;color:#fff;margin-bottom:16px;line-height:1.2;}
+.cta-section p{font-size:17px;color:rgba(255,255,255,.75);margin-bottom:36px;line-height:1.6;}
+.btn-white{padding:18px 40px;background:#fff;color:var(--accent);border:none;border-radius:14px;font-family:'DM Sans',sans-serif;font-size:18px;font-weight:700;cursor:pointer;transition:all .25s;text-decoration:none;display:inline-flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.15);}
+.btn-white:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.2);}
+.cta-social{display:flex;gap:16px;justify-content:center;margin-top:28px;}
+.cta-social a{padding:10px 20px;border:1px solid rgba(255,255,255,.25);border-radius:10px;color:rgba(255,255,255,.7);text-decoration:none;font-size:14px;font-weight:500;transition:all .2s;}
+.cta-social a:hover{border-color:#fff;color:#fff;background:rgba(255,255,255,.1);}
+
+/* EMERGENCY */
+.emergency-section{padding:100px 24px;background:var(--red-light);position:relative;overflow:hidden;}
+.emergency-section::before{content:'';position:absolute;top:0;left:0;right:0;height:6px;background:var(--red);}
+.emergency-inner{max-width:700px;margin:0 auto;}
+.emergency-header{text-align:center;margin-bottom:40px;}
+.emergency-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 20px;background:var(--red);color:#fff;border-radius:10px;font-size:14px;font-weight:700;letter-spacing:.5px;margin-bottom:20px;animation:emergency-pulse 2s infinite;}
+@keyframes emergency-pulse{0%,100%{box-shadow:0 0 0 0 rgba(192,57,43,.4);}50%{box-shadow:0 0 0 12px rgba(192,57,43,0);}}
+.emergency-title{font-family:'Fraunces',serif;font-size:clamp(28px,5vw,40px);font-weight:700;color:var(--red);margin-bottom:12px;line-height:1.2;}
+.emergency-subtitle{font-size:16px;color:var(--text-soft);line-height:1.6;}
+
+.emergency-wizard{background:var(--card);border-radius:20px;padding:32px 28px;box-shadow:var(--shadow-lg);border:1px solid var(--border);}
+.wizard-question{font-family:'Fraunces',serif;font-size:20px;font-weight:700;margin-bottom:20px;text-align:center;line-height:1.3;}
+.wizard-options{display:grid;gap:10px;}
+.wizard-option{padding:18px 20px;border:2px solid var(--border);border-radius:14px;background:var(--bg);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;color:var(--text);cursor:pointer;transition:all .2s;text-align:left;display:flex;align-items:center;gap:14px;}
+.wizard-option:hover{border-color:var(--red);background:var(--red-light);}
+.wizard-option.selected{border-color:var(--red);background:var(--red-light);font-weight:600;}
+.wizard-option-icon{font-size:24px;flex-shrink:0;}
+
+/* Emergency steps */
+.emergency-steps{display:none;animation:slideUp .4s ease;}
+.emergency-steps.active{display:block;}
+.emergency-step{display:flex;gap:16px;padding:20px;background:var(--bg);border-radius:14px;margin-bottom:12px;align-items:flex-start;}
+.step-number{width:36px;height:36px;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0;}
+.step-content h4{font-size:16px;font-weight:700;margin-bottom:4px;}
+.step-content p{font-size:14px;color:var(--text-soft);line-height:1.6;}
+.step-call-btn{display:inline-flex;align-items:center;gap:8px;margin-top:10px;padding:10px 20px;background:var(--red);color:#fff;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;transition:all .2s;}
+.step-call-btn:hover{background:#A93226;transform:translateY(-1px);}
+.step-call-btn.green{background:var(--green);}
+.step-call-btn.green:hover{background:#1E7A3E;}
+.emergency-back{margin-top:20px;padding:12px 24px;background:transparent;border:1px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;color:var(--text-soft);cursor:pointer;transition:all .2s;display:block;margin-left:auto;margin-right:auto;}
+.emergency-back:hover{border-color:var(--text);color:var(--text);}
+.emergency-extra{margin-top:20px;padding:18px;background:rgba(192,57,43,.06);border-radius:12px;font-size:14px;line-height:1.6;color:var(--text-soft);}
+.emergency-extra strong{color:var(--red);}
+.fraudeuy-cta{margin-top:20px;padding:20px;background:var(--card);border:2px solid var(--accent);border-radius:14px;text-align:center;}
+.fraudeuy-cta-title{font-family:'Fraunces',serif;font-size:17px;font-weight:700;color:var(--accent);margin-bottom:6px;}
+.fraudeuy-cta-text{font-size:13px;color:var(--text-soft);line-height:1.5;margin-bottom:14px;}
+.fraudeuy-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;text-decoration:none;opacity:.6;pointer-events:none;}
+.fraudeuy-btn.active-link{opacity:1;pointer-events:auto;}
+.fraudeuy-btn.active-link:hover{background:var(--accent-hover);transform:translateY(-1px);}
+.fraudeuy-badge{display:inline-block;padding:2px 8px;background:var(--yellow-light);color:var(--yellow);border-radius:6px;font-size:11px;font-weight:600;margin-left:6px;}
+
+/* PARTNER SECTION */
+.partner-section{padding:60px 24px;background:var(--bg-alt);}
+.partner-inner{max-width:600px;margin:0 auto;text-align:center;}
+.partner-card{background:var(--card);border-radius:20px;padding:36px 32px;border:1px solid var(--border);box-shadow:var(--shadow);}
+.partner-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-soft);margin-bottom:16px;}
+.partner-logo{font-family:'Fraunces',serif;font-size:28px;font-weight:700;color:var(--accent);margin-bottom:8px;}
+.partner-desc{font-size:15px;color:var(--text-soft);line-height:1.6;margin-bottom:4px;}
+.partner-status{font-size:13px;color:var(--yellow);font-weight:600;}
+
+/* FOOTER */
+.footer{padding:40px 24px;background:var(--dark);text-align:center;}
+.footer-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
+.footer-brand{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.5);font-family:'Fraunces',serif;font-size:16px;font-weight:700;}
+.footer-brand svg{width:20px;height:20px;fill:rgba(255,255,255,.3);}
+.footer-text{font-size:13px;color:rgba(255,255,255,.35);}
+.footer-links{display:flex;gap:20px;}
+.footer-links a{font-size:13px;color:rgba(255,255,255,.4);text-decoration:none;transition:color .2s;}
+.footer-links a:hover{color:rgba(255,255,255,.7);}
+@media(max-width:700px){.footer-inner{flex-direction:column;text-align:center;}}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-icon"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 16l-4-4 1.41-1.41L11 14.17l6.59-6.59L19 9l-8 8z"/></svg></div>
+    <span class="nav-logo-text">LinkGuard</span>
+  </a>
+  <div class="nav-links">
+    <a href="#como-funciona" class="nav-link">Cómo funciona</a>
+    <a href="#consejos" class="nav-link">Consejos</a>
+    <a href="#emergencia" class="nav-link" style="color:var(--red);font-weight:600;">🚨 Ya di mis datos</a>
+    <a href="#verificar" class="nav-cta">Verificar ahora</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge"><span class="hero-badge-dot"></span>Base de amenazas actualizada · Uruguay</div>
+    <h1>Protegé a tu familia del <span>fraude digital</span></h1>
+    <p class="hero-sub">Verificá mensajes, links, capturas de pantalla y publicidades sospechosas. Nuestra IA detecta fraudes en segundos.</p>
+    <div class="hero-cta-group">
+      <a href="#verificar" class="btn-primary"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 16l-4-4 1.41-1.41L11 14.17l6.59-6.59L19 9l-8 8z"/></svg>Verificar ahora</a>
+      <a href="#emergencia" class="btn-secondary" style="border-color:var(--red);color:var(--red);">🚨 Ya di mis datos</a>
+    </div>
+  </div>
+</section>
+
+<!-- TOOL -->
+<section class="tool-section" id="verificar">
+  <div class="tool-inner">
+    <div class="section-label">Herramienta gratuita</div>
+    <h2 class="section-heading">¿Qué querés verificar?</h2>
+
+    <div class="tool-card">
+      <!-- Tabs -->
+      <div class="input-tabs">
+        <button class="input-tab active" onclick="switchTab('text')" id="tabText">
+          <span class="tab-icon">💬</span>
+          <span class="tab-label">Mensaje o link</span>
+        </button>
+        <button class="input-tab" onclick="switchTab('image')" id="tabImage">
+          <span class="tab-icon">📷</span>
+          <span class="tab-label">Captura de pantalla</span>
+        </button>
+        <button class="input-tab" onclick="switchTab('ad')" id="tabAd">
+          <span class="tab-icon">📢</span>
+          <span class="tab-label">Publicidad</span>
+        </button>
+      </div>
+
+      <!-- Text input -->
+      <div class="input-area active" id="areaText">
+        <div class="tool-input-label">Mensaje, SMS o link</div>
+        <div class="tool-hint">Pegá el mensaje completo de WhatsApp, SMS, email o solo el link.</div>
+        <textarea class="tool-textarea" id="msgInput" placeholder="Ej: Estimado cliente, su cuenta ha sido bloqueada. Ingrese a https://bancco-republica.com para verificar..."></textarea>
+        <div class="demo-row">
+          <button class="demo-pill" onclick="loadDemo('sms')">📱 SMS falso</button>
+          <button class="demo-pill" onclick="loadDemo('whatsapp')">💬 WhatsApp</button>
+          <button class="demo-pill" onclick="loadDemo('safe')">✅ Legítimo</button>
+        </div>
+      </div>
+
+      <!-- Image input -->
+      <div class="input-area" id="areaImage">
+        <div class="tool-input-label">Captura de pantalla</div>
+        <div class="tool-hint">Subí la captura del mensaje, WhatsApp, SMS o página web sospechosa.</div>
+        <div class="img-preview" id="imgPreview">
+          <img id="previewImg" src="" alt="Preview">
+          <button class="img-remove" onclick="removeImage()">&times;</button>
+        </div>
+        <div class="upload-zone" id="uploadZone">
+          <span class="upload-zone-icon">📸</span>
+          <div class="upload-zone-text">Tocá para subir o arrastrá la imagen</div>
+          <div class="upload-zone-hint">JPG, PNG · Máximo 10MB</div>
+          <input type="file" accept="image/*" id="fileInput" onchange="handleFile(this)">
+        </div>
+      </div>
+
+      <!-- Ad input -->
+      <div class="input-area" id="areaAd">
+        <div class="tool-input-label">Publicidad sospechosa</div>
+        <div class="tool-hint">Pegá el texto de la publicidad o subí una captura. Analizamos si es legítima o un engaño.</div>
+        <textarea class="tool-textarea" id="adInput" placeholder='Ej: "¡Felicitaciones! El BROU te regala $50.000 por ser cliente fiel. Reclamá tu premio aquí: bit.ly/brou-premio"'></textarea>
+        <div class="demo-row">
+          <button class="demo-pill" onclick="loadAdDemo('premio')">🎁 Premio falso</button>
+          <button class="demo-pill" onclick="loadAdDemo('inversion')">📈 Inversión</button>
+          <button class="demo-pill" onclick="loadAdDemo('gobierno')">🏛️ Gobierno</button>
+        </div>
+        <div style="margin-top:12px;">
+          <div class="img-preview" id="adImgPreview">
+            <img id="adPreviewImg" src="" alt="Ad Preview">
+            <button class="img-remove" onclick="removeAdImage()">&times;</button>
+          </div>
+          <div class="upload-zone" id="adUploadZone" style="padding:24px 16px;">
+            <span class="upload-zone-icon" style="font-size:24px;">📸</span>
+            <div class="upload-zone-text" style="font-size:13px;">O subí una captura de la publicidad</div>
+            <input type="file" accept="image/*" id="adFileInput" onchange="handleAdFile(this)">
+          </div>
+        </div>
+      </div>
+
+      <button class="tool-btn" id="verifyBtn" onclick="analyze()">
+        <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 16l-4-4 1.41-1.41L11 14.17l6.59-6.59L19 9l-8 8z"/></svg>
+        Analizar
+      </button>
+    </div>
+
+    <!-- Loading -->
+    <div class="tool-loading" id="loading">
+      <div class="tool-spinner"></div>
+      <div class="tool-loading-text" id="loadingText">Analizando con inteligencia artificial...</div>
+    </div>
+
+    <!-- Result -->
+    <div class="tool-result" id="resultCard">
+      <div class="result-header">
+        <div class="result-icon-circle" id="resultIcon"></div>
+        <div>
+          <div class="result-title" id="resultTitle"></div>
+          <div class="result-subtitle" id="resultSubtitle"></div>
+        </div>
+      </div>
+      <div id="analysisSection"></div>
+      <div class="result-advice" id="resultAdvice"></div>
+      <div class="result-ai-badge">🤖 Analizado por inteligencia artificial</div>
+      <button class="result-share-btn" onclick="shareResult()">📩 Enviar resultado a un familiar por WhatsApp</button>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section" id="como-funciona">
+  <div class="how-inner">
+    <div class="section-label">Qué podés verificar</div>
+    <h2 class="section-heading">Analizamos todo tipo de amenaza</h2>
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="how-icon-wrap green">💬</div>
+        <h3>Mensajes</h3>
+        <p>SMS, WhatsApp o email sospechosos. Pegá el texto y te decimos si es fraude.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-icon-wrap blue">🔗</div>
+        <h3>Links</h3>
+        <p>URLs que imitan bancos, links acortados, páginas falsas que piden tus datos.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-icon-wrap yellow">📷</div>
+        <h3>Capturas</h3>
+        <p>Sacale captura al mensaje y subila. La IA lee la imagen y analiza el contenido.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-icon-wrap red">📢</div>
+        <h3>Publicidades</h3>
+        <p>Anuncios de premios, inversiones milagrosas, ofertas de gobierno. Verificamos si son reales.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="stats-section">
+  <div class="stats-inner">
+    <div class="stats-grid">
+      <div><div class="stat-number">89%</div><div class="stat-label">de los fraudes llegan por WhatsApp o SMS</div></div>
+      <div><div class="stat-number">72%</div><div class="stat-label">de los mensajes reportados son estafas</div></div>
+      <div><div class="stat-number">45%</div><div class="stat-label">de las víctimas son mayores de 60 años</div></div>
+      <div><div class="stat-number">3 seg</div><div class="stat-label">tarda nuestro análisis con IA</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- TIPS -->
+<section class="tips-section" id="consejos">
+  <div class="tips-inner">
+    <div class="section-label">Aprendé a protegerte</div>
+    <h2 class="section-heading">Señales de que es un fraude</h2>
+    <div class="tips-grid">
+      <div class="tip-card"><div class="tip-icon red">⏰</div><div><h3>Te apuran</h3><p>"Tenés 24 horas", "acción inmediata". Los bancos reales no presionan así.</p></div></div>
+      <div class="tip-card"><div class="tip-icon red">🔑</div><div><h3>Te piden el token</h3><p>Tu banco NUNCA te pide el token o contraseña por mensaje. Si lo piden, es fraude.</p></div></div>
+      <div class="tip-card"><div class="tip-icon yellow">🔗</div><div><h3>El link es raro</h3><p>"banccorepublica.com" no es "brou.com.uy". Una letra cambia todo.</p></div></div>
+      <div class="tip-card"><div class="tip-icon yellow">🎁</div><div><h3>Te regalan algo</h3><p>"Ganaste un premio", "reembolso pendiente", "inversión garantizada". Si suena demasiado bueno, es mentira.</p></div></div>
+      <div class="tip-card"><div class="tip-icon green">📞</div><div><h3>Ante la duda, llamá</h3><p>Usá el número de tu tarjeta, nunca el del mensaje.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- EMERGENCY -->
+<section class="emergency-section" id="emergencia">
+  <div class="emergency-inner">
+    <div class="emergency-header">
+      <div class="emergency-badge">🚨 EMERGENCIA</div>
+      <h2 class="emergency-title">¿Ya diste tus datos?</h2>
+      <p class="emergency-subtitle">No te asustes. Seguí estos pasos ahora mismo. Cada minuto cuenta.</p>
+    </div>
+
+    <div class="emergency-wizard" id="emergencyWizard">
+      <!-- Step 1: What did you give? -->
+      <div id="wizardQ1">
+        <div class="wizard-question">¿Qué datos compartiste?</div>
+        <div class="wizard-options">
+          <button class="wizard-option" onclick="showEmergency('token')">
+            <span class="wizard-option-icon">🔑</span>
+            <span>Di mi token o contraseña del banco</span>
+          </button>
+          <button class="wizard-option" onclick="showEmergency('card')">
+            <span class="wizard-option-icon">💳</span>
+            <span>Di mi número de tarjeta o datos de cuenta</span>
+          </button>
+          <button class="wizard-option" onclick="showEmergency('cedula')">
+            <span class="wizard-option-icon">🪪</span>
+            <span>Di mi cédula de identidad</span>
+          </button>
+          <button class="wizard-option" onclick="showEmergency('link')">
+            <span class="wizard-option-icon">🔗</span>
+            <span>Entré a un link e ingresé datos</span>
+          </button>
+          <button class="wizard-option" onclick="showEmergency('transfer')">
+            <span class="wizard-option-icon">💸</span>
+            <span>Hice una transferencia</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Token / Password -->
+      <div class="emergency-steps" id="stepsToken">
+        <div class="wizard-question" style="color:var(--red);">Diste tu token o contraseña — actuá ahora:</div>
+        <div class="emergency-step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h4>Llamá a tu banco AHORA</h4>
+            <p>Pedí que bloqueen tu cuenta y anulen el token inmediatamente. Usá estos números oficiales:</p>
+            <a href="tel:1896" class="step-call-btn">📞 BROU: 1896</a>
+            <a href="tel:1784" class="step-call-btn">📞 Itaú: 1784</a>
+            <a href="tel:19001234" class="step-call-btn">📞 Santander: 1900 1234</a>
+            <a href="tel:08002382" class="step-call-btn">📞 BBVA: 0800 2382</a>
+          </div>
+        </div>
+        <div class="emergency-step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h4>Cambiá tu contraseña</h4>
+            <p>Entrá a la app oficial de tu banco (no por ningún link) y cambiá la contraseña. Si usás la misma contraseña en otro lado, cambiala ahí también.</p>
+          </div>
+        </div>
+        <div class="emergency-step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h4>Revisá tus movimientos</h4>
+            <p>Fijate si hay alguna transferencia o compra que no hiciste. Si encontrás algo raro, decile al banco que la desconocés.</p>
+          </div>
+        </div>
+        <div class="emergency-step">
+          <div class="step-number">4</div>
+          <div class="step-content">
+            <h4>Hacé la denuncia</h4>
+            <p>Denunciá el fraude en la comisaría más cercana o llamá al 911. Guardá capturas de los mensajes que recibiste como evidencia.</p>
+            <a href="tel:911" class="step-call-btn green">📞 Llamar al 911</a>
+          </div>
+        </div>
+        <div class="emergency-extra">
+          <strong>Importante:</strong> No borres los mensajes ni el historial de llamadas. Son evidencia para la denuncia. Si podés, sacales captura de pantalla ahora.
+        </div>
+        <div class="fraudeuy-cta">
+          <div class="fraudeuy-cta-title">📢 Reportá este fraude</div>
+          <div class="fraudeuy-cta-text">Tu reporte ayuda a proteger a otros uruguayos. Fraude.uy recopila datos de estafas para identificar patrones y alertar a la población.</div>
+          <span class="fraudeuy-btn">💬 Reportar por WhatsApp<span class="fraudeuy-badge">Próximamente</span></span>
+        </div>
+        <button class="emergency-back" onclick="resetEmergency()">← Volver</button>
+      </div>
+
+      <!-- Card / Account data -->
+      <div class="emergency-steps" id="stepsCard">
+        <div class="wizard-question" style="color:var(--red);">Diste datos de tu tarjeta o cuenta:</div>
+        <div class="emergency-step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h4>Llamá a tu banco y pedí bloqueo de tarjeta</h4>
+            <p>Que bloqueen la tarjeta cuyos datos compartiste y te emitan una nueva.</p>
+            <a href="tel:1896" class="step-call-btn">📞 BROU: 1896</a>
+            <a href="tel:1784" class="step-call-btn">📞 Itaú: 1784</a>
+            <a href="tel:19001234" class="step-call-btn">📞 Santander: 1900 1234</a>
+            <a href="tel:08002382" class="step-call-btn">📞 BBVA: 0800 2382</a>
+          </div>
+        </div>
+        <div class="emergency-step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h4>Revisá compras y movimientos</h4>
+            <p>Entrá a la app oficial del banco y revisá si hay compras o movimientos que no reconocés. Avisá al banco sobre cualquier operación sospechosa.</p>
+          </div>
+        </div>
+        <div class="emergency-step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h4>Hacé la denuncia</h4>
+            <p>Denunciá en la comisaría o llamando al 911. Guardá evidencia de todo.</p>
+            <a href="tel:911" class="step-call-btn green">📞 Llamar al 911</a>
+          </div>
+        </div>
+        <div class="emergency-extra">
+          <strong>Importante:</strong> Si compartiste datos de tarjeta de crédito, también llamá a la administradora (Visa, Mastercard) a través de tu banco para disputar cualquier cargo.
+        </div>
+        <div class="fraudeuy-cta">
+          <div class="fraudeuy-cta-title">📢 Reportá este fraude</div>
+          <div class="fraudeuy-cta-text">Tu reporte ayuda a proteger a otros uruguayos. Fraude.uy recopila datos de estafas para identificar patrones y alertar a la población.</div>
+          <span class="fraudeuy-btn">💬 Reportar por WhatsApp<span class="fraudeuy-badge">Próximamente</span></span>
+        </div>
+        <button class="emergency-back" onclick="resetEmergency()">← Volver</button>
+      </div>
+
+      <!-- Cédula -->
+      <div class="emergency-steps" id="stepsCedula">
+        <div class="wizard-question" style="color:var(--yellow);">Diste tu número de cédula:</div>
+        <div class="emergency-step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h4>Avisá a tu banco</h4>
+            <p>Llamá y contá lo que pasó. Pedí que agreguen una alerta de seguridad extra en tu cuenta por si intentan usarla con tu cédula.</p>
+            <a href="tel:1896" class="step-call-btn">📞 BROU: 1896</a>
+            <a href="tel:1784" class="step-call-btn">📞 Itaú: 1784</a>
+          </div>
+        </div>
+        <div class="emergency-step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h4>Monitoreá tus cuentas</h4>
+            <p>Durante las próximas semanas, revisá regularmente tus movimientos bancarios. Si ves algo raro, avisá al banco inmediatamente.</p>
+          </div>
+        </div>
+        <div class="emergency-step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h4>Cuidado con llamadas futuras</h4>
+            <p>Con tu cédula, los estafadores pueden intentar contactarte de nuevo haciéndose pasar por tu banco. Ya tienen un dato real tuyo para generar confianza. Desconfiá de cualquier llamada que mencione tu número de cédula.</p>
+          </div>
+        </div>
+        <div class="fraudeuy-cta">
+          <div class="fraudeuy-cta-title">📢 Reportá este fraude</div>
+          <div class="fraudeuy-cta-text">Tu reporte ayuda a proteger a otros uruguayos. Fraude.uy recopila datos de estafas para identificar patrones y alertar a la población.</div>
+          <span class="fraudeuy-btn">💬 Reportar por WhatsApp<span class="fraudeuy-badge">Próximamente</span></span>
+        </div>
+        <button class="emergency-back" onclick="resetEmergency()">← Volver</button>
+      </div>
+
+      <!-- Clicked link -->
+      <div class="emergency-steps" id="stepsLink">
+        <div class="wizard-question" style="color:var(--red);">Entraste a un link falso e ingresaste datos:</div>
+        <div class="emergency-step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h4>Cerrá todo ahora</h4>
+            <p>Cerrá el navegador y todas las pestañas. Si descargaste algo, no lo abras.</p>
+          </div>
+        </div>
+        <div class="emergency-step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h4>Llamá a tu banco</h4>
+            <p>Contá exactamente qué datos ingresaste en la página falsa. El banco decidirá si necesitan bloquear algo.</p>
+            <a href="tel:1896" class="step-call-btn">📞 BROU: 1896</a>
+            <a href="tel:1784" class="step-call-btn">📞 Itaú: 1784</a>
+            <a href="tel:19001234" class="step-call-btn">📞 Santander: 1900 1234</a>
+            <a href="tel:08002382" class="step-call-btn">📞 BBVA: 0800 2382</a>
+          </div>
+        </div>
+        <div class="emergency-step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h4>Cambiá todas las contraseñas</h4>
+            <p>Cambiá la contraseña del banco y de cualquier cuenta donde uses la misma clave. Hacelo desde la app oficial, nunca desde un link.</p>
+          </div>
+        </div>
+        <div class="emergency-step">
+          <div class="step-number">4</div>
+          <div class="step-content">
+            <h4>Sacá captura del link</h4>
+            <p>Si todavía tenés el mensaje con el link, sacale captura. Es evidencia para la denuncia.</p>
+          </div>
+        </div>
+        <div class="emergency-extra">
+          <strong>Tip:</strong> Si ingresaste usuario y contraseña de email (Gmail, Hotmail), cambiá también esa contraseña. Los estafadores pueden usar tu email para acceder a más cuentas.
+        </div>
+        <div class="fraudeuy-cta">
+          <div class="fraudeuy-cta-title">📢 Reportá este fraude</div>
+          <div class="fraudeuy-cta-text">Tu reporte ayuda a proteger a otros uruguayos. Fraude.uy recopila datos de estafas para identificar patrones y alertar a la población.</div>
+          <span class="fraudeuy-btn">💬 Reportar por WhatsApp<span class="fraudeuy-badge">Próximamente</span></span>
+        </div>
+        <button class="emergency-back" onclick="resetEmergency()">← Volver</button>
+      </div>
+
+      <!-- Made a transfer -->
+      <div class="emergency-steps" id="stepsTransfer">
+        <div class="wizard-question" style="color:var(--red);">Hiciste una transferencia — actuá YA:</div>
+        <div class="emergency-step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h4>Llamá a tu banco AHORA MISMO</h4>
+            <p>Pedí que intenten frenar o revertir la transferencia. Cuanto antes llames, más chances hay de recuperar el dinero. Cada minuto cuenta.</p>
+            <a href="tel:1896" class="step-call-btn">📞 BROU: 1896</a>
+            <a href="tel:1784" class="step-call-btn">📞 Itaú: 1784</a>
+            <a href="tel:19001234" class="step-call-btn">📞 Santander: 1900 1234</a>
+            <a href="tel:08002382" class="step-call-btn">📞 BBVA: 0800 2382</a>
+          </div>
+        </div>
+        <div class="emergency-step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h4>Anotá los datos de la transferencia</h4>
+            <p>Monto, fecha, hora, cuenta destino. Todo lo que recuerdes. El banco lo va a necesitar.</p>
+          </div>
+        </div>
+        <div class="emergency-step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h4>Hacé la denuncia policial</h4>
+            <p>Andá a la comisaría más cercana o llamá al 911. Con la denuncia, el banco puede iniciar el proceso de recuperación.</p>
+            <a href="tel:911" class="step-call-btn green">📞 Llamar al 911</a>
+          </div>
+        </div>
+        <div class="emergency-step">
+          <div class="step-number">4</div>
+          <div class="step-content">
+            <h4>Guardá toda la evidencia</h4>
+            <p>Capturas de mensajes, historial de llamadas, comprobantes de transferencia. No borres nada.</p>
+          </div>
+        </div>
+        <div class="emergency-extra">
+          <strong>No te culpes.</strong> Los estafadores son profesionales y manipulan a miles de personas. Lo importante ahora es actuar rápido. Llamá al banco antes de hacer cualquier otra cosa.
+        </div>
+        <div class="fraudeuy-cta">
+          <div class="fraudeuy-cta-title">📢 Reportá este fraude</div>
+          <div class="fraudeuy-cta-text">Tu reporte ayuda a proteger a otros uruguayos. Fraude.uy recopila datos de estafas para identificar patrones y alertar a la población.</div>
+          <span class="fraudeuy-btn">💬 Reportar por WhatsApp<span class="fraudeuy-badge">Próximamente</span></span>
+        </div>
+        <button class="emergency-back" onclick="resetEmergency()">← Volver</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-inner">
+    <h2>¿Recibiste algo sospechoso?</h2>
+    <p>Verificalo gratis en segundos. Compartí LinkGuard con tu familia para protegerlos.</p>
+    <a href="#verificar" class="btn-white"><svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 16l-4-4 1.41-1.41L11 14.17l6.59-6.59L19 9l-8 8z"/></svg>Verificar ahora</a>
+    <div class="cta-social">
+      <a href="https://x.com/LinkGuardUY" target="_blank">𝕏 @LinkGuardUY</a>
+      <a href="https://instagram.com/linkguard.uy" target="_blank">📷 @linkguard.uy</a>
+    </div>
+  </div>
+</section>
+
+<!-- PARTNER -->
+<section class="partner-section">
+  <div class="partner-inner">
+    <div class="partner-card">
+      <div class="partner-label">Proyecto aliado</div>
+      <div class="partner-logo">Fraude.uy</div>
+      <div class="partner-desc">Observatorio ciudadano de fraude digital en Uruguay. Reportá intentos de estafa por WhatsApp y ayudá a identificar patrones para proteger a la población.</div>
+      <div class="partner-status">🚧 En desarrollo · Próximamente</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 16l-4-4 1.41-1.41L11 14.17l6.59-6.59L19 9l-8 8z"/></svg>LinkGuard</div>
+    <div class="footer-text">Hecho en Uruguay 🇺🇾 · Protección contra fraude digital</div>
+    <div class="footer-links">
+      <a href="https://x.com/LinkGuardUY" target="_blank">Twitter</a>
+      <a href="https://instagram.com/linkguard.uy" target="_blank">Instagram</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// NAV
+window.addEventListener('scroll',()=>{document.getElementById('nav').classList.toggle('scrolled',window.scrollY>20);});
+
+// Smooth scroll fallback for all anchor links
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    const id=a.getAttribute('href').slice(1);
+    const target=document.getElementById(id);
+    if(target){
+      e.preventDefault();
+      const offset=70;
+      const top=target.getBoundingClientRect().top+window.pageYOffset-offset;
+      window.scrollTo({top,behavior:'smooth'});
+    }
+  });
+});
+
+// STATE
+let currentTab = 'text';
+let uploadedImage = null;
+let adUploadedImage = null;
+
+// THREAT DB
+const THREAT_DB={
+  fraudulentDomains:["banccorepublica.com.uy","brou-verificacion.com","brou-seguridad.com","itau-uruguay.com","santander-uy-seguro.com","bbva-verificar.com","bancco-republica.com","e-brou.com","mi-brou.net","brou-online.net","itau-seguridad.com","promo-financiera.com","dgi-reembolsos.com","brou-portal.com","itau-seguridad.online","ebrou-login.com","brou-actualizar.com","santander-uy.com"],
+  scamPhones:["099847231","099312456","098765432"],
+  // DOMINIOS OFICIALES - VERDE DIRECTO
+  legitimateDomains:[
+    // Bancos
+    "brou.com.uy","e-brou.com.uy","itau.com.uy","santander.com.uy","bbva.com.uy",
+    "scotiabank.com.uy","hsbc.com.uy","heritage.com.uy","banquetotal.com.uy",
+    "bcu.gub.uy","bancorepublica.com.uy",
+    // Gobierno (gub.uy y subdominios se manejan aparte)
+    "gub.uy","dgi.gub.uy","bps.gub.uy","portal.bps.gub.uy","mef.gub.uy",
+    "msp.gub.uy","minterior.gub.uy","agesic.gub.uy",
+    // Servicios estatales
+    "antel.com.uy","ute.com.uy","ose.com.uy","correo.com.uy",
+    // Tarjetas y pagos
+    "visa.com.uy","mastercard.com.uy","oca.com.uy",
+    "redpagos.com.uy","abitab.com.uy","prex.com.uy",
+    // Comercio y servicios
+    "mercadopago.com.uy","mercadolibre.com.uy","pedidosya.com.uy"
+  ],
+  recentPatterns:["Fraudes con supuesto reembolso de DGI","Mensajes falsos de Correo Uruguayo","WhatsApp haciéndose pasar por Mercado Pago","SMS de supuesta suspensión de cuenta BROU","Publicidades falsas de premios bancarios en Facebook","Anuncios de inversiones con retorno garantizado"],
+  officialContacts:{"BROU":"1896","Itaú":"1784","Santander":"1900 1234","BBVA":"0800 2382","Scotiabank":"2916 1111"}
+};
+
+// DEMOS
+const demos={
+  sms:`BROU URGENTE: Su cuenta ha sido suspendida por actividad sospechosa. Para reactivarla ingrese a https://brou-verificacion.com/seguro y confirme su identidad con su token digital. Tiene 24hs.`,
+  whatsapp:`Buenas tardes, le escribo del departamento de seguridad del Banco Itaú. Detectamos un intento de acceso no autorizado a su cuenta. Necesitamos que nos confirme su token de 6 dígitos para bloquear la operación. También puede llamar al 099 847 231. Es urgente.`,
+  safe:`https://www.brou.com.uy/personas`
+};
+
+const adDemos={
+  premio:`¡FELICITACIONES! 🎉 El BROU te seleccionó para recibir $50.000 por ser cliente fiel. Solo quedan 3 premios disponibles. Reclamá el tuyo ahora: bit.ly/brou-premio-2026. Ingresá con tu cédula y datos de cuenta para acreditar el depósito.`,
+  inversion:`💰 OPORTUNIDAD ÚNICA: Invertí $5.000 y ganá $150.000 en 30 días con el nuevo sistema de inversión respaldado por el Banco Central del Uruguay. Miles de uruguayos ya lo están usando. Cupos limitados. Registrate en https://inversion-bcu-uy.com`,
+  gobierno:`AVISO DGI: Se detectó un reembolso a su favor por $14.350 correspondiente al ejercicio 2025. Para acreditarlo en su cuenta, ingrese a https://dgi-reembolsos.com/verificar con su cédula y datos bancarios. Vence en 48hs.`
+};
+
+// TABS
+function switchTab(tab){
+  currentTab=tab;
+  document.querySelectorAll('.input-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.input-area').forEach(a=>a.classList.remove('active'));
+  document.getElementById('tab'+tab.charAt(0).toUpperCase()+tab.slice(1)).classList.add('active');
+  document.getElementById('area'+tab.charAt(0).toUpperCase()+tab.slice(1)).classList.add('active');
+  hideResult();
+}
+
+// DEMOS
+function loadDemo(type){switchTab('text');document.getElementById('msgInput').value=demos[type];analyze();}
+function loadAdDemo(type){switchTab('ad');document.getElementById('adInput').value=adDemos[type];analyze();}
+
+// IMAGE HANDLING
+function handleFile(input){
+  const file=input.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    uploadedImage=e.target.result;
+    document.getElementById('previewImg').src=uploadedImage;
+    document.getElementById('imgPreview').classList.add('active');
+    document.getElementById('uploadZone').style.display='none';
+  };
+  reader.readAsDataURL(file);
+}
+function removeImage(){
+  uploadedImage=null;
+  document.getElementById('imgPreview').classList.remove('active');
+  document.getElementById('uploadZone').style.display='block';
+  document.getElementById('fileInput').value='';
+}
+function handleAdFile(input){
+  const file=input.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    adUploadedImage=e.target.result;
+    document.getElementById('adPreviewImg').src=adUploadedImage;
+    document.getElementById('adImgPreview').classList.add('active');
+    document.getElementById('adUploadZone').style.display='none';
+  };
+  reader.readAsDataURL(file);
+}
+function removeAdImage(){
+  adUploadedImage=null;
+  document.getElementById('adImgPreview').classList.remove('active');
+  document.getElementById('adUploadZone').style.display='block';
+  document.getElementById('adFileInput').value='';
+}
+
+// Drag and drop
+['uploadZone','adUploadZone'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(!el)return;
+  el.addEventListener('dragover',e=>{e.preventDefault();el.classList.add('dragover');});
+  el.addEventListener('dragleave',()=>el.classList.remove('dragover'));
+  el.addEventListener('drop',e=>{e.preventDefault();el.classList.remove('dragover');
+    const file=e.dataTransfer.files[0];
+    if(file&&file.type.startsWith('image/')){
+      const input=el.querySelector('input');
+      const dt=new DataTransfer();dt.items.add(file);input.files=dt.files;
+      if(id==='uploadZone')handleFile(input);else handleAdFile(input);
+    }
+  });
+});
+
+// GOOGLE SAFE BROWSING
+const GSB_API_KEY='AIzaSyAHJt17vsq7qHnjwEQQLkEduLYslmpWQmk';
+
+async function checkGoogleSafeBrowsing(urls){
+  if(!urls||urls.length===0)return{unsafe:false,threats:[]};
+  try{
+    const entries=urls.map(u=>{
+      const fullUrl=u.startsWith('http')?u:'https://'+u;
+      return{url:fullUrl};
+    });
+    const r=await fetch(`https://safebrowsing.googleapis.com/v4/threatMatches:find?key=${GSB_API_KEY}`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        client:{clientId:'linkguard-uy',clientVersion:'1.0'},
+        threatInfo:{
+          threatTypes:['MALWARE','SOCIAL_ENGINEERING','UNWANTED_SOFTWARE','POTENTIALLY_HARMFUL_APPLICATION'],
+          platformTypes:['ANY_PLATFORM'],
+          threatEntryTypes:['URL'],
+          threatEntries:entries
+        }
+      })
+    });
+    if(!r.ok)return{unsafe:false,threats:[]};
+    const data=await r.json();
+    if(data.matches&&data.matches.length>0){
+      const threats=data.matches.map(m=>{
+        const types={MALWARE:'malware',SOCIAL_ENGINEERING:'phishing',UNWANTED_SOFTWARE:'software no deseado',POTENTIALLY_HARMFUL_APPLICATION:'app peligrosa'};
+        return{url:m.threat.url,type:types[m.threatType]||m.threatType};
+      });
+      return{unsafe:true,threats};
+    }
+    return{unsafe:false,threats:[]};
+  }catch(e){
+    console.error('GSB error:',e);
+    return{unsafe:false,threats:[]};
+  }
+}
+
+// ANALYZE
+async function analyze(){
+  let input='';let imageData=null;let analysisType='message';
+
+  if(currentTab==='text'){
+    input=document.getElementById('msgInput').value.trim();
+    if(!input)return;
+  } else if(currentTab==='image'){
+    if(!uploadedImage){alert('Subí una imagen primero');return;}
+    imageData=uploadedImage;
+    analysisType='screenshot';
+  } else if(currentTab==='ad'){
+    input=document.getElementById('adInput').value.trim();
+    imageData=adUploadedImage;
+    if(!input&&!imageData){alert('Pegá el texto de la publicidad o subí una captura');return;}
+    analysisType='advertisement';
+  }
+
+  hideResult();
+  showLoading(true);
+
+  try{
+    // ====== STEP 1: LOCAL HEURISTICS (instant) ======
+    let localResult=null;
+    let localVerdict=null;
+    if(input){
+      updateLoading('Analizando con reglas de seguridad...');
+      localResult=localAnalysis(input);
+      localVerdict=formatLocal(localResult,analysisType);
+    }
+
+    if(localResult&&localResult.allSafe&&localVerdict.verdict==='safe'){
+      showLoading(false);
+      displayResult(localVerdict);
+      return;
+    }
+
+    if(localResult&&localResult.hasDangerDomain&&localVerdict.verdict==='danger'){
+      try{
+        updateLoading('Confirmando análisis con inteligencia artificial...');
+        const aiResult=await aiAnalysis(input,imageData,analysisType);
+        aiResult.verdict='danger';
+        const localSignals=localVerdict.signals.filter(s=>s.badge==='PELIGRO');
+        aiResult.signals=[...localSignals,...(aiResult.signals||[]).filter(s=>!localSignals.some(ls=>ls.text===s.text))];
+        showLoading(false);
+        displayResult(aiResult);
+      }catch(e){
+        showLoading(false);
+        displayResult(localVerdict);
+      }
+      return;
+    }
+
+    // ====== STEP 2: GOOGLE SAFE BROWSING ======
+    let extractedUrls=[];
+    if(input){
+      const fullUrls=input.match(/https?:\/\/[^\s]+/gi)||[];
+      const bareUrlRegex=/(?:^|\s)((?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}(?:\/[^\s]*)?)/gi;
+      let m;
+      while((m=bareUrlRegex.exec(input))!==null){
+        if(/\.[a-z]{2,}/.test(m[1])&&!fullUrls.some(u=>u.includes(m[1]))){
+          extractedUrls.push(m[1]);
+        }
+      }
+      extractedUrls=[...fullUrls,...extractedUrls];
+    }
+
+    let gsbResult={unsafe:false,threats:[]};
+    if(extractedUrls.length>0){
+      updateLoading('Consultando base de datos global de Google...');
+      gsbResult=await checkGoogleSafeBrowsing(extractedUrls);
+    }
+
+    if(gsbResult.unsafe){
+      const gsbSignals=gsbResult.threats.map(t=>({
+        badge:'GOOGLE',
+        text:`Google Safe Browsing marcó "${t.url}" como sitio de ${t.type}. Está en la base de datos global de amenazas.`
+      }));
+      const localSignals=(localVerdict&&localVerdict.signals)?localVerdict.signals.filter(s=>s.badge!=='✓'):[];
+      updateLoading('Analizando con inteligencia artificial...');
+      try{
+        const aiResult=await aiAnalysis(input,imageData,analysisType);
+        aiResult.verdict='danger';
+        aiResult.signals=[...gsbSignals,...localSignals,...(aiResult.signals||[])];
+        if(!aiResult.title.includes('FRAUDE'))aiResult.title='¡FRAUDE CONFIRMADO!';
+        aiResult.subtitle='Confirmado por Google, nuestras reglas y análisis de IA';
+        showLoading(false);
+        displayResult(aiResult);
+      }catch(e){
+        showLoading(false);
+        displayResult({verdict:'danger',title:'¡SITIO PELIGROSO!',subtitle:'Confirmado por Google Safe Browsing',signals:[...gsbSignals,...localSignals],advice:'🚫 Este sitio está marcado como peligroso. NO ingreses ningún dato. Si ya lo hiciste, llamá a tu banco inmediatamente.'});
+      }
+      return;
+    }
+
+    if(localResult&&localVerdict&&localVerdict.verdict!=='safe'){
+      updateLoading('Analizando con inteligencia artificial...');
+      try{
+        let aiResult=await aiAnalysis(input,imageData,analysisType);
+        if(localVerdict.verdict==='warning'&&aiResult.verdict==='safe'&&localResult.hasUnknownDomain){
+          aiResult.verdict='warning';
+          aiResult.title=localVerdict.title;
+          aiResult.subtitle=localVerdict.subtitle;
+        }
+        if(localVerdict.verdict==='danger'&&aiResult.verdict!=='danger'){
+          aiResult.verdict='danger';
+        }
+        const localDangerSignals=localVerdict.signals.filter(s=>s.badge==='PELIGRO'||s.badge==='ALERTA');
+        if(localDangerSignals.length>0){
+          aiResult.signals=[...localDangerSignals,...(aiResult.signals||[]).filter(s=>!localDangerSignals.some(ls=>ls.text===s.text))];
+        }
+        if(analysisType==='advertisement'&&input)aiResult=await applyPromoCheck(aiResult,input);
+        showLoading(false);
+        displayResult(aiResult);
+      }catch(e){
+        showLoading(false);
+        displayResult(localVerdict);
+      }
+      return;
+    }
+
+    // ====== STEP 4: Pure AI analysis ======
+    updateLoading(imageData?'Analizando imagen con inteligencia artificial...':'Analizando con inteligencia artificial...');
+    try{
+      let result=await aiAnalysis(input,imageData,analysisType);
+      if(analysisType==='advertisement'&&input)result=await applyPromoCheck(result,input);
+      showLoading(false);
+      displayResult(result);
+    }catch(firstError){
+      if(imageData){
+        console.error('First AI attempt failed for image, retrying...',firstError);
+        updateLoading('Reintentando análisis de imagen...');
+        try{
+          const retryResult=await aiAnalysis(input,imageData,analysisType);
+          showLoading(false);
+          displayResult(retryResult);
+        }catch(retryError){
+          console.error('Retry also failed:',retryError);
+          showLoading(false);
+          displayResult({
+            verdict:'warning',
+            title:'No pudimos analizar la imagen',
+            subtitle:'Problema de conexión con el servidor',
+            signals:[{badge:'INFO',text:'El análisis de imágenes requiere conexión a internet. Verificá tu conexión y probá de nuevo.'},{badge:'TIP',text:'Si la imagen tiene texto, también podés copiarlo y pegarlo en la pestaña "Mensaje o link" para analizarlo.'}],
+            advice:'⚠️ No pudimos procesar la imagen en este momento. Intentá de nuevo en unos segundos, o copiá el texto del mensaje sospechoso y pegalo en la primera pestaña.'
+          });
+        }
+      }else{
+        throw firstError;
+      }
+      return;
+    }
+  }catch(e){
+    console.error(e);
+    showLoading(false);
+    if(input){
+      displayResult(formatLocal(localAnalysis(input),analysisType));
+    } else {
+      displayResult({
+        verdict:'warning',
+        title:'No pudimos analizar',
+        subtitle:'Problema de conexión',
+        signals:[{badge:'INFO',text:'Verificá tu conexión a internet e intentá de nuevo.'}],
+        advice:'⚠️ Intentá de nuevo en unos segundos. Si el problema persiste, copiá el texto del mensaje y pegalo en la pestaña "Mensaje o link".'
+      });
+    }
+  }
+}
+
+function localAnalysis(input){
+  const findings=[];
+  const lower=input.toLowerCase();
+
+  const bareUrlRegex=/(?:^|\s)((?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}(?:\/[^\s]*)?)/gi;
+  const fullUrls=input.match(/https?:\/\/[^\s]+/gi)||[];
+  const bareMatches=[];
+  let m;
+  while((m=bareUrlRegex.exec(input))!==null){
+    const candidate=m[1].toLowerCase();
+    if(/\.[a-z]{2,}/.test(candidate)&&!fullUrls.some(u=>u.includes(candidate))){
+      bareMatches.push(candidate);
+    }
+  }
+  const allUrls=[...fullUrls.map(u=>{try{return new URL(u).hostname.replace('www.','')}catch(e){return null}}).filter(Boolean),...bareMatches.map(b=>b.replace(/\/.*$/,'').replace('www.',''))];
+
+  let allSafe=allUrls.length>0;
+  let hasOfficialDomain=false;
+  let hasUnknownDomain=false;
+  let hasDangerDomain=false;
+
+  function isLegitimate(hostname){
+    if(THREAT_DB.legitimateDomains.includes(hostname))return true;
+    if(hostname.endsWith('.gub.uy'))return true;
+    return THREAT_DB.legitimateDomains.some(d=>hostname.endsWith('.'+d));
+  }
+
+  const spoofPatterns=[
+    {brand:'BROU',legit:'brou.com.uy',keywords:/\bbrou\b|br0u|bruo|ebrou|e-brou/i,legitHostnames:['brou.com.uy','e-brou.com.uy']},
+    {brand:'Itaú',legit:'itau.com.uy',keywords:/\bitau\b|\bitaú\b|itaü/i,legitHostnames:['itau.com.uy']},
+    {brand:'Santander',legit:'santander.com.uy',keywords:/\bsantand/i,legitHostnames:['santander.com.uy']},
+    {brand:'BBVA',legit:'bbva.com.uy',keywords:/\bbbva\b|bvva/i,legitHostnames:['bbva.com.uy']},
+    {brand:'Scotiabank',legit:'scotiabank.com.uy',keywords:/\bscotia/i,legitHostnames:['scotiabank.com.uy']},
+    {brand:'Prex',legit:'prex.com.uy',keywords:/\bprex[e]?\b/i,legitHostnames:['prex.com.uy']},
+    {brand:'República',legit:'brou.com.uy',keywords:/\brepublic[a]?\b/i,legitHostnames:['brou.com.uy','bancorepublica.com.uy']},
+    {brand:'Banco',legit:null,keywords:/\bbanco\b/i,legitHostnames:['bancorepublica.com.uy','banquetotal.com.uy','bcu.gub.uy']},
+    {brand:'DGI',legit:'dgi.gub.uy',keywords:/\bdgi\b/i,legitHostnames:['dgi.gub.uy']},
+    {brand:'BPS',legit:'bps.gub.uy',keywords:/\bbps\b/i,legitHostnames:['bps.gub.uy','portal.bps.gub.uy']},
+    {brand:'BCU',legit:'bcu.gub.uy',keywords:/\bbcu\b|banco.?central/i,legitHostnames:['bcu.gub.uy']},
+    {brand:'MercadoPago',legit:'mercadopago.com.uy',keywords:/mercado.?pago|mercad0/i,legitHostnames:['mercadopago.com.uy','mercadolibre.com.uy']},
+    {brand:'Correo',legit:'correo.com.uy',keywords:/correo.?urugua/i,legitHostnames:['correo.com.uy']},
+    {brand:'OCA',legit:'oca.com.uy',keywords:/\boca\b/i,legitHostnames:['oca.com.uy']},
+    {brand:'Visa',legit:'visa.com.uy',keywords:/\bvisa\b/i,legitHostnames:['visa.com.uy']},
+  ];
+
+  const suspiciousUrlWords=/verific|segur[oi]|login|cuenta|token|reactiv|actualiz|confirm|bloque|suspend|premi|reembols|ganast|devoluci/i;
+
+  allUrls.forEach(hostname=>{
+    if(THREAT_DB.fraudulentDomains.includes(hostname)){
+      findings.push({type:'CRITICAL',detail:`Dominio "${hostname}" está en nuestra base de sitios fraudulentos reportados.`});
+      hasDangerDomain=true;allSafe=false;return;
+    }
+    if(isLegitimate(hostname)){
+      findings.push({type:'OK',detail:`Dominio "${hostname}" verificado como sitio oficial.`});
+      hasOfficialDomain=true;return;
+    }
+    allSafe=false;
+    let spoofFound=false;
+    for(const sp of spoofPatterns){
+      if(sp.keywords.test(hostname)){
+        const isLegitHost=sp.legitHostnames.some(lh=>hostname===lh||hostname.endsWith('.'+lh));
+        if(!isLegitHost){
+          const realSite=sp.legit?` (el sitio real es ${sp.legit})`:'';
+          findings.push({type:'CRITICAL',detail:`"${hostname}" intenta suplantar a ${sp.brand}${realSite}. Este dominio es FALSO.`});
+          hasDangerDomain=true;spoofFound=true;break;
+        }
+      }
+    }
+    if(!spoofFound){
+      const trashTLDs=/\.(top|xyz|digital|site|online|cloud|work|click|link)$/i;
+      if(trashTLDs.test(hostname)){
+        findings.push({type:'CRITICAL',detail:`"${hostname}" usa un dominio .${hostname.split('.').pop()} — ningún banco ni organismo uruguayo usa este tipo de extensión. Es típico de sitios fraudulentos.`});
+        hasDangerDomain=true;
+        hasUnknownDomain=true;
+        return;
+      }
+
+      const fullUrl=fullUrls.find(u=>u.includes(hostname))||'';
+      const utmCount=(fullUrl.match(/utm_/gi)||[]).length;
+      if(utmCount>=3&&/cuenta|banco|seguridad|token/i.test(fullUrl)){
+        findings.push({type:'CRITICAL',detail:`Link con ${utmCount} parámetros de marketing (utm_) y palabras bancarias. Los bancos no mandan links de marketing para temas de seguridad.`});
+        hasDangerDomain=true;
+        return;
+      }
+
+      if(suspiciousUrlWords.test(hostname)){
+        findings.push({type:'HIGH',detail:`"${hostname}" contiene palabras sospechosas típicas de sitios fraudulentos.`});
+      } else {
+        findings.push({type:'MEDIUM',detail:`"${hostname}" no está en nuestra lista de sitios verificados. No podemos confirmar que sea seguro.`});
+      }
+      hasUnknownDomain=true;
+    }
+  });
+
+  const dangerCombos=[
+    {patterns:[/suspensi[oó]n/i,/cuenta/i],detail:'Combinación sospechosa: "suspensión" + "cuenta". Táctica típica de fraude.'},
+    {patterns:[/premio/i,/whatsapp/i],detail:'Combinación sospechosa: "premio" + "WhatsApp". Los premios por WhatsApp son siempre fraude.'},
+    {patterns:[/actualiz/i,/token/i],detail:'Combinación sospechosa: "actualizar" + "token". Tu banco nunca pide actualizar el token por mensaje.'},
+    {patterns:[/devoluci[oó]n/i,/impuesto/i],detail:'Combinación sospechosa: "devolución" + "impuestos". La DGI no devuelve dinero por links.'},
+    {patterns:[/verific/i,/identidad/i],detail:'Combinación sospechosa: "verificar" + "identidad". Los bancos no verifican identidad por links.'},
+    {patterns:[/bloque/i,/cuenta/i],detail:'Combinación sospechosa: "bloqueo" + "cuenta". Táctica de miedo para que actúes sin pensar.'},
+    {patterns:[/reactiv/i,/cuenta/i],detail:'Combinación sospechosa: "reactivar" + "cuenta". Los bancos no reactivan cuentas por links.'},
+    {patterns:[/transferi/i,/urgent/i],detail:'Combinación sospechosa: "transferir" + "urgente". Presión para que muevas dinero rápido.'},
+    {patterns:[/punto/i,/vence/i],detail:'Combinación sospechosa: "puntos" + "vencen". Táctica para crear urgencia con supuestos beneficios.'},
+    {patterns:[/punto/i,/perder/i],detail:'Combinación sospechosa: "puntos" + "perder". Miedo a perder algo que probablemente no existe.'},
+    {patterns:[/cuenta/i,/inusual/i],detail:'Combinación sospechosa: "cuenta" + "inusual". Simula una alerta de seguridad falsa.'},
+    {patterns:[/movimiento/i,/inusual/i],detail:'Combinación sospechosa: "movimiento inusual". Los bancos no notifican así por mensaje.'},
+    {patterns:[/premio/i,/reclamar/i],detail:'Combinación sospechosa: "premio" + "reclamar". Nadie regala nada, es fraude.'},
+    {patterns:[/regalo/i,/clic/i],detail:'Combinación sospechosa: "regalo" + "clic". Si tenés que hacer clic para un regalo, es mentira.'},
+  ];
+  dangerCombos.forEach(combo=>{
+    if(combo.patterns.every(p=>p.test(lower)))findings.push({type:'CRITICAL',detail:combo.detail});
+  });
+
+  if(/\burgente\b/i.test(input))findings.push({type:'HIGH',detail:'Usa la palabra "urgente" para presionarte.'});
+  if(/\b24\s*h(ora)?s?\b/i.test(input))findings.push({type:'HIGH',detail:'Te da un plazo de "24 horas". Los bancos reales no ponen plazos así.'});
+
+  if(/token|contraseña|password|clave\s*(de\s*)?seguridad|pin\s*de|código\s*de\s*(seguridad|verificación)/i.test(input)){
+    findings.push({type:'CRITICAL',detail:'Solicita token, contraseña o código de seguridad. Tu banco NUNCA pide esto por mensaje.'});
+  }
+
+  if(/premio|ganaste|ganador|gratis|regala|reembolso|retorno garantizado|inversión.*%|devoluci[oó]n/i.test(input)){
+    findings.push({type:'HIGH',detail:'Promete premios, regalos, reembolsos o retornos irrealistas.'});
+  }
+
+  const hasShortLink=/bit\.ly|goo\.gl|tinyurl|t\.co|short\.link|is\.gd|ow\.ly|buff\.ly/i.test(input);
+  const asksSensitiveData=/token|contraseña|password|clave|pin|código|cédula|tarjeta|cuenta\s*bancaria|datos\s*(personal|bancari)/i.test(input);
+
+  if(hasShortLink&&asksSensitiveData){
+    findings.push({type:'CRITICAL',detail:'Link acortado + pedido de datos sensibles. Combinación típica de fraude.'});
+  } else if(hasShortLink){
+    findings.push({type:'HIGH',detail:'Link acortado que esconde el destino. Los bancos no usan links acortados.'});
+  }
+
+  const hasShareLink=/share\.google|bit\.ly|t\.co|goo\.gl|tinyurl|ow\.ly/i.test(input);
+  const mentionsBanking=/banco|brou|itau|santander|bbva|scotia|cuenta\s*bancaria|tarjeta|crédito|débito/i.test(input);
+  if(hasShareLink&&mentionsBanking&&!asksSensitiveData){
+    findings.push({type:'HIGH',detail:'Link acortado o de redireccionamiento en un mensaje que menciona bancos. Los bancos nunca usan links acortados ni de Google Share. Verificá directamente con tu banco.'});
+  }
+
+  const phones=input.match(/(\+598\s?|0)\d{2}\s?\d{3}\s?\d{3,4}|\d{3}\s\d{3}\s\d{3}/g)||[];
+  phones.forEach(p=>{const c=p.replace(/\s/g,'');
+    if(THREAT_DB.scamPhones.includes(c))findings.push({type:'CRITICAL',detail:`Número ${p} reportado como fraudulento.`});
+    else if(/^09/.test(c))findings.push({type:'HIGH',detail:`Celular ${p}. Los bancos no contactan desde celulares.`});
+  });
+
+  return{findings,hasUnknownDomain,allSafe:(allSafe&&allUrls.length>0&&!hasDangerDomain),hasDangerDomain};
+}
+
+function formatLocal(l,type){
+  let score=0;const signals=[];
+  l.findings.forEach(f=>{
+    if(f.type==='CRITICAL'){score+=40;signals.push({badge:'PELIGRO',text:f.detail});}
+    else if(f.type==='HIGH'){score+=20;signals.push({badge:'ALERTA',text:f.detail});}
+    else if(f.type==='MEDIUM'){score+=10;signals.push({badge:'?',text:f.detail});}
+    else signals.push({badge:'✓',text:f.detail});
+  });
+  if(l.allSafe&&score===0){
+    return{verdict:'safe',title:'Sitio seguro',subtitle:'Dominio verificado como oficial',signals,advice:'✅ Este sitio es oficial y verificado. De todas formas, recordá que tu banco nunca te pide el token por mensaje.'};
+  }
+  if(l.hasUnknownDomain&&score<10)score=10;
+  let v='safe',t='Parece seguro',s='No detectamos señales de fraude';
+  if(score>=35){v='danger';t=type==='advertisement'?'¡PUBLICIDAD FALSA!':'¡FRAUDE DETECTADO!';s='Señales claras de estafa';}
+  else if(score>=10){v='warning';t='No podemos verificar';s='Este sitio no está en nuestra base de datos';}
+  const a={danger:'🚫 NO hagas clic, no ingreses datos, no llames a ningún número de este mensaje. Si ya diste datos, llamá a tu banco YA por el número oficial.',warning:'⚠️ No pudimos confirmar que este sitio sea seguro. No ingreses datos personales hasta verificarlo por otro medio.',safe:'✅ No encontramos señales de fraude. Recordá: tu banco nunca pide el token por mensaje.'};
+  return{verdict:v,title:t,subtitle:s,signals,advice:a[v]};
+}
+
+function compressImage(dataUrl,maxWidth,quality){
+  return new Promise((resolve,reject)=>{
+    const img=new Image();
+    img.onload=()=>{
+      let w=img.width,h=img.height;
+      if(w>maxWidth){h=Math.round(h*(maxWidth/w));w=maxWidth;}
+      const maxHeight=1600;
+      if(h>maxHeight){w=Math.round(w*(maxHeight/h));h=maxHeight;}
+      const canvas=document.createElement('canvas');
+      canvas.width=w;canvas.height=h;
+      const ctx=canvas.getContext('2d');
+      ctx.drawImage(img,0,0,w,h);
+      let result=canvas.toDataURL('image/jpeg',quality);
+      const sizeKB=result.length*0.75/1024;
+      if(sizeKB>800){result=canvas.toDataURL('image/jpeg',0.5);}
+      if(sizeKB>1500){
+        const smallerW=Math.round(w*0.6);
+        const smallerH=Math.round(h*0.6);
+        canvas.width=smallerW;canvas.height=smallerH;
+        ctx.drawImage(img,0,0,smallerW,smallerH);
+        result=canvas.toDataURL('image/jpeg',0.5);
+      }
+      resolve(result);
+    };
+    img.onerror=reject;
+    img.src=dataUrl;
+  });
+}
+
+function fetchWithTimeout(url,options,timeoutMs=30000){
+  return Promise.race([
+    fetch(url,options),
+    new Promise((_,reject)=>setTimeout(()=>reject(new Error('Timeout: la conexión tardó demasiado')),timeoutMs))
+  ]);
+}
+
+async function aiAnalysis(input,imageData,analysisType){
+  const systemPrompt=`Sos un experto en ciberseguridad especializado en fraudes digitales en Uruguay. Tu trabajo es proteger a personas vulnerables (especialmente adultos mayores) analizando contenido sospechoso.
+
+PRINCIPIO FUNDAMENTAL: Es mejor dar una falsa alarma que dejar pasar un fraude. Ante la duda, siempre warning o danger, NUNCA safe.
+
+BASE DE AMENAZAS ACTUALIZADA (Uruguay):
+- Dominios fraudulentos reportados: ${THREAT_DB.fraudulentDomains.join(', ')}
+- Números de teléfono fraudulentos: ${THREAT_DB.scamPhones.join(', ')}
+- Dominios legítimos verificados: ${THREAT_DB.legitimateDomains.join(', ')}
+- Patrones de fraude activos: ${THREAT_DB.recentPatterns.join('; ')}
+- Teléfonos oficiales de bancos: ${JSON.stringify(THREAT_DB.officialContacts)}
+
+ANÁLISIS DE URLS - Revisá cada URL con estos criterios:
+1. ¿El dominio está en la lista de legítimos? Si NO está → nunca decir "safe"
+2. ¿Usa typosquatting? (letras cambiadas que imitan un sitio real)
+3. ¿Tiene palabras sospechosas en la URL? (verificar, seguro, login, cuenta, token)
+4. ¿Usa un TLD inusual para Uruguay? (.top, .xyz, .online, .click, .site)
+5. ¿Es un link acortado? Los bancos NUNCA usan links acortados
+6. ¿Tiene muchos parámetros utm_ con palabras bancarias? Los bancos no mandan links de marketing para seguridad
+
+ANÁLISIS DE MENSAJES - Buscá estas señales:
+1. URGENCIA: "inmediatamente", "24 horas", "última oportunidad"
+2. MIEDO: "acceso no autorizado", "cuenta bloqueada", "movimiento inusual"
+3. AUTORIDAD FALSA: "departamento de seguridad", "área de fraude"
+4. PEDIDO DE DATOS: token, contraseña, PIN, CVV, código de seguridad
+5. RECOMPENSA FALSA: premio, reembolso, dinero gratis, inversión garantizada
+6. PRESIÓN SOCIAL: "miles de personas ya lo usan", "cupos limitados"
+7. NÚMEROS SOSPECHOSOS: celulares (09X) — bancos usan líneas fijas/0800
+8. ERRORES: faltas de ortografía, gramática pobre
+
+${analysisType==='advertisement'?`
+REGLAS PARA PUBLICIDADES:
+- Premios o sorteos de bancos por redes sociales = SIEMPRE fraude
+- Inversiones con retorno garantizado = SIEMPRE fraude
+- Reembolsos de gobierno que piden datos bancarios por link = SIEMPRE fraude
+- EMPRESAS ESTATALES URUGUAYAS QUE NUNCA OFRECEN INVERSIONES: UTE (energía), OSE (agua), ANTEL (telecomunicaciones), BPS (seguridad social), BROU (banco). Si ves una publicidad de cualquiera de estas ofreciendo acciones, inversiones o bonificaciones = SIEMPRE fraude.
+- "Acciones", "bonificación de acciones", "monto mínimo de inversión" usando logo de UTE, ANTEL, OSE o BPS = fraude OBVIO. Son empresas estatales, NO cotizan en bolsa.
+- Publicidad "patrocinada" en Facebook/Instagram con logo institucional + oferta financiera = FRAUDE CONFIRMADO
+`:''}
+
+${analysisType==='screenshot'?`
+REGLAS PARA CAPTURAS DE PANTALLA:
+- Leé TODO el texto visible en la imagen
+- Identificá logos, marcas, colores corporativos
+- Detectá URLs y números de teléfono
+- FRAUDE MUY COMÚN EN URUGUAY: Publicidades "patrocinadas" en Facebook/Instagram que usan logos de UTE, ANTEL, OSE, BPS o BROU para ofrecer inversiones o acciones. Estas empresas son ESTATALES y NUNCA ofrecen productos financieros. Si ves esto = SIEMPRE danger.
+- Si la imagen muestra una publicidad con logo institucional + "inversión", "acciones", "bonificación", "monto mínimo" = FRAUDE
+- Si ves "Patrocinado" + logo de empresa estatal + oferta financiera = FRAUDE CONFIRMADO
+- Si aparecen múltiples publicidades suplantando distintas instituciones = campaña de fraude organizada
+`:''}
+
+REGLAS DE VEREDICTO:
+- "danger": pide token/contraseña, dominio fraudulento, typosquatting, promete dinero gratis, suplantación de empresa estatal, link acortado + datos sensibles
+- "warning": dominio desconocido, señales sospechosas no concluyentes
+- "safe": SOLO si el dominio está en la lista de legítimos Y no hay señales sospechosas
+
+Respondé SOLO con JSON válido (sin markdown, sin backticks):
+{"verdict":"danger|warning|safe","title":"título corto","subtitle":"subtítulo","signals":[{"badge":"etiqueta","text":"explicación simple para persona de 70 años"}],"advice":"consejo directo. Incluí número oficial del banco si aplica.","confidence":0.0-1.0}`;
+
+  const content=[];
+
+  if(imageData){
+    const base64=imageData.split(',')[1];
+    const mimeMatch=imageData.match(/data:(.*?);/);
+    const mime=mimeMatch?mimeMatch[1]:'image/jpeg';
+    content.push({type:'image',source:{type:'base64',media_type:mime,data:base64}});
+  }
+
+  let textPrompt='Analizá ';
+  if(analysisType==='screenshot')textPrompt+='esta captura de pantalla. Leé todo el texto visible, identificá URLs, logos, formularios y cualquier señal de fraude.';
+  else if(analysisType==='advertisement')textPrompt+=`esta publicidad:\n\n"${input}"`;
+  else textPrompt+=`este contenido que una persona recibió:\n\n"${input}"`;
+
+  if(analysisType==='ad'&&input&&imageData)textPrompt+='\n\nEl texto de arriba acompaña a la imagen.';
+
+  content.push({type:'text',text:textPrompt});
+
+  const r=await fetchWithTimeout('/.netlify/functions/analyze',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      model:'claude-sonnet-4-6',
+      max_tokens:1024,
+      system:systemPrompt,
+      messages:[{role:'user',content}]
+    })
+  },45000);
+
+  if(!r.ok){
+    const errBody=await r.text().catch(()=>'');
+    console.error(`Anthropic proxy error ${r.status}:`,errBody);
+    throw new Error(`API error ${r.status}`);
+  }
+
+  const d=await r.json();
+  const text=d.content?.[0]?.text||'';
+  const cleanJson=text.replace(/```json|```/g,'').trim();
+  try{
+    return JSON.parse(cleanJson);
+  }catch(parseErr){
+    console.error('Failed to parse Anthropic response:',cleanJson);
+    throw new Error('AI response was not valid JSON');
+  }
+}
+
+// ====== VERIFICACIÓN DE PROMOCIONES ======
+async function verificarPromocion(textoAnuncio){
+  // Paso 1: Claude extrae empresa, dominio y palabras clave
+  const r=await fetchWithTimeout('/.netlify/functions/analyze',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      model:'claude-sonnet-4-6',
+      max_tokens:256,
+      system:'Sos un extractor de datos de anuncios publicitarios. Dado un texto de anuncio, extraé en JSON: empresa (nombre de la empresa mencionada), dominio (dominio oficial probable, ej: "oca.com.uy"), beneficio (descripción corta de la promoción en 5-8 palabras), palabrasClave (array de 2-3 términos clave para buscar en el sitio oficial). Respondé SOLO con JSON válido, sin markdown ni backticks.',
+      messages:[{role:'user',content:`Extraé los datos de este anuncio:\n\n"${textoAnuncio}"`}]
+    })
+  },20000);
+  if(!r.ok)throw new Error(`Claude extract error ${r.status}`);
+  const d=await r.json();
+  const text=d.content?.[0]?.text||'';
+  const extracted=JSON.parse(text.replace(/```json|```/g,'').trim());
+
+  // Paso 2: Google Custom Search en el sitio oficial
+  const query=`site:${extracted.dominio} ${extracted.palabrasClave.join(' ')}`;
+  const searchR=await fetchWithTimeout(
+    `/.netlify/functions/search?q=${encodeURIComponent(query)}`,
+    {method:'GET'},
+    12000
+  );
+  const searchData=await searchR.json();
+  const items=searchData.items||[];
+
+  // Paso 3: Evaluar resultados
+  const kws=extracted.palabrasClave.map(k=>k.toLowerCase());
+  const exactMatch=items.find(item=>
+    kws.some(kw=>(item.title+' '+(item.snippet||'')).toLowerCase().includes(kw))
+  );
+
+  if(exactMatch){
+    return{
+      confirmado:true,
+      confianza:'alta',
+      fuente:exactMatch.link,
+      resumen:`Promoción encontrada en el sitio oficial de ${extracted.empresa}: "${exactMatch.title.slice(0,80)}"`
+    };
+  }else if(items.length>0){
+    return{
+      confirmado:false,
+      confianza:'media',
+      fuente:items[0].link,
+      resumen:`Se encontró el sitio oficial de ${extracted.empresa} pero sin datos de esta promoción específica.`
+    };
+  }else{
+    return{
+      confirmado:false,
+      confianza:'no_encontrado',
+      fuente:null,
+      resumen:`No encontramos esta promoción en el sitio oficial de ${extracted.empresa}.`
+    };
+  }
+}
+
+async function applyPromoCheck(result,input){
+  if(!input||result.verdict==='safe')return result;
+  try{
+    updateLoading('Verificando en fuentes oficiales...');
+    const check=await verificarPromocion(input);
+    result.signals=result.signals||[];
+    const badge=check.confianza==='alta'?'✓ OFICIAL':check.confianza==='media'?'AVISO':'ALERTA';
+    const fuente=check.fuente?` <a href="${check.fuente}" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">Ver fuente oficial</a>`:'';
+    result.signals.unshift({badge,text:check.resumen+fuente});
+    if(check.confirmado&&check.confianza==='alta'&&result.verdict==='danger'){
+      result.verdict='warning';
+      result.subtitle='La promoción existe en el sitio oficial, pero el anuncio tiene señales sospechosas';
+    }
+  }catch(e){
+    console.error('verificarPromocion failed:',e);
+  }
+  return result;
+}
+
+// UI
+function hideResult(){
+  const r=document.getElementById('resultCard');
+  r.classList.remove('active','danger','warning','safe');
+}
+function showLoading(show){
+  document.getElementById('loading').classList.toggle('active',show);
+  document.getElementById('verifyBtn').disabled=show;
+  if(show){
+    const msgs={text:'Analizando mensaje...',image:'Leyendo captura de pantalla...',ad:'Verificando publicidad...'};
+    document.getElementById('loadingText').textContent=msgs[currentTab]||'Analizando...';
+  }
+}
+function updateLoading(text){
+  document.getElementById('loadingText').textContent=text;
+}
+function displayResult(r){
+  const card=document.getElementById('resultCard');
+  card.classList.add('active',r.verdict);
+  const icons={danger:'<svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>',warning:'<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>',safe:'<svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 16l-4-4 1.41-1.41L11 14.17l6.59-6.59L19 9l-8 8z"/></svg>'};
+  document.getElementById('resultIcon').innerHTML=icons[r.verdict];
+  document.getElementById('resultTitle').textContent=r.title;
+  document.getElementById('resultSubtitle').textContent=r.subtitle;
+  let h='';
+  if(r.signals&&r.signals.length){
+    h='<div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--text-soft);margin-bottom:10px">Señales detectadas</div>';
+    r.signals.forEach(s=>{h+=`<div class="signal-item"><span class="signal-badge">${s.badge}</span><span>${s.text}</span></div>`;});
+  }
+  document.getElementById('analysisSection').innerHTML=h;
+  document.getElementById('resultAdvice').innerHTML=r.advice;
+  window._lastResult=r;
+  card.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+function shareResult(){
+  const r=window._lastResult;if(!r)return;
+  const v={danger:'🔴 FRAUDE',warning:'🟡 SOSPECHOSO',safe:'🟢 SEGURO'};
+  const t=`${v[r.verdict]} - LinkGuard analizó un mensaje:\n\n${r.title}\n${r.advice}\n\nVerificá tus mensajes en linkguard-uy.netlify.app`;
+  window.open(`https://wa.me/?text=${encodeURIComponent(t)}`,'_blank');
+}
+
+// EMERGENCY WIZARD
+function showEmergency(type){
+  document.getElementById('wizardQ1').style.display='none';
+  const map={token:'stepsToken',card:'stepsCard',cedula:'stepsCedula',link:'stepsLink',transfer:'stepsTransfer'};
+  document.getElementById(map[type]).classList.add('active');
+}
+function resetEmergency(){
+  document.querySelectorAll('.emergency-steps').forEach(s=>s.classList.remove('active'));
+  document.getElementById('wizardQ1').style.display='block';
+}
+
+// Enter key for text areas
+['msgInput','adInput'].forEach(id=>{
+  document.getElementById(id).addEventListener('keydown',e=>{
+    if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();analyze();}
+  });
+});
+</script>
+
+</body>
+</html>
