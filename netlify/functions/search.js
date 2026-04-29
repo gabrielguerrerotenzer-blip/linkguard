@@ -9,23 +9,35 @@ exports.handler = async (event) => {
     return { statusCode: 200, headers, body: '' };
   }
 
-  const q = event.queryStringParameters?.q;
+  let q = event.queryStringParameters?.q;
+  if (!q && event.body) {
+    try {
+      const body = JSON.parse(event.body);
+      q = body.q || body.text;
+    } catch (_) {}
+  }
   if (!q) {
     return { statusCode: 400, headers, body: JSON.stringify({ error: 'Missing query parameter q' }) };
   }
 
-  const apiKey = process.env.GOOGLE_API_KEY || 'AIzaSyAHJt17vsq7qHnjwEQQLkEduLYslmpWQmk';
-  const cx = process.env.GOOGLE_CSE_CX;
-
-  if (!cx) {
-    return { statusCode: 200, headers, body: JSON.stringify({ items: [], _note: 'CSE not configured' }) };
+  const apiKey = process.env.SERPAPI_KEY;
+  if (!apiKey) {
+    return { statusCode: 200, headers, body: JSON.stringify({ items: [], _note: 'Search not configured' }) };
   }
 
   try {
-    const url = `https://www.googleapis.com/customsearch/v1?key=${encodeURIComponent(apiKey)}&cx=${encodeURIComponent(cx)}&q=${encodeURIComponent(q)}&num=5`;
+    const url = `https://serpapi.com/search.json?q=${encodeURIComponent(q)}&num=5&api_key=${apiKey}`;
     const response = await fetch(url);
     const data = await response.json();
-    return { statusCode: 200, headers, body: JSON.stringify(data) };
+
+    // Normalizar formato al mismo que usaba Google CSE (items[].title, .link, .snippet)
+    const items = (data.organic_results || []).slice(0, 5).map(r => ({
+      title: r.title || '',
+      link: r.link || '',
+      snippet: r.snippet || '',
+    }));
+
+    return { statusCode: 200, headers, body: JSON.stringify({ items }) };
   } catch (error) {
     return { statusCode: 500, headers, body: JSON.stringify({ error: error.message, items: [] }) };
   }

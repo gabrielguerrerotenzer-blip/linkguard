@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -5,6 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LinkGuard · Protegé a tu familia del fraude digital</title>
 <meta name="description" content="Verificá mensajes, links, capturas de pantalla y publicidades sospechosas. Protección contra phishing y estafas en Uruguay.">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#2D5A3D">
+<link rel="apple-touch-icon" href="/icon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&display=swap" rel="stylesheet">
 <style>
@@ -144,8 +148,8 @@ section[id]{scroll-margin-top:70px;}
 .warning .result-advice{background:rgba(212,160,23,.08);color:#8B6914;}
 .safe .result-advice{background:rgba(39,136,74,.08);color:var(--green);}
 .result-ai-badge{display:inline-flex;align-items:center;gap:5px;margin-top:12px;padding:4px 10px;background:rgba(0,0,0,.04);border-radius:8px;font-size:11px;color:var(--text-soft);}
-.result-share-btn{width:100%;margin-top:14px;padding:12px;border:2px dashed var(--border);border-radius:10px;background:transparent;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--text-soft);cursor:pointer;transition:all .2s;}
-.result-share-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-light);}
+.result-share-btn{width:100%;margin-top:16px;padding:14px;border:none;border-radius:12px;background:#25D366;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.result-share-btn:hover{background:#1DA851;transform:translateY(-1px);box-shadow:0 4px 14px rgba(37,211,102,.35);}
 
 /* HOW IT WORKS */
 .how-section{padding:100px 24px;}
@@ -258,6 +262,36 @@ section[id]{scroll-margin-top:70px;}
 .footer-links a{font-size:13px;color:rgba(255,255,255,.4);text-decoration:none;transition:color .2s;}
 .footer-links a:hover{color:rgba(255,255,255,.7);}
 @media(max-width:700px){.footer-inner{flex-direction:column;text-align:center;}}
+
+/* MOBILE UX */
+@media(max-width:600px){
+  .tool-btn,.btn-primary,.btn-secondary,.btn-white{min-height:48px;font-size:16px;}
+  .input-tab{min-height:48px;font-size:13px;}
+  .demo-pill{min-height:40px;padding:9px 14px;font-size:12px;}
+  .wizard-option{min-height:56px;font-size:16px;}
+  .step-call-btn{min-height:48px;font-size:15px;padding:12px 22px;}
+  .emergency-back{min-height:44px;}
+
+  .tool-textarea{font-size:16px;min-height:120px;}
+  .tool-input-label,.tool-hint{font-size:14px;}
+
+  .upload-zone{padding:48px 20px;}
+  .upload-zone-text{font-size:16px;}
+  .upload-zone-hint{font-size:13px;}
+
+  .signal-badge{font-size:12px;padding:3px 10px;}
+  .signal-item{font-size:14px;}
+  .result-advice{font-size:15px;}
+  .result-title{font-size:20px;}
+
+  .result-share-btn{font-size:15px;min-height:52px;padding:14px;}
+
+  .tool-card{padding:20px 16px;}
+  .tool-result{padding:20px 16px;}
+
+  body{overflow-x:hidden;}
+  .tool-inner{max-width:100%;padding:0 4px;}
+}
 </style>
 </head>
 <body>
@@ -271,6 +305,7 @@ section[id]{scroll-margin-top:70px;}
   <div class="nav-links">
     <a href="#como-funciona" class="nav-link">Cómo funciona</a>
     <a href="#consejos" class="nav-link">Consejos</a>
+    <a href="#sobre" class="nav-link">Sobre el proyecto</a>
     <a href="#emergencia" class="nav-link" style="color:var(--red);font-weight:600;">🚨 Ya di mis datos</a>
     <a href="#verificar" class="nav-cta">Verificar ahora</a>
   </div>
@@ -279,11 +314,11 @@ section[id]{scroll-margin-top:70px;}
 <!-- HERO -->
 <section class="hero">
   <div class="hero-inner">
-    <div class="hero-badge"><span class="hero-badge-dot"></span>Base de amenazas actualizada · Uruguay</div>
+    <div class="hero-badge"><span class="hero-badge-dot"></span>Herramienta gratuita · Uruguay</div>
     <h1>Protegé a tu familia del <span>fraude digital</span></h1>
     <p class="hero-sub">Verificá mensajes, links, capturas de pantalla y publicidades sospechosas. Nuestra IA detecta fraudes en segundos.</p>
     <div class="hero-cta-group">
-      <a href="#verificar" class="btn-primary"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 16l-4-4 1.41-1.41L11 14.17l6.59-6.59L19 9l-8 8z"/></svg>Verificar ahora</a>
+      <a href="#verificar" class="btn-primary"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 16l-4-4 1.41-1.41L11 14.17l6.59-6.59L19 9l-8 8z"/></svg>Verificar mensaje o link</a>
       <a href="#emergencia" class="btn-secondary" style="border-color:var(--red);color:var(--red);">🚨 Ya di mis datos</a>
     </div>
   </div>
@@ -386,8 +421,11 @@ section[id]{scroll-margin-top:70px;}
       </div>
       <div id="analysisSection"></div>
       <div class="result-advice" id="resultAdvice"></div>
-      <div class="result-ai-badge">🤖 Analizado por inteligencia artificial</div>
-      <button class="result-share-btn" onclick="shareResult()">📩 Enviar resultado a un familiar por WhatsApp</button>
+      <div class="result-ai-badge">🤖 Analizado por IA (Claude, Anthropic) · Este resultado es orientativo, no reemplaza el criterio de un profesional ni constituye asesoramiento legal.</div>
+      <button class="result-share-btn" onclick="shareResult()">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.558 4.107 1.535 5.823L.057 23.18a.75.75 0 00.916.919l5.433-1.479A11.943 11.943 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.943 9.943 0 01-5.354-1.557l-.38-.229-3.965 1.079 1.079-3.887-.247-.393A9.944 9.944 0 012 12C2 6.486 6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/></svg>
+        Enviá este resultado por WhatsApp
+      </button>
     </div>
   </div>
 </section>
@@ -426,11 +464,12 @@ section[id]{scroll-margin-top:70px;}
 <section class="stats-section">
   <div class="stats-inner">
     <div class="stats-grid">
-      <div><div class="stat-number">89%</div><div class="stat-label">de los fraudes llegan por WhatsApp o SMS</div></div>
-      <div><div class="stat-number">72%</div><div class="stat-label">de los mensajes reportados son estafas</div></div>
-      <div><div class="stat-number">45%</div><div class="stat-label">de las víctimas son mayores de 60 años</div></div>
+      <div><div class="stat-number">89%</div><div class="stat-label">de los fraudes digitales en Uruguay llegan por WhatsApp o SMS</div></div>
+      <div><div class="stat-number">45%</div><div class="stat-label">de las víctimas de fraude digital son mayores de 60 años</div></div>
       <div><div class="stat-number">3 seg</div><div class="stat-label">tarda nuestro análisis con IA</div></div>
+      <div><div class="stat-number">24/7</div><div class="stat-label">disponible gratis, sin registro</div></div>
     </div>
+    <div style="text-align:center;margin-top:20px;font-size:12px;color:rgba(255,255,255,.3);">Fuentes: datos estimados en base a reportes públicos de organismos uruguayos y tendencias regionales.</div>
   </div>
 </section>
 
@@ -525,11 +564,7 @@ section[id]{scroll-margin-top:70px;}
         <div class="emergency-extra">
           <strong>Importante:</strong> No borres los mensajes ni el historial de llamadas. Son evidencia para la denuncia. Si podés, sacales captura de pantalla ahora.
         </div>
-        <div class="fraudeuy-cta">
-          <div class="fraudeuy-cta-title">📢 Reportá este fraude</div>
-          <div class="fraudeuy-cta-text">Tu reporte ayuda a proteger a otros uruguayos. Fraude.uy recopila datos de estafas para identificar patrones y alertar a la población.</div>
-          <span class="fraudeuy-btn">💬 Reportar por WhatsApp<span class="fraudeuy-badge">Próximamente</span></span>
-        </div>
+
         <button class="emergency-back" onclick="resetEmergency()">← Volver</button>
       </div>
 
@@ -565,11 +600,7 @@ section[id]{scroll-margin-top:70px;}
         <div class="emergency-extra">
           <strong>Importante:</strong> Si compartiste datos de tarjeta de crédito, también llamá a la administradora (Visa, Mastercard) a través de tu banco para disputar cualquier cargo.
         </div>
-        <div class="fraudeuy-cta">
-          <div class="fraudeuy-cta-title">📢 Reportá este fraude</div>
-          <div class="fraudeuy-cta-text">Tu reporte ayuda a proteger a otros uruguayos. Fraude.uy recopila datos de estafas para identificar patrones y alertar a la población.</div>
-          <span class="fraudeuy-btn">💬 Reportar por WhatsApp<span class="fraudeuy-badge">Próximamente</span></span>
-        </div>
+
         <button class="emergency-back" onclick="resetEmergency()">← Volver</button>
       </div>
 
@@ -599,11 +630,7 @@ section[id]{scroll-margin-top:70px;}
             <p>Con tu cédula, los estafadores pueden intentar contactarte de nuevo haciéndose pasar por tu banco. Ya tienen un dato real tuyo para generar confianza. Desconfiá de cualquier llamada que mencione tu número de cédula.</p>
           </div>
         </div>
-        <div class="fraudeuy-cta">
-          <div class="fraudeuy-cta-title">📢 Reportá este fraude</div>
-          <div class="fraudeuy-cta-text">Tu reporte ayuda a proteger a otros uruguayos. Fraude.uy recopila datos de estafas para identificar patrones y alertar a la población.</div>
-          <span class="fraudeuy-btn">💬 Reportar por WhatsApp<span class="fraudeuy-badge">Próximamente</span></span>
-        </div>
+
         <button class="emergency-back" onclick="resetEmergency()">← Volver</button>
       </div>
 
@@ -645,11 +672,7 @@ section[id]{scroll-margin-top:70px;}
         <div class="emergency-extra">
           <strong>Tip:</strong> Si ingresaste usuario y contraseña de email (Gmail, Hotmail), cambiá también esa contraseña. Los estafadores pueden usar tu email para acceder a más cuentas.
         </div>
-        <div class="fraudeuy-cta">
-          <div class="fraudeuy-cta-title">📢 Reportá este fraude</div>
-          <div class="fraudeuy-cta-text">Tu reporte ayuda a proteger a otros uruguayos. Fraude.uy recopila datos de estafas para identificar patrones y alertar a la población.</div>
-          <span class="fraudeuy-btn">💬 Reportar por WhatsApp<span class="fraudeuy-badge">Próximamente</span></span>
-        </div>
+
         <button class="emergency-back" onclick="resetEmergency()">← Volver</button>
       </div>
 
@@ -692,11 +715,7 @@ section[id]{scroll-margin-top:70px;}
         <div class="emergency-extra">
           <strong>No te culpes.</strong> Los estafadores son profesionales y manipulan a miles de personas. Lo importante ahora es actuar rápido. Llamá al banco antes de hacer cualquier otra cosa.
         </div>
-        <div class="fraudeuy-cta">
-          <div class="fraudeuy-cta-title">📢 Reportá este fraude</div>
-          <div class="fraudeuy-cta-text">Tu reporte ayuda a proteger a otros uruguayos. Fraude.uy recopila datos de estafas para identificar patrones y alertar a la población.</div>
-          <span class="fraudeuy-btn">💬 Reportar por WhatsApp<span class="fraudeuy-badge">Próximamente</span></span>
-        </div>
+
         <button class="emergency-back" onclick="resetEmergency()">← Volver</button>
       </div>
     </div>
@@ -716,24 +735,55 @@ section[id]{scroll-margin-top:70px;}
   </div>
 </section>
 
-<!-- PARTNER -->
-<section class="partner-section">
-  <div class="partner-inner">
-    <div class="partner-card">
-      <div class="partner-label">Proyecto aliado</div>
-      <div class="partner-logo">Fraude.uy</div>
-      <div class="partner-desc">Observatorio ciudadano de fraude digital en Uruguay. Reportá intentos de estafa por WhatsApp y ayudá a identificar patrones para proteger a la población.</div>
-      <div class="partner-status">🚧 En desarrollo · Próximamente</div>
+<!-- SOBRE ESTE PROYECTO -->
+<section class="partner-section" id="sobre">
+  <div class="partner-inner" style="max-width:700px;">
+    <div class="partner-card" style="text-align:left;">
+      <div class="partner-label">Sobre este proyecto</div>
+      <div class="partner-logo" style="font-size:22px;margin-bottom:12px;">LinkGuard · fraude.uy</div>
+      <div class="partner-desc" style="margin-bottom:16px;">LinkGuard es un proyecto ciudadano independiente creado en Uruguay con el objetivo de ayudar a las personas —especialmente las más vulnerables— a detectar fraudes digitales antes de caer en ellos.</div>
+      <div class="partner-desc" style="margin-bottom:16px;">No somos un banco, no somos una empresa de seguridad, y no estamos afiliados a ninguna institución financiera. Somos un equipo pequeño que cree que la tecnología puede proteger a la gente si se usa bien.</div>
+      <div class="partner-desc" style="margin-bottom:16px;"><strong>¿Cómo funciona el análisis?</strong> Cuando verificás un mensaje, usamos una combinación de reglas locales (base de dominios fraudulentos y legítimos de Uruguay), Google Safe Browsing, y el modelo de inteligencia artificial Claude (de Anthropic) para evaluar si el contenido es sospechoso. El resultado es orientativo y no reemplaza el criterio profesional.</div>
+      <div class="partner-desc" style="margin-bottom:0;"><strong>¿Qué pasa con mis datos?</strong> No almacenamos los mensajes, links ni imágenes que verificás. El contenido se envía al modelo de IA para analizarlo y se descarta inmediatamente después. No creamos perfiles, no pedimos registro, y no compartimos información con terceros. Para más detalle, consultá nuestra <a href="#privacidad" style="color:var(--accent);text-decoration:underline;">Política de Privacidad</a>.</div>
     </div>
   </div>
 </section>
 
 <!-- FOOTER -->
+<!-- POLÍTICA DE PRIVACIDAD Y AVISO LEGAL -->
+<section class="tips-section" id="privacidad" style="padding:80px 24px;background:var(--bg);">
+  <div class="tips-inner" style="max-width:700px;">
+    <div class="section-label">Transparencia</div>
+    <h2 class="section-heading">Política de Privacidad y Aviso Legal</h2>
+    <div style="font-size:14px;color:var(--text-soft);line-height:1.8;">
+      <h3 style="font-family:'Fraunces',serif;font-size:18px;color:var(--text);margin:24px 0 8px;">Qué datos procesamos</h3>
+      <p>Cuando usás LinkGuard, el contenido que enviás (texto, link o imagen) se transmite al modelo de inteligencia artificial Claude (de la empresa Anthropic, EE.UU.) para su análisis. También podemos consultar Google Safe Browsing para verificar URLs.</p>
+      
+      <h3 style="font-family:'Fraunces',serif;font-size:18px;color:var(--text);margin:24px 0 8px;">Qué NO hacemos con tus datos</h3>
+      <p>No almacenamos los mensajes, links ni imágenes que verificás. No creamos perfiles de usuario. No pedimos registro ni datos personales. No usamos cookies de rastreo. No compartimos información con terceros más allá de los servicios necesarios para el análisis (Anthropic y Google).</p>
+      
+      <h3 style="font-family:'Fraunces',serif;font-size:18px;color:var(--text);margin:24px 0 8px;">Sobre el modelo de IA</h3>
+      <p>Usamos el modelo Claude de Anthropic para analizar el contenido. Como toda IA, puede cometer errores. Un resultado "seguro" no garantiza que el contenido sea legítimo, y un resultado "peligroso" no significa necesariamente que lo sea. Siempre usá tu criterio y ante la duda, contactá directamente a tu banco por los canales oficiales.</p>
+
+      <h3 style="font-family:'Fraunces',serif;font-size:18px;color:var(--text);margin:24px 0 8px;">Aviso legal</h3>
+      <p>LinkGuard es una herramienta orientativa que no constituye asesoramiento legal, financiero ni profesional de ningún tipo. No somos responsables por decisiones tomadas en base a los resultados del análisis. No estamos afiliados a ningún banco, institución financiera ni organismo público uruguayo. Los números de teléfono de emergencia que mostramos son públicos y están disponibles en los sitios oficiales de cada institución.</p>
+
+      <h3 style="font-family:'Fraunces',serif;font-size:18px;color:var(--text);margin:24px 0 8px;">Contacto</h3>
+      <p>Si tenés preguntas, sugerencias o querés reportar un problema, escribinos a <a href="mailto:contacto@fraude.uy" style="color:var(--accent);">contacto@fraude.uy</a>.</p>
+      
+      <p style="margin-top:24px;font-size:12px;color:var(--text-soft);opacity:.6;">Última actualización: abril 2026.</p>
+    </div>
+  </div>
+</section>
+
 <footer class="footer">
   <div class="footer-inner">
     <div class="footer-brand"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 16l-4-4 1.41-1.41L11 14.17l6.59-6.59L19 9l-8 8z"/></svg>LinkGuard</div>
-    <div class="footer-text">Hecho en Uruguay 🇺🇾 · Protección contra fraude digital</div>
+    <div class="footer-text">Proyecto ciudadano · Hecho en Uruguay 🇺🇾</div>
     <div class="footer-links">
+      <a href="#sobre">Sobre el proyecto</a>
+      <a href="#privacidad">Privacidad</a>
+      <a href="mailto:contacto@fraude.uy">contacto@fraude.uy</a>
       <a href="https://x.com/LinkGuardUY" target="_blank">Twitter</a>
       <a href="https://instagram.com/linkguard.uy" target="_blank">Instagram</a>
     </div>
@@ -772,20 +822,36 @@ const THREAT_DB={
     // Bancos
     "brou.com.uy","e-brou.com.uy","itau.com.uy","santander.com.uy","bbva.com.uy",
     "scotiabank.com.uy","hsbc.com.uy","heritage.com.uy","banquetotal.com.uy",
-    "bcu.gub.uy","bancorepublica.com.uy",
-    // Gobierno (gub.uy y subdominios se manejan aparte)
+    "bcu.gub.uy","bancorepublica.com.uy","citibank.com.uy","bancaseguros.com.uy",
+    "creditel.com.uy","geocom.com.uy","lolc.com.uy",
+    // Gobierno
     "gub.uy","dgi.gub.uy","bps.gub.uy","portal.bps.gub.uy","mef.gub.uy",
-    "msp.gub.uy","minterior.gub.uy","agesic.gub.uy",
+    "msp.gub.uy","minterior.gub.uy","agesic.gub.uy","presidencia.gub.uy",
+    "parlamento.gub.uy","imm.gub.uy","mides.gub.uy","mtss.gub.uy",
+    "mec.gub.uy","miem.gub.uy","mgap.gub.uy","mvotma.gub.uy",
+    "poder-judicial.gub.uy","ine.gub.uy","inau.gub.uy","ursea.gub.uy",
+    "ursec.gub.uy","unit.org.uy","cjppu.com.uy",
     // Servicios estatales
-    "antel.com.uy","ute.com.uy","ose.com.uy","correo.com.uy",
+    "antel.com.uy","antel.net.uy","ute.com.uy","ose.com.uy","correo.com.uy",
+    "ancap.com.uy","tcc.com.uy",
     // Tarjetas y pagos
-    "visa.com.uy","mastercard.com.uy","oca.com.uy",
+    "visa.com.uy","mastercard.com.uy","oca.com.uy","passcard.com.uy",
     "redpagos.com.uy","abitab.com.uy","prex.com.uy",
-    // Comercio y servicios
-    "mercadopago.com.uy","mercadolibre.com.uy","pedidosya.com.uy"
+    // Comercio y telecomunicaciones
+    "mercadopago.com.uy","mercadolibre.com.uy","pedidosya.com.uy",
+    "claro.com.uy","movistar.com.uy","sky.com.uy","tiendamia.com",
+    // Medios de comunicación
+    "elpais.com.uy","elobservador.com.uy","montevideo.com.uy",
+    "lr21.com.uy","subrayado.com.uy","telemundo.com.uy","canal10.com.uy",
+    // Salud
+    "casmu.com.uy","smec.com.uy","mucam.com.uy","asociacionespanola.com.uy",
+    "hospitaldeClinicas.edu.uy","hmc.com.uy",
+    // Educación
+    "udelar.edu.uy","ort.edu.uy","ucu.edu.uy","um.edu.uy","anep.edu.uy",
+    "claeh.edu.uy","ude.edu.uy"
   ],
   recentPatterns:["Fraudes con supuesto reembolso de DGI","Mensajes falsos de Correo Uruguayo","WhatsApp haciéndose pasar por Mercado Pago","SMS de supuesta suspensión de cuenta BROU","Publicidades falsas de premios bancarios en Facebook","Anuncios de inversiones con retorno garantizado"],
-  officialContacts:{"BROU":"1896","Itaú":"1784","Santander":"1900 1234","BBVA":"0800 2382","Scotiabank":"2916 1111"}
+  officialContacts:{"BROU":"1896","Itaú":"1784","Santander":"1900 1234","BBVA":"0800 2382","Scotiabank":"2916 1111","OCA":"2900 3939","ANCAP":"2604 2000","UTE":"0800 1870","OSE":"1952","ANTEL":"109","BPS":"1997","BROU":"1896"}
 };
 
 // DEMOS
@@ -821,10 +887,12 @@ function handleFile(input){
   if(!file)return;
   const reader=new FileReader();
   reader.onload=e=>{
-    uploadedImage=e.target.result;
-    document.getElementById('previewImg').src=uploadedImage;
-    document.getElementById('imgPreview').classList.add('active');
-    document.getElementById('uploadZone').style.display='none';
+    compressImage(e.target.result,1200,0.75).then(compressed=>{
+      uploadedImage=compressed;
+      document.getElementById('previewImg').src=compressed;
+      document.getElementById('imgPreview').classList.add('active');
+      document.getElementById('uploadZone').style.display='none';
+    });
   };
   reader.readAsDataURL(file);
 }
@@ -839,10 +907,12 @@ function handleAdFile(input){
   if(!file)return;
   const reader=new FileReader();
   reader.onload=e=>{
-    adUploadedImage=e.target.result;
-    document.getElementById('adPreviewImg').src=adUploadedImage;
-    document.getElementById('adImgPreview').classList.add('active');
-    document.getElementById('adUploadZone').style.display='none';
+    compressImage(e.target.result,1200,0.75).then(compressed=>{
+      adUploadedImage=compressed;
+      document.getElementById('adPreviewImg').src=compressed;
+      document.getElementById('adImgPreview').classList.add('active');
+      document.getElementById('adUploadZone').style.display='none';
+    });
   };
   reader.readAsDataURL(file);
 }
@@ -926,6 +996,7 @@ async function analyze(){
     analysisType='advertisement';
   }
 
+  window._lastInput={tab:currentTab,text:input};
   hideResult();
   showLoading(true);
 
@@ -1019,7 +1090,6 @@ async function analyze(){
         if(localDangerSignals.length>0){
           aiResult.signals=[...localDangerSignals,...(aiResult.signals||[]).filter(s=>!localDangerSignals.some(ls=>ls.text===s.text))];
         }
-        if(analysisType==='advertisement'&&input)aiResult=await applyPromoCheck(aiResult,input);
         showLoading(false);
         displayResult(aiResult);
       }catch(e){
@@ -1033,7 +1103,6 @@ async function analyze(){
     updateLoading(imageData?'Analizando imagen con inteligencia artificial...':'Analizando con inteligencia artificial...');
     try{
       let result=await aiAnalysis(input,imageData,analysisType);
-      if(analysisType==='advertisement'&&input)result=await applyPromoCheck(result,input);
       showLoading(false);
       displayResult(result);
     }catch(firstError){
@@ -1157,7 +1226,7 @@ function localAnalysis(input){
       const fullUrl=fullUrls.find(u=>u.includes(hostname))||'';
       const utmCount=(fullUrl.match(/utm_/gi)||[]).length;
       if(utmCount>=3&&/cuenta|banco|seguridad|token/i.test(fullUrl)){
-        findings.push({type:'CRITICAL',detail:`Link con ${utmCount} parámetros de marketing (utm_) y palabras bancarias. Los bancos no mandan links de marketing para temas de seguridad.`});
+        findings.push({type:'CRITICAL',detail:`Link con ${utmCount} parámetros de marketing (utm_) y palabras bancarias. Es inusual que instituciones bancarias utilicen links de marketing para comunicaciones de seguridad.`});
         hasDangerDomain=true;
         return;
       }
@@ -1176,14 +1245,14 @@ function localAnalysis(input){
     {patterns:[/premio/i,/whatsapp/i],detail:'Combinación sospechosa: "premio" + "WhatsApp". Los premios por WhatsApp son siempre fraude.'},
     {patterns:[/actualiz/i,/token/i],detail:'Combinación sospechosa: "actualizar" + "token". Tu banco nunca pide actualizar el token por mensaje.'},
     {patterns:[/devoluci[oó]n/i,/impuesto/i],detail:'Combinación sospechosa: "devolución" + "impuestos". La DGI no devuelve dinero por links.'},
-    {patterns:[/verific/i,/identidad/i],detail:'Combinación sospechosa: "verificar" + "identidad". Los bancos no verifican identidad por links.'},
+    {patterns:[/verific/i,/identidad/i],detail:'Combinación sospechosa: "verificar" + "identidad". Es poco común que los bancos soliciten verificación de identidad mediante links enviados por mensaje.'},
     {patterns:[/bloque/i,/cuenta/i],detail:'Combinación sospechosa: "bloqueo" + "cuenta". Táctica de miedo para que actúes sin pensar.'},
-    {patterns:[/reactiv/i,/cuenta/i],detail:'Combinación sospechosa: "reactivar" + "cuenta". Los bancos no reactivan cuentas por links.'},
+    {patterns:[/reactiv/i,/cuenta/i],detail:'Combinación sospechosa: "reactivar" + "cuenta". Es inusual que los bancos reactiven cuentas mediante links enviados por mensaje.'},
     {patterns:[/transferi/i,/urgent/i],detail:'Combinación sospechosa: "transferir" + "urgente". Presión para que muevas dinero rápido.'},
     {patterns:[/punto/i,/vence/i],detail:'Combinación sospechosa: "puntos" + "vencen". Táctica para crear urgencia con supuestos beneficios.'},
     {patterns:[/punto/i,/perder/i],detail:'Combinación sospechosa: "puntos" + "perder". Miedo a perder algo que probablemente no existe.'},
     {patterns:[/cuenta/i,/inusual/i],detail:'Combinación sospechosa: "cuenta" + "inusual". Simula una alerta de seguridad falsa.'},
-    {patterns:[/movimiento/i,/inusual/i],detail:'Combinación sospechosa: "movimiento inusual". Los bancos no notifican así por mensaje.'},
+    {patterns:[/movimiento/i,/inusual/i],detail:'Combinación sospechosa: "movimiento inusual". Es poco común que los bancos notifiquen movimientos inusuales de esta forma.'},
     {patterns:[/premio/i,/reclamar/i],detail:'Combinación sospechosa: "premio" + "reclamar". Nadie regala nada, es fraude.'},
     {patterns:[/regalo/i,/clic/i],detail:'Combinación sospechosa: "regalo" + "clic". Si tenés que hacer clic para un regalo, es mentira.'},
   ];
@@ -1208,19 +1277,19 @@ function localAnalysis(input){
   if(hasShortLink&&asksSensitiveData){
     findings.push({type:'CRITICAL',detail:'Link acortado + pedido de datos sensibles. Combinación típica de fraude.'});
   } else if(hasShortLink){
-    findings.push({type:'HIGH',detail:'Link acortado que esconde el destino. Los bancos no usan links acortados.'});
+    findings.push({type:'HIGH',detail:'Link acortado que esconde el destino. Es poco común que bancos e instituciones oficiales utilicen links acortados en sus comunicaciones.'});
   }
 
   const hasShareLink=/share\.google|bit\.ly|t\.co|goo\.gl|tinyurl|ow\.ly/i.test(input);
   const mentionsBanking=/banco|brou|itau|santander|bbva|scotia|cuenta\s*bancaria|tarjeta|crédito|débito/i.test(input);
   if(hasShareLink&&mentionsBanking&&!asksSensitiveData){
-    findings.push({type:'HIGH',detail:'Link acortado o de redireccionamiento en un mensaje que menciona bancos. Los bancos nunca usan links acortados ni de Google Share. Verificá directamente con tu banco.'});
+    findings.push({type:'HIGH',detail:'Link acortado o de redireccionamiento en un mensaje que menciona bancos. Es inusual que los bancos utilicen links acortados o de redireccionamiento. Le recomendamos verificar directamente con su banco.'});
   }
 
   const phones=input.match(/(\+598\s?|0)\d{2}\s?\d{3}\s?\d{3,4}|\d{3}\s\d{3}\s\d{3}/g)||[];
   phones.forEach(p=>{const c=p.replace(/\s/g,'');
     if(THREAT_DB.scamPhones.includes(c))findings.push({type:'CRITICAL',detail:`Número ${p} reportado como fraudulento.`});
-    else if(/^09/.test(c))findings.push({type:'HIGH',detail:`Celular ${p}. Los bancos no contactan desde celulares.`});
+    else if(/^09/.test(c))findings.push({type:'HIGH',detail:`Celular ${p}. Es poco común que los bancos contacten desde números de celular. Le recomendamos verificar llamando al número oficial de su banco.`});
   });
 
   return{findings,hasUnknownDomain,allSafe:(allSafe&&allUrls.length>0&&!hasDangerDomain),hasDangerDomain};
@@ -1319,6 +1388,8 @@ REGLAS PARA PUBLICIDADES:
 - EMPRESAS ESTATALES URUGUAYAS QUE NUNCA OFRECEN INVERSIONES: UTE (energía), OSE (agua), ANTEL (telecomunicaciones), BPS (seguridad social), BROU (banco). Si ves una publicidad de cualquiera de estas ofreciendo acciones, inversiones o bonificaciones = SIEMPRE fraude.
 - "Acciones", "bonificación de acciones", "monto mínimo de inversión" usando logo de UTE, ANTEL, OSE o BPS = fraude OBVIO. Son empresas estatales, NO cotizan en bolsa.
 - Publicidad "patrocinada" en Facebook/Instagram con logo institucional + oferta financiera = FRAUDE CONFIRMADO
+- Registro por WhatsApp para obtener descuento de banco, tarjeta o empresa = SIEMPRE fraude. Los bancos y tarjetas NUNCA procesan beneficios por WhatsApp.
+- "Registrate por WhatsApp y obtené X% de descuento" con logo de banco/tarjeta = FRAUDE CONFIRMADO
 `:''}
 
 ${analysisType==='screenshot'?`
@@ -1330,10 +1401,18 @@ REGLAS PARA CAPTURAS DE PANTALLA:
 - Si la imagen muestra una publicidad con logo institucional + "inversión", "acciones", "bonificación", "monto mínimo" = FRAUDE
 - Si ves "Patrocinado" + logo de empresa estatal + oferta financiera = FRAUDE CONFIRMADO
 - Si aparecen múltiples publicidades suplantando distintas instituciones = campaña de fraude organizada
+- Publicidad que redirige a WhatsApp para obtener descuentos, beneficios o registrarse en un banco/tarjeta/financiera = SIEMPRE fraude. Las empresas legítimas NUNCA usan WhatsApp para esto.
+- Botón "Chatear por WhatsApp" + logo de banco o tarjeta + descuento o beneficio = FRAUDE CONFIRMADO
 `:''}
 
+⚠️ REGLAS ABSOLUTAS — OBLIGATORIO APLICAR, SIN EXCEPCIONES:
+1. Publicidad (Instagram/Facebook/etc.) con botón o link a WhatsApp + banco/tarjeta/financiera = SIEMPRE "danger". No importa si la empresa parece real. Los estafadores siempre usan nombres de empresas reales como OCA, BROU, Santander, etc.
+2. Suplantación de empresa estatal (UTE, OSE, ANTEL, BPS, ANCAP) + oferta financiera = SIEMPRE "danger".
+3. Promesa de dinero, reembolso, o premio que requiere datos = SIEMPRE "danger".
+Si detectás cualquiera de estas situaciones, el veredicto DEBE ser "danger" independientemente de cualquier otra señal.
+
 REGLAS DE VEREDICTO:
-- "danger": pide token/contraseña, dominio fraudulento, typosquatting, promete dinero gratis, suplantación de empresa estatal, link acortado + datos sensibles
+- "danger": pide token/contraseña, dominio fraudulento, typosquatting, promete dinero gratis, empresa estatal + oferta financiera, publicidad con WhatsApp + banco/tarjeta/descuento
 - "warning": dominio desconocido, señales sospechosas no concluyentes
 - "safe": SOLO si el dominio está en la lista de legítimos Y no hay señales sospechosas
 
@@ -1350,17 +1429,19 @@ Respondé SOLO con JSON válido (sin markdown, sin backticks):
   }
 
   let textPrompt='Analizá ';
-  if(analysisType==='screenshot')textPrompt+='esta captura de pantalla. Leé todo el texto visible, identificá URLs, logos, formularios y cualquier señal de fraude.';
-  else if(analysisType==='advertisement')textPrompt+=`esta publicidad:\n\n"${input}"`;
+  if(analysisType==='screenshot')textPrompt+='esta captura de pantalla. Leé TODO el texto visible, identificá URLs, logos, formularios y cualquier señal de fraude.';
+  else if(analysisType==='advertisement'){
+    if(imageData&&!input)textPrompt+='esta imagen de publicidad. Identificá la empresa, el producto o promoción ofrecida, cualquier link o número visible, y evaluá si es un fraude según las reglas anteriores.';
+    else textPrompt+=`esta publicidad:\n\n"${input}"`;
+    if(input&&imageData)textPrompt+='\n\nEl texto de arriba acompaña a la imagen adjunta.';
+  }
   else textPrompt+=`este contenido que una persona recibió:\n\n"${input}"`;
-
-  if(analysisType==='ad'&&input&&imageData)textPrompt+='\n\nEl texto de arriba acompaña a la imagen.';
 
   content.push({type:'text',text:textPrompt});
 
   const r=await fetchWithTimeout('/.netlify/functions/analyze',{
     method:'POST',
-    headers:{'Content-Type':'application/json'},
+    headers:{'Content-Type':'application/json','x-linkguard':'fraude-uy-2026'},
     body:JSON.stringify({
       model:'claude-sonnet-4-6',
       max_tokens:1024,
@@ -1391,7 +1472,7 @@ async function verificarPromocion(textoAnuncio){
   // Paso 1: Claude extrae empresa, dominio y palabras clave
   const r=await fetchWithTimeout('/.netlify/functions/analyze',{
     method:'POST',
-    headers:{'Content-Type':'application/json'},
+    headers:{'Content-Type':'application/json','x-linkguard':'fraude-uy-2026'},
     body:JSON.stringify({
       model:'claude-sonnet-4-6',
       max_tokens:256,
@@ -1402,66 +1483,64 @@ async function verificarPromocion(textoAnuncio){
   if(!r.ok)throw new Error(`Claude extract error ${r.status}`);
   const d=await r.json();
   const text=d.content?.[0]?.text||'';
-  const extracted=JSON.parse(text.replace(/```json|```/g,'').trim());
+  const jsonMatch=text.match(/\{[\s\S]*\}/);
+  if(!jsonMatch)throw new Error('Claude no devolvió JSON válido: '+text.slice(0,100));
+  const extracted=JSON.parse(jsonMatch[0]);
 
-  // Paso 2: Google Custom Search en el sitio oficial
-  const query=`site:${extracted.dominio} ${extracted.palabrasClave.join(' ')}`;
-  const searchR=await fetchWithTimeout(
-    `/.netlify/functions/search?q=${encodeURIComponent(query)}`,
-    {method:'GET'},
-    12000
-  );
-  const searchData=await searchR.json();
-  const items=searchData.items||[];
+  // Paso 2: Dos búsquedas en paralelo — sitio oficial y web amplia
+  const queryOficial=`site:${extracted.dominio} ${extracted.palabrasClave.join(' ')}`;
+  const queryAmplia=`${extracted.empresa} ${extracted.beneficio} ${extracted.palabrasClave.join(' ')}`;
+  const [resOficial,resAmplia]=await Promise.all([
+    fetchWithTimeout(`/.netlify/functions/search?q=${encodeURIComponent(queryOficial)}`,{method:'GET'},12000).then(r=>r.json()).catch(()=>({items:[]})),
+    fetchWithTimeout(`/.netlify/functions/search?q=${encodeURIComponent(queryAmplia)}`,{method:'GET'},12000).then(r=>r.json()).catch(()=>({items:[]}))
+  ]);
+  const itemsOficial=resOficial.items||[];
+  const itemsAmplia=resAmplia.items||[];
 
-  // Paso 3: Evaluar resultados
+  // Paso 3: Evaluar combinando ambas búsquedas
   const kws=extracted.palabrasClave.map(k=>k.toLowerCase());
-  const exactMatch=items.find(item=>
-    kws.some(kw=>(item.title+' '+(item.snippet||'')).toLowerCase().includes(kw))
-  );
+  const matchOficial=itemsOficial.find(item=>kws.some(kw=>(item.title+' '+(item.snippet||'')).toLowerCase().includes(kw)));
+  const matchAmplia=itemsAmplia.find(item=>kws.some(kw=>(item.title+' '+(item.snippet||'')).toLowerCase().includes(kw)));
 
-  if(exactMatch){
+  const contactKey=Object.keys(THREAT_DB.officialContacts).find(k=>
+    extracted.empresa.toLowerCase().includes(k.toLowerCase())||k.toLowerCase().includes(extracted.empresa.toLowerCase())
+  );
+  const telefono=contactKey?THREAT_DB.officialContacts[contactKey]:null;
+  const contactoSufijo=telefono
+    ?` Si tenés dudas, llamá directamente al ${telefono}.`
+    :` Si tenés dudas, ingresá a ${extracted.dominio} desde tu navegador.`;
+
+  if(matchOficial){
     return{
       confirmado:true,
       confianza:'alta',
-      fuente:exactMatch.link,
-      resumen:`Promoción encontrada en el sitio oficial de ${extracted.empresa}: "${exactMatch.title.slice(0,80)}"`
+      fuente:matchOficial.link,
+      resumen:`Verificamos el sitio oficial de ${extracted.empresa} (${extracted.dominio}) y encontramos esta promoción: "${matchOficial.title.slice(0,70)}".`
     };
-  }else if(items.length>0){
+  }else if(matchAmplia){
     return{
       confirmado:false,
       confianza:'media',
-      fuente:items[0].link,
-      resumen:`Se encontró el sitio oficial de ${extracted.empresa} pero sin datos de esta promoción específica.`
+      fuente:matchAmplia.link,
+      resumen:`No encontramos esta promoción en el sitio oficial de ${extracted.empresa} (${extracted.dominio}), pero encontramos referencias en otros sitios. Verificá directamente antes de actuar.${contactoSufijo}`
+    };
+  }else if(itemsOficial.length>0||itemsAmplia.length>0){
+    return{
+      confirmado:false,
+      confianza:'media',
+      fuente:(itemsOficial[0]||itemsAmplia[0]).link,
+      resumen:`Buscamos en el sitio oficial de ${extracted.empresa} y en Google de forma amplia, y no encontramos esta promoción específica.${contactoSufijo}`
     };
   }else{
     return{
       confirmado:false,
       confianza:'no_encontrado',
       fuente:null,
-      resumen:`No encontramos esta promoción en el sitio oficial de ${extracted.empresa}.`
+      resumen:`Buscamos en el sitio oficial de ${extracted.empresa} (${extracted.dominio}) y en Google de forma amplia, y no encontramos ninguna referencia a esta promoción.${contactoSufijo}`
     };
   }
 }
 
-async function applyPromoCheck(result,input){
-  if(!input||result.verdict==='safe')return result;
-  try{
-    updateLoading('Verificando en fuentes oficiales...');
-    const check=await verificarPromocion(input);
-    result.signals=result.signals||[];
-    const badge=check.confianza==='alta'?'✓ OFICIAL':check.confianza==='media'?'AVISO':'ALERTA';
-    const fuente=check.fuente?` <a href="${check.fuente}" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">Ver fuente oficial</a>`:'';
-    result.signals.unshift({badge,text:check.resumen+fuente});
-    if(check.confirmado&&check.confianza==='alta'&&result.verdict==='danger'){
-      result.verdict='warning';
-      result.subtitle='La promoción existe en el sitio oficial, pero el anuncio tiene señales sospechosas';
-    }
-  }catch(e){
-    console.error('verificarPromocion failed:',e);
-  }
-  return result;
-}
 
 // UI
 function hideResult(){
@@ -1499,8 +1578,15 @@ function displayResult(r){
 
 function shareResult(){
   const r=window._lastResult;if(!r)return;
-  const v={danger:'🔴 FRAUDE',warning:'🟡 SOSPECHOSO',safe:'🟢 SEGURO'};
-  const t=`${v[r.verdict]} - LinkGuard analizó un mensaje:\n\n${r.title}\n${r.advice}\n\nVerificá tus mensajes en linkguard-uy.netlify.app`;
+  const i=window._lastInput||{};
+  const v={danger:'FRAUDE',warning:'SOSPECHOSO',safe:'SEGURO'};
+  let contenido;
+  if(i.tab==='image'){
+    contenido='Se analizó una captura de pantalla';
+  } else {
+    contenido=(i.text||'').slice(0,300)+(i.text&&i.text.length>300?'…':'');
+  }
+  const t=`🛡️ LinkGuard analizó esto:\n---\n${contenido}\n---\n\nResultado: ${v[r.verdict]}\n${r.title}\n\n${r.advice.replace(/<[^>]*>/g,'')}\n\nVerificá vos también en fraude.uy`;
   window.open(`https://wa.me/?text=${encodeURIComponent(t)}`,'_blank');
 }
 
@@ -1521,6 +1607,11 @@ function resetEmergency(){
     if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();analyze();}
   });
 });
+
+// Service worker
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('/sw.js').catch(()=>{});
+}
 </script>
 
 </body>
