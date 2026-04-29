@@ -263,6 +263,48 @@ section[id]{scroll-margin-top:70px;}
 .footer-links a:hover{color:rgba(255,255,255,.7);}
 @media(max-width:700px){.footer-inner{flex-direction:column;text-align:center;}}
 
+/* ENTITY BLOCK */
+.entity-block{margin-top:14px;padding:14px 16px;border-radius:12px;background:#F0F4FF;border:1px solid #C5D0F0;}
+.entity-block-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#3A5ABF;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.entity-policy{font-size:14px;line-height:1.6;color:var(--text);margin-bottom:10px;}
+.entity-links{display:flex;flex-wrap:wrap;gap:8px;}
+.entity-link{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;transition:opacity .2s;}
+.entity-link:hover{opacity:.8;}
+.entity-link.web{background:#E8EEF5;color:#3A5ABF;}
+.entity-link.tel{background:#E8F5E9;color:var(--green);}
+
+/* REPORT WIZARD */
+.result-report-btn{width:100%;margin-top:10px;padding:13px;border:2px dashed var(--red);border-radius:10px;background:transparent;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;color:var(--red);cursor:pointer;transition:all .2s;display:none;align-items:center;justify-content:center;gap:8px;}
+.result-report-btn:hover{background:var(--red-light);}
+.report-section{margin-top:14px;border-top:1px solid var(--border);padding-top:16px;}
+.report-title{font-family:'Fraunces',serif;font-size:17px;font-weight:700;color:var(--red);margin-bottom:6px;}
+.report-subtitle{font-size:14px;color:var(--text-soft);line-height:1.5;margin-bottom:14px;}
+.report-question{font-size:15px;font-weight:600;margin-bottom:12px;}
+.report-edad-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+.report-edad-btn{padding:10px 6px;border:2px solid var(--border);border-radius:10px;background:var(--bg);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;text-align:center;}
+.report-edad-btn.selected{border-color:var(--red);background:var(--red-light);color:var(--red);font-weight:700;}
+.report-edad-btn:hover:not(.selected){border-color:var(--text-soft);}
+.report-submit-btn{width:100%;padding:14px;background:var(--red);color:#fff;border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;margin-bottom:8px;}
+.report-submit-btn:hover{background:#a93226;transform:translateY(-1px);}
+.report-submit-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.report-cancel-link{display:block;text-align:center;font-size:13px;color:var(--text-soft);background:none;border:none;cursor:pointer;text-decoration:underline;padding:4px;}
+.report-success{text-align:center;padding:8px 0;}
+.report-success-icon{font-size:40px;margin-bottom:10px;}
+.report-success-numero{font-family:'Fraunces',serif;font-size:24px;font-weight:700;color:var(--accent);margin-bottom:6px;}
+.report-success-text{font-size:14px;color:var(--text-soft);line-height:1.6;}
+@media(max-width:600px){.report-edad-grid{grid-template-columns:repeat(2,1fr);}}
+
+/* WEB SEARCH BLOCK */
+.web-search-section{margin-top:14px;}
+.web-search-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-soft);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.web-search-loading{font-size:13px;color:var(--text-soft);padding:8px 0;display:flex;align-items:center;gap:8px;}
+.web-search-results{display:flex;flex-direction:column;gap:6px;}
+.web-search-item{display:block;padding:10px 12px;border-radius:10px;background:var(--bg);border:1px solid var(--border);text-decoration:none;color:var(--text);transition:border-color .2s,box-shadow .2s;}
+.web-search-item:hover{border-color:var(--accent);box-shadow:0 2px 8px rgba(0,0,0,.06);}
+.web-search-item-title{font-size:13px;font-weight:600;color:var(--accent);margin-bottom:3px;line-height:1.4;}
+.web-search-item-snippet{font-size:12px;color:var(--text-soft);line-height:1.5;margin-bottom:4px;}
+.web-search-item-source{font-size:11px;color:var(--text-soft);opacity:.7;}
+
 /* MOBILE UX */
 @media(max-width:600px){
   .tool-btn,.btn-primary,.btn-secondary,.btn-white{min-height:48px;font-size:16px;}
@@ -421,11 +463,17 @@ section[id]{scroll-margin-top:70px;}
       </div>
       <div id="analysisSection"></div>
       <div class="result-advice" id="resultAdvice"></div>
+      <div id="entityBlock"></div>
+      <div id="webSearchBlock"></div>
       <div class="result-ai-badge">🤖 Analizado por IA (Claude, Anthropic) · Este resultado es orientativo, no reemplaza el criterio de un profesional ni constituye asesoramiento legal.</div>
       <button class="result-share-btn" onclick="shareResult()">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.558 4.107 1.535 5.823L.057 23.18a.75.75 0 00.916.919l5.433-1.479A11.943 11.943 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.943 9.943 0 01-5.354-1.557l-.38-.229-3.965 1.079 1.079-3.887-.247-.393A9.944 9.944 0 012 12C2 6.486 6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/></svg>
         Enviá este resultado por WhatsApp
       </button>
+      <button class="result-report-btn" id="reportBtn" onclick="abrirReporte()">
+        🚨 Reportar este fraude
+      </button>
+      <div id="reportSection"></div>
     </div>
   </div>
 </section>
@@ -854,6 +902,47 @@ const THREAT_DB={
   officialContacts:{"BROU":"1896","Itaú":"1784","Santander":"1900 1234","BBVA":"0800 2382","Scotiabank":"2916 1111","OCA":"2900 3939","ANCAP":"2604 2000","UTE":"0800 1870","OSE":"1952","ANTEL":"109","BPS":"1997","BROU":"1896"}
 };
 
+// POLÍTICAS DE COMUNICACIÓN DE ENTIDADES URUGUAYAS
+const ENTIDADES_UY={
+  sucive:{nombre:"SUCIVE",web:"sucive.gub.uy",politica:"SUCIVE no envía ningún tipo de mensaje con enlaces de internet. Si recibís un SMS o email con un link diciendo ser de SUCIVE, es fraude. Consultas solo en sucive.gub.uy o al 2916-3288.",telefono:"2916-3288"},
+  brou:{nombre:"Banco República (BROU)",web:"brou.com.uy",politica:"BROU nunca solicita claves, tokens, contraseñas ni datos de tarjeta por SMS, email, WhatsApp ni llamada telefónica. No envía links para actualizar datos. Operá solo desde ebrou.com.uy o la app oficial.",telefono:"1896"},
+  itau:{nombre:"Itaú",web:"itau.com.uy",politica:"Itaú nunca solicita datos personales, claves ni tokens por email, SMS o llamada. No envía links para verificar cuentas.",telefono:"1784"},
+  santander:{nombre:"Santander",web:"santander.com.uy",politica:"Santander nunca pide claves, tokens ni datos de tarjeta por canales digitales ni telefónicos. No envía links por SMS.",telefono:"1900 1234"},
+  bbva:{nombre:"BBVA",web:"bbva.com.uy",politica:"BBVA nunca solicita información confidencial por email, SMS ni llamada.",telefono:"0800 2382"},
+  bcu:{nombre:"Banco Central del Uruguay",web:"bcu.gub.uy",politica:"El BCU no realiza operaciones comerciales ni envía comunicaciones solicitando pagos o datos personales. Cualquier mensaje pidiendo dinero en nombre del BCU es fraude.",telefono:"1967"},
+  ute:{nombre:"UTE",web:"ute.com.uy",politica:"UTE no solicita pagos ni datos personales por SMS o email con links. Pagos solo por canales oficiales.",telefono:"0800 1930"},
+  antel:{nombre:"Antel",web:"antel.com.uy",politica:"Antel no pide datos personales ni de pago por SMS o email. No envía links para verificar cuentas.",telefono:"0800 2323"},
+  ose:{nombre:"OSE",web:"ose.com.uy",politica:"OSE no solicita datos personales ni pagos a través de links por SMS o email.",telefono:"0800 1871"},
+  bps:{nombre:"BPS",web:"bps.gub.uy",politica:"BPS no solicita datos personales ni pagos por SMS, email ni WhatsApp con links.",telefono:"1997"},
+  correo:{nombre:"Correo Uruguayo",web:"correo.com.uy",politica:"Correo Uruguayo no envía SMS ni emails con links para pagar envíos o liberar paquetes retenidos en aduana.",telefono:"0800 2637"},
+  dgi:{nombre:"DGI",web:"dgi.gub.uy",politica:"La DGI no solicita pagos ni datos personales por SMS, email ni WhatsApp. No envía links para regularizar situaciones fiscales.",telefono:"1344"},
+  mercadolibre:{nombre:"MercadoLibre",web:"mercadolibre.com.uy",politica:"MercadoLibre no contacta por fuera de la plataforma para cerrar ventas ni pide pagos por transferencia directa. Toda comunicación legítima es dentro de la app.",telefono:null}
+};
+
+function detectEntidad(text){
+  if(!text)return null;
+  const t=text.toLowerCase();
+  const matchers=[
+    {key:'sucive',     re:/sucive/},
+    {key:'brou',       re:/\bbrou\b|banco\s+rep[uú]blica/},
+    {key:'itau',       re:/\bit[aá]u\b/},
+    {key:'santander',  re:/santander/},
+    {key:'bbva',       re:/\bbbva\b/},
+    {key:'bcu',        re:/\bbcu\b|banco\s+central/},
+    {key:'ute',        re:/\bute\b/},
+    {key:'antel',      re:/antel/},
+    {key:'ose',        re:/\bose\b/},
+    {key:'bps',        re:/\bbps\b|seguridad\s+social/},
+    {key:'correo',     re:/correo\s+uruguayo|correo\.com\.uy/},
+    {key:'dgi',        re:/\bdgi\b|direcci[oó]n\s+general\s+impositiva/},
+    {key:'mercadolibre',re:/mercado\s*libre|mercado\s*pago/},
+  ];
+  for(const {key,re} of matchers){
+    if(re.test(t))return ENTIDADES_UY[key];
+  }
+  return null;
+}
+
 // DEMOS
 const demos={
   sms:`BROU URGENTE: Su cuenta ha sido suspendida por actividad sospechosa. Para reactivarla ingrese a https://brou-verificacion.com/seguro y confirme su identidad con su token digital. Tiene 24hs.`,
@@ -866,6 +955,26 @@ const adDemos={
   inversion:`💰 OPORTUNIDAD ÚNICA: Invertí $5.000 y ganá $150.000 en 30 días con el nuevo sistema de inversión respaldado por el Banco Central del Uruguay. Miles de uruguayos ya lo están usando. Cupos limitados. Registrate en https://inversion-bcu-uy.com`,
   gobierno:`AVISO DGI: Se detectó un reembolso a su favor por $14.350 correspondiente al ejercicio 2025. Para acreditarlo en su cuenta, ingrese a https://dgi-reembolsos.com/verificar con su cédula y datos bancarios. Vence en 48hs.`
 };
+
+// DYNAMIC THREATS (desde Neon DB)
+let _threatsPromise = null;
+function ensureThreats(){
+  if(!_threatsPromise) _threatsPromise = (async()=>{
+    try{
+      const res=await fetch('/.netlify/functions/threats',{headers:{'x-linkguard':'fraude-uy-2026'}});
+      if(!res.ok)return;
+      const d=await res.json();
+      const existingD=new Set(THREAT_DB.fraudulentDomains);
+      const existingP=new Set(THREAT_DB.scamPhones);
+      (d.fraudulentDomains||[]).forEach(x=>{if(!existingD.has(x))THREAT_DB.fraudulentDomains.push(x);});
+      (d.scamPhones||[]).forEach(x=>{if(!existingP.has(x))THREAT_DB.scamPhones.push(x);});
+      console.log(`[threats] +${d.fraudulentDomains?.length||0} dominios, +${d.scamPhones?.length||0} teléfonos desde Neon`);
+    }catch(e){console.warn('[threats] fetch falló:',e.message);}
+  })();
+  return _threatsPromise;
+}
+// Precarga al cargar la página (sin bloquear)
+ensureThreats();
 
 // TABS
 function switchTab(tab){
@@ -997,10 +1106,14 @@ async function analyze(){
   }
 
   window._lastInput={tab:currentTab,text:input};
+  window._lastEntidad=detectEntidad(input);
   hideResult();
   showLoading(true);
 
   try{
+    // ====== PRE-STEP: cargar amenazas dinámicas de Neon (rápido si ya están cacheadas) ======
+    await ensureThreats();
+
     // ====== STEP 1: LOCAL HEURISTICS (instant) ======
     let localResult=null;
     let localVerdict=null;
@@ -1351,6 +1464,7 @@ function fetchWithTimeout(url,options,timeoutMs=30000){
 }
 
 async function aiAnalysis(input,imageData,analysisType){
+  const _entidad=detectEntidad(input);
   const systemPrompt=`Sos un experto en ciberseguridad especializado en fraudes digitales en Uruguay. Tu trabajo es proteger a personas vulnerables (especialmente adultos mayores) analizando contenido sospechoso.
 
 PRINCIPIO FUNDAMENTAL: Es mejor dar una falsa alarma que dejar pasar un fraude. Ante la duda, siempre warning o danger, NUNCA safe.
@@ -1361,6 +1475,11 @@ BASE DE AMENAZAS ACTUALIZADA (Uruguay):
 - Dominios legítimos verificados: ${THREAT_DB.legitimateDomains.join(', ')}
 - Patrones de fraude activos: ${THREAT_DB.recentPatterns.join('; ')}
 - Teléfonos oficiales de bancos: ${JSON.stringify(THREAT_DB.officialContacts)}
+${_entidad?`
+POLÍTICA OFICIAL DE ${_entidad.nombre.toUpperCase()} (entidad mencionada en el contenido):
+${_entidad.politica}
+Web oficial: ${_entidad.web}${_entidad.telefono?` | Teléfono oficial: ${_entidad.telefono}`:''}
+Usá esta política para evaluar si el mensaje es coherente con cómo opera la entidad real.`:''}
 
 ANÁLISIS DE URLS - Revisá cada URL con estos criterios:
 1. ¿El dominio está en la lista de legítimos? Si NO está → nunca decir "safe"
@@ -1417,7 +1536,7 @@ REGLAS DE VEREDICTO:
 - "safe": SOLO si el dominio está en la lista de legítimos Y no hay señales sospechosas
 
 Respondé SOLO con JSON válido (sin markdown, sin backticks):
-{"verdict":"danger|warning|safe","title":"título corto","subtitle":"subtítulo","signals":[{"badge":"etiqueta","text":"explicación simple para persona de 70 años"}],"advice":"consejo directo. Incluí número oficial del banco si aplica.","confidence":0.0-1.0}`;
+{"verdict":"danger|warning|safe","title":"título corto","subtitle":"subtítulo","signals":[{"badge":"etiqueta","text":"explicación simple para persona de 70 años"}],"advice":"consejo directo. Incluí número oficial del banco si aplica.","confidence":0.0-1.0,"empresa":"nombre de la empresa/organismo/banco/marca suplantada o mencionada (ej: 'BROU', 'MercadoLibre', 'DGI', 'Correo Uruguayo'). null si no hay entidad identificable."}`;
 
   const content=[];
 
@@ -1542,10 +1661,46 @@ async function verificarPromocion(textoAnuncio){
 }
 
 
+// BÚSQUEDA WEB COMPLEMENTARIA
+async function buscarEnWeb(empresa){
+  const wb=document.getElementById('webSearchBlock');
+  if(!wb||!empresa)return;
+  wb.innerHTML=`<div class="web-search-section"><div class="web-search-loading"><div class="tool-spinner" style="width:16px;height:16px;border-width:2px;margin:0"></div>Buscando información oficial sobre ${empresa}...</div></div>`;
+  try{
+    const q=`"${empresa}" fraude mensajes estafa Uruguay`;
+    const res=await fetch(`/.netlify/functions/search?q=${encodeURIComponent(q)}`);
+    if(!res.ok){wb.innerHTML='';return;}
+    const data=await res.json();
+    const items=(data.items||[]).slice(0,3);
+    if(!items.length){wb.innerHTML='';return;}
+    let html=`<div class="web-search-section">
+      <div class="web-search-title">🔍 Qué dice ${empresa} sobre este tipo de mensajes</div>
+      <div class="web-search-results">`;
+    items.forEach(item=>{
+      let host='';try{host=new URL(item.link).hostname.replace(/^www\./,'');}catch{}
+      const title=(item.title||'').replace(/</g,'&lt;');
+      const snippet=(item.snippet||'').replace(/</g,'&lt;').slice(0,160);
+      html+=`<a class="web-search-item" href="${item.link}" target="_blank" rel="noopener noreferrer">
+        <div class="web-search-item-title">${title}</div>
+        <div class="web-search-item-snippet">${snippet}${snippet.length===160?'…':''}</div>
+        <div class="web-search-item-source">🌐 ${host}</div>
+      </a>`;
+    });
+    html+='</div></div>';
+    wb.innerHTML=html;
+  }catch(e){
+    wb.innerHTML='';
+    console.warn('[web-search]',e.message);
+  }
+}
+
 // UI
 function hideResult(){
   const r=document.getElementById('resultCard');
   r.classList.remove('active','danger','warning','safe');
+  document.getElementById('webSearchBlock').innerHTML='';
+  document.getElementById('reportSection').innerHTML='';
+  document.getElementById('reportBtn').style.display='none';
 }
 function showLoading(show){
   document.getElementById('loading').classList.toggle('active',show);
@@ -1572,6 +1727,39 @@ function displayResult(r){
   }
   document.getElementById('analysisSection').innerHTML=h;
   document.getElementById('resultAdvice').innerHTML=r.advice;
+
+  // Bloque de entidad: mostrar si se detectó suplantación (danger o warning)
+  const entidad=window._lastEntidad;
+  const eb=document.getElementById('entityBlock');
+  if(entidad&&r.verdict!=='safe'){
+    const telHtml=entidad.telefono
+      ?`<a class="entity-link tel" href="tel:${entidad.telefono}">📞 ${entidad.telefono}</a>`
+      :'';
+    eb.innerHTML=`<div class="entity-block">
+      <div class="entity-block-title">🏛️ Política oficial de ${entidad.nombre}</div>
+      <div class="entity-policy">${entidad.politica}</div>
+      <div class="entity-links">
+        <a class="entity-link web" href="https://${entidad.web}" target="_blank" rel="noopener">🌐 ${entidad.web}</a>
+        ${telHtml}
+      </div>
+    </div>`;
+  } else {
+    eb.innerHTML='';
+  }
+
+  // Búsqueda web complementaria
+  const empresaBuscar=(r.empresa&&r.empresa!=='null'?r.empresa:null)||window._lastEntidad?.nombre||null;
+  if(empresaBuscar&&r.verdict!=='safe'){
+    buscarEnWeb(empresaBuscar);
+  }else{
+    document.getElementById('webSearchBlock').innerHTML='';
+  }
+
+  // Botón de reporte
+  const reportBtn=document.getElementById('reportBtn');
+  reportBtn.style.display=r.verdict!=='safe'?'flex':'none';
+  document.getElementById('reportSection').innerHTML='';
+
   window._lastResult=r;
   card.scrollIntoView({behavior:'smooth',block:'center'});
 }
@@ -1588,6 +1776,100 @@ function shareResult(){
   }
   const t=`🛡️ LinkGuard analizó esto:\n---\n${contenido}\n---\n\nResultado: ${v[r.verdict]}\n${r.title}\n\n${r.advice.replace(/<[^>]*>/g,'')}\n\nVerificá vos también en fraude.uy`;
   window.open(`https://wa.me/?text=${encodeURIComponent(t)}`,'_blank');
+}
+
+// REPORT WIZARD
+let _reportEdad=null;
+
+function abrirReporte(){
+  _reportEdad=null;
+  document.getElementById('reportBtn').style.display='none';
+  const edades=['Menos de 18','18-29','30-44','45-59','60+','Prefiero no decir'];
+  let btns=edades.map(e=>`<button class="report-edad-btn" onclick="seleccionarEdad('${e}',this)">${e}</button>`).join('');
+  document.getElementById('reportSection').innerHTML=`<div class="report-section">
+    <div class="report-title">🚨 Reportar este fraude</div>
+    <div class="report-subtitle">Tu reporte es anónimo y ayuda a alertar a otras personas en Uruguay.</div>
+    <div class="report-question">¿En qué rango de edad estás?</div>
+    <div class="report-edad-grid">${btns}</div>
+    <button class="report-submit-btn" id="reportSubmitBtn" onclick="enviarReporte()">📤 Confirmar reporte</button>
+    <button class="report-cancel-link" onclick="cerrarReporte()">Cancelar</button>
+  </div>`;
+}
+
+function seleccionarEdad(edad,el){
+  _reportEdad=edad;
+  document.querySelectorAll('.report-edad-btn').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function cerrarReporte(){
+  _reportEdad=null;
+  document.getElementById('reportSection').innerHTML='';
+  const btn=document.getElementById('reportBtn');
+  if(window._lastResult?.verdict!=='safe') btn.style.display='flex';
+}
+
+async function enviarReporte(){
+  if(!_reportEdad){
+    document.querySelectorAll('.report-edad-btn').forEach(b=>{b.style.borderColor='var(--red)';});
+    return;
+  }
+  const submitBtn=document.getElementById('reportSubmitBtn');
+  submitBtn.disabled=true;
+  submitBtn.textContent='Enviando...';
+
+  const r=window._lastResult||{};
+  const inp=window._lastInput||{};
+  const entidad=window._lastEntidad;
+
+  // Extraer URL del texto si existe
+  const urlMatch=(inp.text||'').match(/https?:\/\/[^\s]+/);
+  const linkFraudulento=urlMatch?urlMatch[0]:null;
+
+  // Detectar canales desde el tab e input
+  const canales=[];
+  const t=(inp.text||'').toLowerCase();
+  if(inp.tab==='ad')canales.push('publicidad');
+  if(/\bwhatsapp\b/.test(t))canales.push('whatsapp');
+  if(/\bsms\b/.test(t))canales.push('sms');
+  if(/\bemail\b|@[a-z]/.test(t))canales.push('email');
+  if(inp.tab==='image'&&canales.length===0)canales.push('publicidad');
+  if(linkFraudulento&&!canales.includes('sitio_web'))canales.push('sitio_web');
+
+  try{
+    const res=await fetch('/api/report',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-linkguard':'fraude-uy-2026'},
+      body:JSON.stringify({
+        link_fraudulento:linkFraudulento,
+        link_sitio_web:linkFraudulento,
+        institucion:r.empresa&&r.empresa!=='null'?r.empresa:(entidad?.nombre||null),
+        motivo:null,
+        edad:_reportEdad,
+        canales
+      })
+    });
+    const data=await res.json();
+    if(!data.ok)throw new Error(data.error||'Error');
+    document.getElementById('reportSection').innerHTML=`<div class="report-section report-success">
+      <div class="report-success-icon">✅</div>
+      <div class="report-success-numero">${data.numero_reporte}</div>
+      <div style="font-size:14px;font-weight:600;color:var(--accent);margin-bottom:8px">Reporte registrado</div>
+      <div class="report-success-text">Gracias por tu reporte. Tu número de referencia es <strong>${data.numero_reporte}</strong>.<br>Tu información ayuda a proteger a otras personas en Uruguay.</div>
+    </div>`;
+  }catch(e){
+    submitBtn.disabled=false;
+    submitBtn.textContent='📤 Confirmar reporte';
+    const sec=document.getElementById('reportSection');
+    if(!sec.querySelector('.report-err')){
+      const d=document.createElement('p');
+      d.className='report-err';
+      d.style.cssText='color:var(--red);font-size:13px;margin-bottom:8px;';
+      d.textContent='No se pudo enviar el reporte. Intentá de nuevo.';
+      sec.querySelector('.report-section').prepend(d);
+    }
+    console.error('[report]',e.message);
+  }
 }
 
 // EMERGENCY WIZARD

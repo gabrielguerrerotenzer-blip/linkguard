@@ -1,2 +1,13 @@
 [build]
   functions = "netlify/functions"
+  command = "npm install"
+
+[[redirects]]
+  from = "/api/threats"
+  to   = "/.netlify/functions/threats"
+  status = 200
+
+[[redirects]]
+  from = "/api/report"
+  to   = "/.netlify/functions/report"
+  status = 200
