@@ -53,6 +53,7 @@ async function procesarIndicadoresWeb(sql, body, reporteId, institucion) {
                 ultima_vez         = NOW(),
                 entidad_suplantada = COALESCE(${entidad}, dominios_fraudulentos.entidad_suplantada)
         `;
+        await recalcularScoreRiesgoWeb(sql, 'dominio', dominio);
       } catch (e) {
         console.error('[procesarIndicadoresWeb] dominios_fraudulentos upsert:', e.message);
       }
@@ -79,6 +80,7 @@ async function procesarIndicadoresWeb(sql, body, reporteId, institucion) {
                 ultima_vez         = NOW(),
                 entidad_suplantada = COALESCE(${entidad}, telefonos_fraudulentos.entidad_suplantada)
         `;
+        await recalcularScoreRiesgoWeb(sql, 'telefono', telefono);
       } catch (e) {
         console.error('[procesarIndicadoresWeb] telefonos_fraudulentos upsert:', e.message);
       }
@@ -108,6 +110,7 @@ async function procesarIndicadoresWeb(sql, body, reporteId, institucion) {
                 ultima_vez         = NOW(),
                 entidad_suplantada = COALESCE(${entidad}, emails_fraudulentos.entidad_suplantada)
         `;
+        await recalcularScoreRiesgoWeb(sql, 'email', email);
       } catch (e) {
         console.error('[procesarIndicadoresWeb] emails_fraudulentos upsert:', e.message);
       }
@@ -209,6 +212,89 @@ async function detectarCampanaWeb(sql, reporteId, entidad, canalesList) {
   }
 }
 
+// ── REPUTACIÓN DE REPORTANTES ────────────────────────────────────────────────
+
+async function obtenerOCrearReportanteWeb(sql, identificador) {
+  if (!identificador) return { id: null, score: 0.5 };
+  try {
+    const ex = await sql`
+      SELECT id, score_confiabilidad FROM reportantes
+      WHERE identificador = ${identificador} LIMIT 1
+    `;
+    if (ex.length > 0) {
+      await sql`
+        UPDATE reportantes
+        SET total_reportes = total_reportes + 1, ultima_vez = NOW()
+        WHERE id = ${ex[0].id}
+      `;
+      return { id: ex[0].id, score: Number(ex[0].score_confiabilidad) };
+    }
+    const nr = await sql`
+      INSERT INTO reportantes (identificador, tipo, score_confiabilidad, total_reportes)
+      VALUES (${identificador}, 'fingerprint', 0.5, 1)
+      RETURNING id, score_confiabilidad
+    `;
+    return { id: nr[0].id, score: Number(nr[0].score_confiabilidad) };
+  } catch (e) {
+    console.error('[obtenerOCrearReportanteWeb] error:', e.message);
+    return { id: null, score: 0.5 };
+  }
+}
+
+async function recalcularScoreRiesgoWeb(sql, tipo, valor) {
+  try {
+    const rows = await sql`
+      SELECT COALESCE(AVG(rep.score_confiabilidad), 0.5) AS avg_score
+      FROM indicadores_fraude i
+      JOIN reportes    r   ON r.id   = i.reporte_id
+      JOIN reportantes rep ON rep.id = r.reportante_id
+      WHERE i.tipo = ${tipo} AND i.valor = ${valor}
+    `;
+    const score = Math.min(0.95, Math.max(0.1, Number(rows[0]?.avg_score || 0.5)));
+    if (tipo === 'dominio') {
+      await sql`UPDATE dominios_fraudulentos  SET score_riesgo = ${score} WHERE dominio  = ${valor}`;
+    } else if (tipo === 'telefono') {
+      await sql`UPDATE telefonos_fraudulentos SET score_riesgo = ${score} WHERE telefono = ${valor}`;
+    } else if (tipo === 'email') {
+      await sql`UPDATE emails_fraudulentos    SET score_riesgo = ${score} WHERE email    = ${valor}`;
+    }
+  } catch (e) {
+    console.error('[recalcularScoreRiesgoWeb] error:', e.message);
+  }
+}
+
+async function recalcularScoreReportanteWeb(sql, reportanteId) {
+  if (!reportanteId) return;
+  try {
+    const confRows = await sql`
+      SELECT COUNT(DISTINCT i.tipo || ':' || i.valor) AS confirmados
+      FROM indicadores_fraude i
+      JOIN reportes r ON r.id = i.reporte_id
+      WHERE r.reportante_id = ${reportanteId}
+        AND EXISTS (
+          SELECT 1 FROM indicadores_fraude i2
+          JOIN reportes r2 ON r2.id = i2.reporte_id
+          WHERE i2.tipo = i.tipo AND i2.valor = i.valor
+            AND r2.reportante_id != ${reportanteId}
+        )
+    `;
+    const totalRows = await sql`
+      SELECT total_reportes FROM reportantes WHERE id = ${reportanteId}
+    `;
+    const confirmados = parseInt(confRows[0]?.confirmados || '0', 10);
+    const total       = parseInt(totalRows[0]?.total_reportes || '1', 10);
+    const score = Math.min(0.95, Math.max(0.1, 0.3 + 0.7 * (confirmados / Math.max(total, 1))));
+    await sql`
+      UPDATE reportantes
+      SET score_confiabilidad = ${score}, reportes_confirmados = ${confirmados}
+      WHERE id = ${reportanteId}
+    `;
+    console.log(`[recalcularScoreReportanteWeb] id=${reportanteId} score=${score.toFixed(2)} confirmados=${confirmados}/${total}`);
+  } catch (e) {
+    console.error('[recalcularScoreReportanteWeb] error:', e.message);
+  }
+}
+
 export const handler = async (event) => {
   const headers = {
     'Access-Control-Allow-Origin': '*',
@@ -234,6 +320,9 @@ export const handler = async (event) => {
 
     const sql = neon(process.env.NEON_DATABASE_URL);
 
+    // Reputación: buscar o crear reportante por fingerprint
+    const reportante = await obtenerOCrearReportanteWeb(sql, body.fingerprint || null);
+
     // Incremento atómico del contador
     const cntRows = await sql`UPDATE contador SET valor = valor + 1 WHERE id = 1 RETURNING valor`;
     const contador = cntRows[0].valor;
@@ -248,7 +337,7 @@ export const handler = async (event) => {
         institucion, motivo, edad,
         dato_tarjeta, dato_cvv2, dato_vencimiento, dato_usuario_clave,
         dato_email, dato_token, dato_bancario_general, dato_ninguno, dato_otro,
-        tiene_audio, fuente
+        tiene_audio, fuente, reportante_id
       ) VALUES (
         ${numeroReporte}, NULL, NOW(), NOW(),
         ${canales.includes('email')},
@@ -264,12 +353,13 @@ export const handler = async (event) => {
         ${body.motivo           || null},
         ${body.edad             || null},
         false, false, false, false, false, false, false, false, false,
-        false, 'web'
+        false, 'web', ${reportante.id}
       ) RETURNING id
     `;
 
     const reporteId = insertResult[0].id;
     await procesarIndicadoresWeb(sql, body, reporteId, body.institucion || null);
+    await recalcularScoreReportanteWeb(sql, reportante.id);
 
     const ip = event.headers['x-nf-client-connection-ip'] ||
                event.headers['x-forwarded-for']?.split(',')[0].trim() || 'unknown';

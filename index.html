@@ -1785,6 +1785,24 @@ function shareResult(){
   window.open(`https://wa.me/?text=${encodeURIComponent(t)}`,'_blank');
 }
 
+// FINGERPRINT (hash del navegador para reputación de reportantes)
+async function generarFingerprint(){
+  try{
+    const str=[
+      navigator.userAgent,
+      screen.width,screen.height,
+      Intl.DateTimeFormat().resolvedOptions().timeZone,
+    ].join('|');
+    const data=new TextEncoder().encode(str);
+    const buf=await crypto.subtle.digest('SHA-256',data);
+    return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  }catch{
+    // fallback si crypto.subtle no está disponible (HTTP sin localhost)
+    let h=5381;for(const c of navigator.userAgent+screen.width+screen.height)h=(h*33^c.charCodeAt(0))>>>0;
+    return h.toString(16).padStart(8,'0');
+  }
+}
+
 // REPORT WIZARD
 let _reportEdad=null;
 
@@ -1848,6 +1866,7 @@ async function enviarReporte(){
   if(linkFraudulento&&!canales.includes('sitio_web'))canales.push('sitio_web');
 
   try{
+    const fingerprint=await generarFingerprint();
     const res=await fetch('/api/report',{
       method:'POST',
       headers:{'Content-Type':'application/json','x-linkguard':'fraude-uy-2026'},
@@ -1857,7 +1876,8 @@ async function enviarReporte(){
         institucion:r.empresa&&r.empresa!=='null'?r.empresa:(entidad?.nombre||null),
         motivo:null,
         edad:_reportEdad,
-        canales
+        canales,
+        fingerprint
       })
     });
     const data=await res.json();
