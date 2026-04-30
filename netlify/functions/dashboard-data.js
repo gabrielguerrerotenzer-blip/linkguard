@@ -35,6 +35,7 @@ export const handler = async (event) => {
       porCanal,
       porDia,
       campanas,
+      feedback,
     ] = await Promise.all([
 
       // 1. Totales generales
@@ -138,6 +139,14 @@ export const handler = async (event) => {
         ORDER BY total_reportes DESC
         LIMIT 20
       `,
+
+      // 12. Feedback reciente
+      sql`
+        SELECT id, comentario, created_at
+        FROM feedback
+        ORDER BY created_at DESC
+        LIMIT 20
+      `.catch(() => []),
     ]);
 
     const t = totales[0];
@@ -183,6 +192,11 @@ export const handler = async (event) => {
           publicidad:  Number(porCanal[0]?.publicidad  || 0),
         },
         por_dia:   porDia.map(r => ({ dia: r.dia, total: Number(r.total) })),
+        feedback:  (feedback || []).map(r => ({
+          id:          r.id,
+          comentario:  r.comentario,
+          created_at:  r.created_at,
+        })),
         campanas:  campanas.map(r => ({
           id:       r.id,
           nombre:   r.nombre || '—',

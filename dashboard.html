@@ -241,6 +241,12 @@ body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);min
       <div id="campanasContent"></div>
     </div>
 
+    <!-- FEEDBACK -->
+    <div class="section-title" style="margin-top:8px"><span class="dot"></span>Feedback de usuarios (últimos 20)</div>
+    <div class="campanas-card">
+      <div id="feedbackContent"></div>
+    </div>
+
   </div><!-- /dash-body -->
 </div><!-- /dashboard -->
 
@@ -329,6 +335,7 @@ function render(d) {
   renderDist('edadDist', d.por_edad, 'edad', '#D4A017');
   renderDist('entidadDist', d.top_entidades.slice(0,10), 'entidad', '#C0392B');
   renderCampanas(d.campanas);
+  renderFeedback(d.feedback);
 }
 
 function renderStats(t) {
@@ -484,6 +491,24 @@ function renderDist(containerId, arr, labelKey, color) {
        <div class="dist-count">${r.total}</div>
      </div>`
   ).join('');
+}
+
+function renderFeedback(arr) {
+  const el = document.getElementById('feedbackContent');
+  if (!arr || !arr.length) {
+    el.innerHTML = '<p class="campanas-empty">No hay feedback registrado</p>';
+    return;
+  }
+  el.innerHTML = `<table class="data-table" style="width:100%">
+    <thead><tr><th>#</th><th>Comentario</th><th>Fecha</th></tr></thead>
+    <tbody>` +
+    arr.map(c => `
+      <tr>
+        <td class="mono" style="color:var(--text-soft);min-width:36px">${c.id}</td>
+        <td style="max-width:600px;word-break:break-word">${(c.comentario || '').replace(/</g,'&lt;')}</td>
+        <td style="color:var(--text-soft);font-size:12px;white-space:nowrap">${c.created_at ? new Date(c.created_at).toLocaleString('es-UY') : '—'}</td>
+      </tr>`).join('') +
+    '</tbody></table>';
 }
 
 function renderCampanas(arr) {

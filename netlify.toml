@@ -3,6 +3,16 @@
   command = "npm install"
 
 [[redirects]]
+  from = "/api/analyze"
+  to   = "/.netlify/functions/analyze"
+  status = 200
+
+[[redirects]]
+  from = "/api/search"
+  to   = "/.netlify/functions/search"
+  status = 200
+
+[[redirects]]
   from = "/api/threats"
   to   = "/.netlify/functions/threats"
   status = 200
