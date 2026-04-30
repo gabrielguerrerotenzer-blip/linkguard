@@ -112,8 +112,100 @@ async function procesarIndicadoresWeb(sql, body, reporteId, institucion) {
         console.error('[procesarIndicadoresWeb] emails_fraudulentos upsert:', e.message);
       }
     }
+
+    // --- Detección de campaña ---
+    await detectarCampanaWeb(sql, reporteId, entidad, body.canales || []);
+
   } catch (err) {
     console.error('[procesarIndicadoresWeb] error general:', err.message);
+  }
+}
+
+// Prioridad de canales (claves en minúscula, tal como las envía el frontend web)
+const CANAL_PRIORITY_WEB = [
+  { labels: ['sms'],         col: 'canal_sms',         nombre: 'SMS' },
+  { labels: ['llamada'],     col: 'canal_llamada',      nombre: 'Llamada' },
+  { labels: ['email'],       col: 'canal_email',        nombre: 'Email' },
+  { labels: ['whatsapp'],    col: 'canal_whatsapp',     nombre: 'WhatsApp' },
+  { labels: ['sitio_web'],   col: 'canal_sitio_web',    nombre: 'Sitio web' },
+  { labels: ['marketplace'], col: 'canal_marketplace',  nombre: 'Marketplace' },
+  { labels: ['publicidad'],  col: 'canal_publicidad',   nombre: 'Publicidad' },
+];
+
+const MESES_ES = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+
+async function detectarCampanaWeb(sql, reporteId, entidad, canalesList) {
+  try {
+    if (!entidad) return;
+
+    // 1. Canal principal según prioridad
+    const canal = CANAL_PRIORITY_WEB.find(c => canalesList.some(cl => c.labels.includes(cl)));
+    if (!canal) return;
+
+    // 2. Contar reportes de los últimos 7 días con misma entidad y canal.
+    //    La expresión parametrizada ($2 = 'canal_sms' AND canal_sms = true) evita
+    //    SQL dinámico y es compatible con neon tagged templates.
+    const countRows = await sql`
+      SELECT COUNT(*) AS cnt
+      FROM reportes
+      WHERE institucion = ${entidad}
+        AND fin_flujo >= NOW() - INTERVAL '7 days'
+        AND (
+          (${canal.col} = 'canal_sms'         AND canal_sms = true) OR
+          (${canal.col} = 'canal_llamada'     AND canal_llamada = true) OR
+          (${canal.col} = 'canal_email'       AND canal_email = true) OR
+          (${canal.col} = 'canal_whatsapp'    AND canal_whatsapp = true) OR
+          (${canal.col} = 'canal_sitio_web'   AND canal_sitio_web = true) OR
+          (${canal.col} = 'canal_marketplace' AND canal_marketplace = true) OR
+          (${canal.col} = 'canal_publicidad'  AND canal_publicidad = true)
+        )
+    `;
+    const count = parseInt(countRows[0]?.cnt || '0', 10);
+    if (count < 3) return;
+
+    // 3. ¿Ya existe campaña activa para esta combinación?
+    const campRows = await sql`
+      SELECT id FROM campanas
+      WHERE entidad_suplantada = ${entidad}
+        AND canal_principal = ${canal.nombre}
+        AND estado = 'activa'
+      LIMIT 1
+    `;
+
+    let campanaId;
+    if (campRows.length === 0) {
+      // Crear campaña nueva
+      const now = new Date();
+      const nombre = `${entidad} ${canal.nombre} ${MESES_ES[now.getMonth()]}${now.getFullYear()}`;
+      const newCamp = await sql`
+        INSERT INTO campanas (nombre, entidad_suplantada, canal_principal, estado, total_reportes, inicio)
+        VALUES (${nombre}, ${entidad}, ${canal.nombre}, 'activa', ${count}, NOW())
+        RETURNING id
+      `;
+      campanaId = newCamp[0].id;
+      console.log(`[detectarCampanaWeb] Nueva campaña: "${nombre}" id=${campanaId} reportes=${count}`);
+    } else {
+      // Actualizar campaña existente
+      campanaId = campRows[0].id;
+      await sql`
+        UPDATE campanas SET total_reportes = ${count}, fin = NOW() WHERE id = ${campanaId}
+      `;
+      console.log(`[detectarCampanaWeb] Campaña ${campanaId} actualizada reportes=${count}`);
+    }
+
+    // 4. Vincular este reporte a la campaña
+    try {
+      await sql`
+        INSERT INTO campana_reportes (campana_id, reporte_id)
+        VALUES (${campanaId}, ${reporteId})
+        ON CONFLICT DO NOTHING
+      `;
+    } catch (e) {
+      console.error('[detectarCampanaWeb] campana_reportes insert:', e.message);
+    }
+
+  } catch (err) {
+    console.error('[detectarCampanaWeb] error:', err.message);
   }
 }
 
