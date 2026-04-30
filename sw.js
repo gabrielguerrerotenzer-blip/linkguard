@@ -1,4 +1,4 @@
-const CACHE = 'linkguard-v1';
+const CACHE = 'fraudeuy-v2';
 const ASSETS = ['/', '/index.html', '/icon.svg', '/manifest.json'];
 
 self.addEventListener('install', e => {

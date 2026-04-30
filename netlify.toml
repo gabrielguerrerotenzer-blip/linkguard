@@ -21,3 +21,8 @@
   from = "/api/lookup"
   to   = "/.netlify/functions/api-lookup"
   status = 200
+
+[[redirects]]
+  from = "/api/feedback"
+  to   = "/.netlify/functions/feedback"
+  status = 200

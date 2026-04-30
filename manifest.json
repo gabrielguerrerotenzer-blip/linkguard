@@ -1,6 +1,6 @@
 {
-  "name": "LinkGuard – Protección contra fraude",
-  "short_name": "LinkGuard",
+  "name": "fraude.uy — Verificá si es fraude",
+  "short_name": "fraude.uy",
   "description": "Verificá mensajes, links y capturas sospechosas. Protección contra phishing y estafas en Uruguay.",
   "start_url": "/",
   "display": "standalone",

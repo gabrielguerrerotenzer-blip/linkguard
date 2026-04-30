@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LinkGuard · Protegé a tu familia del fraude digital</title>
+<title>fraude.uy — Verificá si es fraude</title>
 <meta name="description" content="Verificá mensajes, links, capturas de pantalla y publicidades sospechosas. Protección contra phishing y estafas en Uruguay.">
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#2D5A3D">
@@ -344,7 +344,7 @@ section[id]{scroll-margin-top:70px;}
 <nav class="nav" id="nav">
   <a href="#" class="nav-logo">
     <div class="nav-logo-icon"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 16l-4-4 1.41-1.41L11 14.17l6.59-6.59L19 9l-8 8z"/></svg></div>
-    <span class="nav-logo-text">LinkGuard</span>
+    <span class="nav-logo-text">fraude.uy</span>
   </a>
   <div class="nav-links">
     <a href="#como-funciona" class="nav-link">Cómo funciona</a>
@@ -850,6 +850,20 @@ section[id]{scroll-margin-top:70px;}
 </section>
 
 <!-- FOOTER -->
+<!-- FEEDBACK -->
+<section class="tips-section" id="feedback" style="padding:80px 24px;background:var(--bg-alt);">
+  <div class="tips-inner" style="max-width:700px;">
+    <div class="section-label">Tu opinión</div>
+    <h2 class="section-heading">¿Tenés sugerencias?</h2>
+    <p style="font-size:15px;color:var(--text-soft);margin-bottom:24px;line-height:1.6;">Ayudanos a mejorar fraude.uy. Todos los comentarios son anónimos.</p>
+    <div id="feedbackForm">
+      <textarea id="feedbackTexto" placeholder="Escribí tu sugerencia o comentario..." style="width:100%;min-height:120px;padding:14px 16px;border:1.5px solid var(--border);border-radius:12px;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--text);background:var(--card);resize:vertical;outline:none;transition:border-color .2s;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+      <button onclick="enviarFeedback()" style="margin-top:12px;padding:12px 28px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:background .2s;" onmouseover="this.style.background='var(--accent-hover)'" onmouseout="this.style.background='var(--accent)'">Enviar comentario</button>
+    </div>
+    <div id="feedbackOk" style="display:none;padding:20px;background:var(--green-light);border-radius:12px;color:var(--green);font-weight:600;font-size:15px;">✅ ¡Gracias por tu comentario!</div>
+  </div>
+</section>
+
 <!-- POLÍTICA DE PRIVACIDAD Y AVISO LEGAL -->
 <section class="tips-section" id="privacidad" style="padding:80px 24px;background:var(--bg);">
   <div class="tips-inner" style="max-width:700px;">
@@ -857,16 +871,17 @@ section[id]{scroll-margin-top:70px;}
     <h2 class="section-heading">Política de Privacidad y Aviso Legal</h2>
     <div style="font-size:14px;color:var(--text-soft);line-height:1.8;">
       <h3 style="font-family:'Fraunces',serif;font-size:18px;color:var(--text);margin:24px 0 8px;">Qué datos procesamos</h3>
-      <p>Cuando usás LinkGuard, el contenido que enviás (texto, link o imagen) se transmite al modelo de inteligencia artificial Claude (de la empresa Anthropic, EE.UU.) para su análisis. También podemos consultar Google Safe Browsing para verificar URLs.</p>
+      <p>Cuando usás fraude.uy, el contenido que enviás (texto, link o imagen) se transmite al modelo de inteligencia artificial Claude (de la empresa Anthropic, EE.UU.) para su análisis. También podemos consultar Google Safe Browsing para verificar URLs.</p>
       
       <h3 style="font-family:'Fraunces',serif;font-size:18px;color:var(--text);margin:24px 0 8px;">Qué NO hacemos con tus datos</h3>
       <p>No almacenamos los mensajes, links ni imágenes que verificás. No creamos perfiles de usuario. No pedimos registro ni datos personales. No usamos cookies de rastreo. No compartimos información con terceros más allá de los servicios necesarios para el análisis (Anthropic y Google).</p>
+      <p style="margin-top:12px;">Generamos un identificador anónimo e irreversible para cada reportante, que nos permite medir la calidad de los reportes sin almacenar datos personales. Este identificador no puede vincularse a tu identidad real.</p>
       
       <h3 style="font-family:'Fraunces',serif;font-size:18px;color:var(--text);margin:24px 0 8px;">Sobre el modelo de IA</h3>
       <p>Usamos el modelo Claude de Anthropic para analizar el contenido. Como toda IA, puede cometer errores. Un resultado "seguro" no garantiza que el contenido sea legítimo, y un resultado "peligroso" no significa necesariamente que lo sea. Siempre usá tu criterio y ante la duda, contactá directamente a tu banco por los canales oficiales.</p>
 
       <h3 style="font-family:'Fraunces',serif;font-size:18px;color:var(--text);margin:24px 0 8px;">Aviso legal</h3>
-      <p>LinkGuard es una herramienta orientativa que no constituye asesoramiento legal, financiero ni profesional de ningún tipo. No somos responsables por decisiones tomadas en base a los resultados del análisis. No estamos afiliados a ningún banco, institución financiera ni organismo público uruguayo. Los números de teléfono de emergencia que mostramos son públicos y están disponibles en los sitios oficiales de cada institución.</p>
+      <p>fraude.uy es una herramienta orientativa que no constituye asesoramiento legal, financiero ni profesional de ningún tipo. No somos responsables por decisiones tomadas en base a los resultados del análisis. No estamos afiliados a ningún banco, institución financiera ni organismo público uruguayo. Los números de teléfono de emergencia que mostramos son públicos y están disponibles en los sitios oficiales de cada institución.</p>
 
       <h3 style="font-family:'Fraunces',serif;font-size:18px;color:var(--text);margin:24px 0 8px;">Contacto</h3>
       <p>Si tenés preguntas, sugerencias o querés reportar un problema, escribinos a <a href="mailto:contacto@fraude.uy" style="color:var(--accent);">contacto@fraude.uy</a>.</p>
@@ -878,7 +893,7 @@ section[id]{scroll-margin-top:70px;}
 
 <footer class="footer">
   <div class="footer-inner">
-    <div class="footer-brand"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 16l-4-4 1.41-1.41L11 14.17l6.59-6.59L19 9l-8 8z"/></svg>LinkGuard</div>
+    <div class="footer-brand"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 16l-4-4 1.41-1.41L11 14.17l6.59-6.59L19 9l-8 8z"/></svg>fraude.uy · Desarrollado con tecnología LinkGuard</div>
     <div class="footer-text">Proyecto ciudadano · Hecho en Uruguay 🇺🇾</div>
     <div class="footer-links">
       <a href="#sobre">Sobre el proyecto</a>
@@ -1854,32 +1869,63 @@ async function generarFingerprint(){
 
 // REPORT WIZARD
 let _reportEdad=null;
+let _reportCanal=null;
 
 function abrirReporte(){
   _reportEdad=null;
+  _reportCanal=null;
   document.getElementById('reportBtn').style.display='none';
   document.getElementById('reportBtnTop').style.display='none';
+  const canales=[
+    {key:'sms',label:'SMS'},
+    {key:'whatsapp',label:'WhatsApp'},
+    {key:'email',label:'Email'},
+    {key:'llamada',label:'Llamada'},
+    {key:'sitio_web',label:'Sitio web'},
+    {key:'marketplace',label:'Marketplace'},
+    {key:'publicidad',label:'Redes sociales / Publicidad'},
+    {key:'otro',label:'Otro'},
+  ];
+  let canalBtns=canales.map(c=>`<button class="report-edad-btn" onclick="seleccionarCanal('${c.key}',this)">${c.label}</button>`).join('');
   const edades=['Menos de 18','18-29','30-44','45-59','60+','Prefiero no decir'];
-  let btns=edades.map(e=>`<button class="report-edad-btn" onclick="seleccionarEdad('${e}',this)">${e}</button>`).join('');
+  let edadBtns=edades.map(e=>`<button class="report-edad-btn" onclick="seleccionarEdad('${e}',this)">${e}</button>`).join('');
   document.getElementById('reportSection').innerHTML=`<div class="report-section">
     <div class="report-title">🚨 Reportar este fraude</div>
     <div class="report-subtitle">Tu reporte es anónimo y ayuda a alertar a otras personas en Uruguay.</div>
-    <div class="report-question">¿En qué rango de edad estás?</div>
-    <div class="report-edad-grid">${btns}</div>
+    <div class="report-question">¿Por dónde te llegó el fraude?</div>
+    <div class="report-edad-grid">${canalBtns}</div>
+    <div class="report-question" style="margin-top:20px;">¿En qué rango de edad estás?</div>
+    <div class="report-edad-grid">${edadBtns}</div>
     <button class="report-submit-btn" id="reportSubmitBtn" onclick="enviarReporte()">📤 Confirmar reporte</button>
     <button class="report-cancel-link" onclick="cerrarReporte()">Cancelar</button>
   </div>`;
   setTimeout(()=>document.getElementById('reportSection').scrollIntoView({behavior:'smooth',block:'start'}),60);
 }
 
+function seleccionarCanal(canal,el){
+  _reportCanal=canal;
+  // solo desmarcar botones del grupo de canales (los primeros 8)
+  document.querySelectorAll('.report-edad-btn').forEach(b=>{
+    if(['SMS','WhatsApp','Email','Llamada','Sitio web','Marketplace','Redes sociales / Publicidad','Otro'].includes(b.textContent)){
+      b.classList.remove('selected');
+    }
+  });
+  el.classList.add('selected');
+}
+
 function seleccionarEdad(edad,el){
   _reportEdad=edad;
-  document.querySelectorAll('.report-edad-btn').forEach(b=>b.classList.remove('selected'));
+  document.querySelectorAll('.report-edad-btn').forEach(b=>{
+    if(['Menos de 18','18-29','30-44','45-59','60+','Prefiero no decir'].includes(b.textContent)){
+      b.classList.remove('selected');
+    }
+  });
   el.classList.add('selected');
 }
 
 function cerrarReporte(){
   _reportEdad=null;
+  _reportCanal=null;
   document.getElementById('reportSection').innerHTML='';
   if(window._lastResult?.verdict!=='safe'){
     document.getElementById('reportBtn').style.display='flex';
@@ -1889,7 +1935,10 @@ function cerrarReporte(){
 
 async function enviarReporte(){
   if(!_reportEdad){
-    document.querySelectorAll('.report-edad-btn').forEach(b=>{b.style.borderColor='var(--red)';});
+    document.querySelectorAll('.report-edad-btn').forEach(b=>{
+      if(['Menos de 18','18-29','30-44','45-59','60+','Prefiero no decir'].includes(b.textContent))
+        b.style.borderColor='var(--red)';
+    });
     return;
   }
   const submitBtn=document.getElementById('reportSubmitBtn');
@@ -1904,15 +1953,9 @@ async function enviarReporte(){
   const urlMatch=(inp.text||'').match(/https?:\/\/[^\s]+/);
   const linkFraudulento=urlMatch?urlMatch[0]:null;
 
-  // Detectar canales desde el tab e input
-  const canales=[];
-  const t=(inp.text||'').toLowerCase();
-  if(inp.tab==='ad')canales.push('publicidad');
-  if(/\bwhatsapp\b/.test(t))canales.push('whatsapp');
-  if(/\bsms\b/.test(t))canales.push('sms');
-  if(/\bemail\b|@[a-z]/.test(t))canales.push('email');
-  if(inp.tab==='image'&&canales.length===0)canales.push('publicidad');
-  if(linkFraudulento&&!canales.includes('sitio_web'))canales.push('sitio_web');
+  // Canal elegido por el usuario en el wizard; "otro" no mapea a columna específica → array vacío
+  const CANAL_MAP={sms:'sms',whatsapp:'whatsapp',email:'email',llamada:'llamada',sitio_web:'sitio_web',marketplace:'marketplace',publicidad:'publicidad'};
+  const canales=_reportCanal&&CANAL_MAP[_reportCanal]?[CANAL_MAP[_reportCanal]]:[];
 
   try{
     const fingerprint=await generarFingerprint();
@@ -1950,6 +1993,21 @@ async function enviarReporte(){
     }
     console.error('[report]',e.message);
   }
+}
+
+// FEEDBACK
+async function enviarFeedback(){
+  const texto=document.getElementById('feedbackTexto').value.trim();
+  if(!texto)return;
+  try{
+    await fetch('/api/feedback',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-linkguard':'fraude-uy-2026'},
+      body:JSON.stringify({comentario:texto})
+    });
+  }catch(e){console.error('[feedback]',e.message);}
+  document.getElementById('feedbackForm').style.display='none';
+  document.getElementById('feedbackOk').style.display='block';
 }
 
 // EMERGENCY WIZARD
