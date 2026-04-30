@@ -274,8 +274,10 @@ section[id]{scroll-margin-top:70px;}
 .entity-link.tel{background:#E8F5E9;color:var(--green);}
 
 /* REPORT WIZARD */
-.result-report-btn{width:100%;margin-top:10px;padding:13px;border:2px dashed var(--red);border-radius:10px;background:transparent;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;color:var(--red);cursor:pointer;transition:all .2s;display:none;align-items:center;justify-content:center;gap:8px;}
+.result-report-btn{width:100%;margin-top:10px;padding:15px;border:2px dashed var(--red);border-radius:12px;background:transparent;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;color:var(--red);cursor:pointer;transition:all .2s;display:none;align-items:center;justify-content:center;gap:9px;letter-spacing:.01em;}
 .result-report-btn:hover{background:var(--red-light);}
+.result-report-btn--top{margin-top:16px;margin-bottom:2px;padding:17px;font-size:16px;background:var(--red);color:#fff;border:none;border-radius:14px;box-shadow:0 4px 18px rgba(192,57,43,.28);}
+.result-report-btn--top:hover{background:#a93226;box-shadow:0 6px 24px rgba(192,57,43,.38);transform:translateY(-1px);}
 .report-section{margin-top:14px;border-top:1px solid var(--border);padding-top:16px;}
 .report-title{font-family:'Fraunces',serif;font-size:17px;font-weight:700;color:var(--red);margin-bottom:6px;}
 .report-subtitle{font-size:14px;color:var(--text-soft);line-height:1.5;margin-bottom:14px;}
@@ -461,6 +463,9 @@ section[id]{scroll-margin-top:70px;}
           <div class="result-subtitle" id="resultSubtitle"></div>
         </div>
       </div>
+      <button class="result-report-btn result-report-btn--top" id="reportBtnTop" onclick="abrirReporte()">
+        🚨 Reportar este fraude
+      </button>
       <div id="analysisSection"></div>
       <div class="result-advice" id="resultAdvice"></div>
       <div id="entityBlock"></div>
@@ -1701,6 +1706,7 @@ function hideResult(){
   document.getElementById('webSearchBlock').innerHTML='';
   document.getElementById('reportSection').innerHTML='';
   document.getElementById('reportBtn').style.display='none';
+  document.getElementById('reportBtnTop').style.display='none';
 }
 function showLoading(show){
   document.getElementById('loading').classList.toggle('active',show);
@@ -1755,9 +1761,10 @@ function displayResult(r){
     document.getElementById('webSearchBlock').innerHTML='';
   }
 
-  // Botón de reporte
-  const reportBtn=document.getElementById('reportBtn');
-  reportBtn.style.display=r.verdict!=='safe'?'flex':'none';
+  // Botones de reporte (top y bottom)
+  const showReport=r.verdict!=='safe';
+  document.getElementById('reportBtn').style.display=showReport?'flex':'none';
+  document.getElementById('reportBtnTop').style.display=showReport?'flex':'none';
   document.getElementById('reportSection').innerHTML='';
 
   window._lastResult=r;
@@ -1784,6 +1791,7 @@ let _reportEdad=null;
 function abrirReporte(){
   _reportEdad=null;
   document.getElementById('reportBtn').style.display='none';
+  document.getElementById('reportBtnTop').style.display='none';
   const edades=['Menos de 18','18-29','30-44','45-59','60+','Prefiero no decir'];
   let btns=edades.map(e=>`<button class="report-edad-btn" onclick="seleccionarEdad('${e}',this)">${e}</button>`).join('');
   document.getElementById('reportSection').innerHTML=`<div class="report-section">
@@ -1794,6 +1802,7 @@ function abrirReporte(){
     <button class="report-submit-btn" id="reportSubmitBtn" onclick="enviarReporte()">📤 Confirmar reporte</button>
     <button class="report-cancel-link" onclick="cerrarReporte()">Cancelar</button>
   </div>`;
+  setTimeout(()=>document.getElementById('reportSection').scrollIntoView({behavior:'smooth',block:'start'}),60);
 }
 
 function seleccionarEdad(edad,el){
@@ -1805,8 +1814,10 @@ function seleccionarEdad(edad,el){
 function cerrarReporte(){
   _reportEdad=null;
   document.getElementById('reportSection').innerHTML='';
-  const btn=document.getElementById('reportBtn');
-  if(window._lastResult?.verdict!=='safe') btn.style.display='flex';
+  if(window._lastResult?.verdict!=='safe'){
+    document.getElementById('reportBtn').style.display='flex';
+    document.getElementById('reportBtnTop').style.display='flex';
+  }
 }
 
 async function enviarReporte(){

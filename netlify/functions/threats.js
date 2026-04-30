@@ -4,16 +4,6 @@ import { neon } from '@neondatabase/serverless';
 const cache = { data: null, ts: 0 };
 const CACHE_TTL = 5 * 60 * 1000;
 
-function extractHostname(url) {
-  if (!url) return null;
-  try {
-    const u = url.includes('://') ? url : 'https://' + url;
-    return new URL(u).hostname.replace(/^www\./, '').toLowerCase();
-  } catch {
-    return null;
-  }
-}
-
 export const handler = async (event) => {
   const headers = {
     'Access-Control-Allow-Origin': '*',
@@ -48,39 +38,43 @@ export const handler = async (event) => {
   try {
     const sql = neon(process.env.NEON_DATABASE_URL);
 
-    const rows = await sql`
-      SELECT link_fraudulento, link_sitio_web, telefono_normalizado, email_estafador
-      FROM reportes
-      WHERE link_fraudulento    IS NOT NULL
-         OR link_sitio_web      IS NOT NULL
-         OR telefono_normalizado IS NOT NULL
-         OR email_estafador     IS NOT NULL
+    const domains = await sql`
+      SELECT dominio, entidad_suplantada, score_riesgo, total_reportes
+      FROM dominios_fraudulentos
+      WHERE estado = 'activo'
+      ORDER BY total_reportes DESC
       LIMIT 500
     `;
 
-    const domainsSet = new Set();
-    const phonesSet  = new Set();
-    const emailsSet  = new Set();
+    const phones = await sql`
+      SELECT telefono, entidad_suplantada, total_reportes
+      FROM telefonos_fraudulentos
+      ORDER BY total_reportes DESC
+      LIMIT 500
+    `;
 
-    for (const row of rows) {
-      const d1 = extractHostname(row.link_fraudulento);
-      const d2 = extractHostname(row.link_sitio_web);
-      if (d1) domainsSet.add(d1);
-      if (d2) domainsSet.add(d2);
-      if (row.telefono_normalizado) phonesSet.add(row.telefono_normalizado.trim());
-      if (row.email_estafador)      emailsSet.add(row.email_estafador.trim().toLowerCase());
-    }
+    const emails = await sql`
+      SELECT email, dominio_email, entidad_suplantada, total_reportes
+      FROM emails_fraudulentos
+      ORDER BY total_reportes DESC
+      LIMIT 500
+    `;
 
     cache.data = {
-      fraudulentDomains: [...domainsSet],
-      scamPhones:        [...phonesSet],
-      scamEmails:        [...emailsSet],
+      fraudulentDomains: domains.map(r => ({
+        dominio:  r.dominio,
+        score:    r.score_riesgo,
+        reportes: r.total_reportes,
+        entidad:  r.entidad_suplantada,
+      })),
+      scamPhones: phones.map(r => r.telefono),
+      scamEmails: emails.map(r => r.email),
     };
     cache.ts = Date.now();
 
     console.log(
-      `[threats] cargados: ${domainsSet.size} dominios, ` +
-      `${phonesSet.size} teléfonos, ${emailsSet.size} emails`
+      `[threats] cargados: ${domains.length} dominios, ` +
+      `${phones.length} teléfonos, ${emails.length} emails`
     );
     return { statusCode: 200, headers, body: JSON.stringify(cache.data) };
 
