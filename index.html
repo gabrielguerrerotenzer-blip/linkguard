@@ -270,6 +270,9 @@ section[id]{scroll-margin-top:70px;}
 .entity-link.web{background:#E8EEF5;color:#3A5ABF;}
 .entity-link.tel{background:#E8F5E9;color:var(--green);}
 
+.deep-analysis-btn{margin-top:12px;width:100%;padding:12px;background:var(--yellow-light);color:var(--yellow);border:1.5px solid var(--yellow);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.deep-analysis-btn:hover{background:var(--yellow);color:#fff;}
+
 /* REPORT WIZARD */
 .result-report-btn{width:100%;margin-top:10px;padding:15px;border:2px dashed var(--red);border-radius:12px;background:transparent;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;color:var(--red);cursor:pointer;transition:all .2s;display:none;align-items:center;justify-content:center;gap:9px;letter-spacing:.01em;}
 .result-report-btn:hover{background:var(--red-light);}
@@ -479,6 +482,7 @@ section[id]{scroll-margin-top:70px;}
       </button>
       <div id="analysisSection"></div>
       <div class="result-advice" id="resultAdvice"></div>
+      <div id="deepAnalysisContainer"></div>
       <div id="entityBlock"></div>
       <div id="webSearchBlock"></div>
       <div class="result-ai-badge">🤖 Analizado por IA (Claude, Anthropic) · Este resultado es orientativo, no reemplaza el criterio de un profesional ni constituye asesoramiento legal.</div>
@@ -1184,6 +1188,7 @@ async function analyze(){
   }
 
   window._lastInput={tab:currentTab,text:input};
+  window._lastModel=null;
   window._lastEntidad=detectEntidad(input);
   hideResult();
   showLoading(true);
@@ -1541,7 +1546,7 @@ function fetchWithTimeout(url,options,timeoutMs=30000){
   ]);
 }
 
-async function aiAnalysis(input,imageData,analysisType){
+async function aiAnalysis(input,imageData,analysisType,model='claude-haiku-4-5-20251001'){
   const _entidad=detectEntidad(input);
   const systemPrompt=`Sos un experto en ciberseguridad especializado en fraudes digitales en Uruguay. Tu trabajo es proteger a personas vulnerables (especialmente adultos mayores) analizando contenido sospechoso.
 
@@ -1560,6 +1565,8 @@ POLÍTICA OFICIAL DE ${_entidad.nombre.toUpperCase()} (entidad mencionada en el 
 ${_entidad.politica}
 Web oficial: ${_entidad.web}${_entidad.telefono?` | Teléfono oficial: ${_entidad.telefono}`:''}
 Usá esta política para evaluar si el mensaje es coherente con cómo opera la entidad real.`:''}
+
+CONOCIMIENTO DE ENTIDADES: Si el contenido menciona una entidad específica (banco, empresa, organismo), usá tu conocimiento actualizado sobre esa entidad para evaluar si el mensaje es consistente con cómo esa entidad realmente opera. ¿Esa entidad manda mensajes así? ¿Usa esos canales? ¿Tiene esas políticas?
 
 ANÁLISIS DE URLS - Revisá cada URL con estos criterios:
 1. ¿El dominio está en la lista de legítimos? Si NO está → nunca decir "safe"
@@ -1646,11 +1653,12 @@ Respondé SOLO con JSON válido (sin markdown, sin backticks):
 
   content.push({type:'text',text:textPrompt});
 
+  window._lastModel=model;
   const r=await fetchWithTimeout('/.netlify/functions/analyze',{
     method:'POST',
     headers:{'Content-Type':'application/json','x-linkguard':'fraude-uy-2026'},
     body:JSON.stringify({
-      model:'claude-sonnet-4-6',
+      model:model,
       max_tokens:1024,
       system:systemPrompt,
       messages:[{role:'user',content}]
@@ -1790,6 +1798,8 @@ function hideResult(){
   document.getElementById('reportSection').innerHTML='';
   document.getElementById('reportBtn').style.display='none';
   document.getElementById('reportBtnTop').style.display='none';
+  const dc=document.getElementById('deepAnalysisContainer');
+  if(dc)dc.innerHTML='';
 }
 function showLoading(show){
   document.getElementById('loading').classList.toggle('active',show);
@@ -1850,8 +1860,37 @@ function displayResult(r){
   document.getElementById('reportBtnTop').style.display=showReport?'flex':'none';
   document.getElementById('reportSection').innerHTML='';
 
+  // Botón "Analizar con más profundidad" — solo para warning con Haiku
+  const deepBtnContainer=document.getElementById('deepAnalysisContainer');
+  if(deepBtnContainer){
+    if(r.verdict==='warning'&&window._lastModel&&window._lastModel.includes('haiku')){
+      deepBtnContainer.innerHTML=`<button class="deep-analysis-btn" onclick="analizarConSonnet()">🔍 Analizar con más profundidad</button>`;
+    }else{
+      deepBtnContainer.innerHTML='';
+    }
+  }
+
   window._lastResult=r;
   card.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+async function analizarConSonnet(){
+  const inp=window._lastInput||{};
+  const deepBtn=document.querySelector('.deep-analysis-btn');
+  if(deepBtn){deepBtn.disabled=true;deepBtn.textContent='Analizando en profundidad...';}
+  showLoading(true);
+  updateLoading('Analizando con modelo avanzado...');
+  try{
+    const result=await aiAnalysis(inp.text,'',inp.tab,'claude-sonnet-4-6');
+    showLoading(false);
+    // Ocultar el botón antes de re-mostrar resultado
+    window._lastModel='claude-sonnet-4-6';
+    displayResult(result);
+  }catch(e){
+    showLoading(false);
+    if(deepBtn){deepBtn.disabled=false;deepBtn.textContent='🔍 Analizar con más profundidad';}
+    console.error('Sonnet deep analysis failed:',e);
+  }
 }
 
 function shareResult(){
