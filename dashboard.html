@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LinkGuard · Dashboard de Fraude</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#FAFAF7;--bg-alt:#F2F0EB;--card:#FFF;--text:#1A1A2E;--text-soft:#6B6B80;
+  --accent:#2D5A3D;--accent-hover:#234A30;--accent-light:#E8F0EB;
+  --red:#C0392B;--red-light:#FDECEA;--yellow:#D4A017;--yellow-light:#FFF8E1;
+  --green:#27884A;--green-light:#E8F5E9;--border:#E5E2DB;
+  --shadow:0 2px 20px rgba(0,0,0,0.05);--shadow-lg:0 8px 32px rgba(0,0,0,0.08);
+  --radius:16px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);min-height:100vh;}
+
+/* LOGIN */
+#loginScreen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px;}
+.login-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow-lg);padding:48px 40px;width:100%;max-width:400px;text-align:center;}
+.login-logo{width:48px;height:48px;background:var(--accent);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;}
+.login-logo svg{width:28px;height:28px;fill:#fff;}
+.login-title{font-family:'Fraunces',serif;font-size:24px;font-weight:700;margin-bottom:6px;}
+.login-sub{font-size:14px;color:var(--text-soft);margin-bottom:32px;}
+.login-input{width:100%;padding:14px 16px;border:1.5px solid var(--border);border-radius:12px;font-family:'DM Sans',sans-serif;font-size:15px;background:var(--bg);color:var(--text);outline:none;transition:border-color .2s;margin-bottom:12px;letter-spacing:.1em;}
+.login-input:focus{border-color:var(--accent);}
+.login-btn{width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;}
+.login-btn:hover{background:var(--accent-hover);transform:translateY(-1px);}
+.login-error{font-size:13px;color:var(--red);margin-top:10px;display:none;}
+
+/* DASHBOARD */
+#dashboard{display:none;}
+.dash-header{background:var(--card);border-bottom:1px solid var(--border);padding:0 32px;position:sticky;top:0;z-index:50;}
+.dash-header-inner{display:flex;align-items:center;justify-content:space-between;height:60px;max-width:1400px;margin:0 auto;}
+.dash-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text);}
+.dash-logo-icon{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.dash-logo-icon svg{width:18px;height:18px;fill:#fff;}
+.dash-logo-text{font-family:'Fraunces',serif;font-size:18px;font-weight:700;}
+.dash-logo-badge{font-size:11px;font-weight:600;background:var(--red-light);color:var(--red);padding:2px 8px;border-radius:20px;margin-left:4px;}
+.dash-header-right{display:flex;align-items:center;gap:12px;}
+.dash-updated{font-size:12px;color:var(--text-soft);}
+.dash-refresh-btn{display:flex;align-items:center;gap:6px;padding:7px 14px;background:var(--accent-light);color:var(--accent);border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;}
+.dash-refresh-btn:hover{background:var(--accent);color:#fff;}
+.dash-refresh-btn svg{width:14px;height:14px;fill:currentColor;}
+.dash-logout-btn{padding:7px 14px;background:transparent;color:var(--text-soft);border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;transition:all .2s;}
+.dash-logout-btn:hover{color:var(--red);border-color:var(--red);}
+
+.dash-body{max-width:1400px;margin:0 auto;padding:32px 32px 64px;}
+
+/* SECTION TITLE */
+.section-title{font-family:'Fraunces',serif;font-size:20px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.section-title .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);display:inline-block;}
+
+/* STAT CARDS */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;margin-bottom:32px;}
+.stat-card{background:var(--card);border-radius:var(--radius);padding:24px 20px;box-shadow:var(--shadow);border:1px solid var(--border);}
+.stat-label{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text-soft);margin-bottom:10px;}
+.stat-value{font-family:'Fraunces',serif;font-size:36px;font-weight:700;line-height:1;margin-bottom:4px;}
+.stat-sub{font-size:12px;color:var(--text-soft);}
+.stat-card.accent .stat-value{color:var(--accent);}
+.stat-card.red .stat-value{color:var(--red);}
+.stat-card.yellow .stat-value{color:var(--yellow);}
+
+/* FUENTE BADGES */
+.fuente-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:32px;}
+.fuente-badge{display:flex;align-items:center;gap:8px;padding:10px 18px;background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow);}
+.fuente-dot{width:10px;height:10px;border-radius:50%;}
+.fuente-label{font-size:13px;font-weight:600;color:var(--text-soft);}
+.fuente-val{font-size:18px;font-weight:700;font-family:'Fraunces',serif;}
+
+/* CHARTS ROW */
+.charts-row{display:grid;grid-template-columns:2fr 1fr;gap:20px;margin-bottom:32px;}
+.chart-card{background:var(--card);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);border:1px solid var(--border);}
+.chart-title{font-size:14px;font-weight:700;margin-bottom:16px;color:var(--text);}
+.chart-wrap{position:relative;height:220px;}
+
+/* TABLES */
+.tables-row{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:32px;}
+.table-card{background:var(--card);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden;}
+.table-card-title{font-size:14px;font-weight:700;margin-bottom:14px;color:var(--text);}
+.data-table{width:100%;border-collapse:collapse;font-size:13px;}
+.data-table th{text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--text-soft);padding:0 0 8px;border-bottom:1px solid var(--border);}
+.data-table td{padding:9px 0;border-bottom:1px solid var(--border);vertical-align:middle;color:var(--text);}
+.data-table tr:last-child td{border-bottom:none;}
+.data-table .mono{font-family:ui-monospace,'SF Mono',Consolas,monospace;font-size:12px;}
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;}
+.badge.activo{background:var(--green-light);color:var(--green);}
+.badge.caido{background:var(--bg-alt);color:var(--text-soft);}
+.badge.verificado{background:#EDE8FF;color:#6B46C1;}
+.score-bar{display:flex;align-items:center;gap:6px;}
+.score-bg{flex:1;height:5px;background:var(--bg-alt);border-radius:3px;overflow:hidden;}
+.score-fill{height:100%;border-radius:3px;background:var(--red);}
+
+/* DISTRIBUTIONS */
+.dist-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-bottom:32px;}
+.dist-card{background:var(--card);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);border:1px solid var(--border);}
+.dist-title{font-size:14px;font-weight:700;margin-bottom:14px;}
+.dist-item{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.dist-label{font-size:13px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.dist-bar-wrap{flex:2;height:8px;background:var(--bg-alt);border-radius:4px;overflow:hidden;}
+.dist-bar{height:100%;border-radius:4px;background:var(--accent);transition:width .6s ease;}
+.dist-count{font-size:12px;font-weight:700;color:var(--text-soft);min-width:28px;text-align:right;}
+
+/* CAMPANAS */
+.campanas-card{background:var(--card);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:32px;}
+.campanas-empty{font-size:14px;color:var(--text-soft);text-align:center;padding:24px 0;}
+
+/* LOADING OVERLAY */
+#loadingOverlay{position:fixed;inset:0;background:rgba(250,250,247,.8);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:200;}
+.spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .charts-row{grid-template-columns:1fr;}
+  .tables-row{grid-template-columns:1fr;}
+  .dist-row{grid-template-columns:1fr 1fr;}
+  .dash-body{padding:20px 16px 48px;}
+  .dash-header{padding:0 16px;}
+}
+@media(max-width:600px){
+  .stat-grid{grid-template-columns:1fr 1fr;}
+  .stat-value{font-size:28px;}
+  .dist-row{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">
+      <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+    </div>
+    <div class="login-title">Dashboard de Fraude</div>
+    <div class="login-sub">Ingresá la clave de acceso para continuar</div>
+    <input class="login-input" id="keyInput" type="password" placeholder="Clave de acceso" autocomplete="current-password">
+    <button class="login-btn" id="loginBtn">Entrar</button>
+    <div class="login-error" id="loginError">Clave incorrecta. Intentá de nuevo.</div>
+  </div>
+</div>
+
+<!-- LOADING -->
+<div id="loadingOverlay" style="display:none;">
+  <div class="spinner"></div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+  <header class="dash-header">
+    <div class="dash-header-inner">
+      <a href="/" class="dash-logo">
+        <div class="dash-logo-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+        </div>
+        <span class="dash-logo-text">LinkGuard</span>
+        <span class="dash-logo-badge">INTERNO</span>
+      </a>
+      <div class="dash-header-right">
+        <span class="dash-updated" id="updatedAt"></span>
+        <button class="dash-refresh-btn" id="refreshBtn">
+          <svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+          Actualizar
+        </button>
+        <button class="dash-logout-btn" id="logoutBtn">Salir</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="dash-body">
+
+    <!-- RESUMEN -->
+    <div class="section-title"><span class="dot"></span>Resumen general</div>
+    <div class="stat-grid" id="statGrid"></div>
+
+    <!-- POR FUENTE -->
+    <div class="fuente-row" id="fuenteRow"></div>
+
+    <!-- TENDENCIA + CANAL -->
+    <div class="charts-row">
+      <div class="chart-card">
+        <div class="chart-title">📈 Reportes por día — últimos 30 días</div>
+        <div class="chart-wrap"><canvas id="trendChart"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">📡 Canales de fraude</div>
+        <div class="chart-wrap"><canvas id="canalChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- TOP DOMINIOS Y TELÉFONOS -->
+    <div class="tables-row">
+      <div class="table-card">
+        <div class="table-card-title">🌐 Top 10 dominios fraudulentos</div>
+        <table class="data-table" id="dominiosTable"></table>
+      </div>
+      <div class="table-card">
+        <div class="table-card-title">📞 Top 10 teléfonos fraudulentos</div>
+        <table class="data-table" id="telefonosTable"></table>
+      </div>
+    </div>
+
+    <!-- EMAILS + ENTIDADES -->
+    <div class="tables-row">
+      <div class="table-card">
+        <div class="table-card-title">✉️ Top 10 emails fraudulentos</div>
+        <table class="data-table" id="emailsTable"></table>
+      </div>
+      <div class="table-card">
+        <div class="table-card-title">🏛️ Top 10 entidades suplantadas</div>
+        <table class="data-table" id="entidadesTable"></table>
+      </div>
+    </div>
+
+    <!-- DISTRIBUCIONES -->
+    <div class="section-title" style="margin-top:8px"><span class="dot"></span>Distribuciones</div>
+    <div class="dist-row">
+      <div class="dist-card">
+        <div class="dist-title">📍 Por departamento</div>
+        <div id="depDist"></div>
+      </div>
+      <div class="dist-card">
+        <div class="dist-title">👤 Por rango de edad</div>
+        <div id="edadDist"></div>
+      </div>
+      <div class="dist-card">
+        <div class="dist-title">🏛️ Por entidad (top 10)</div>
+        <div id="entidadDist"></div>
+      </div>
+    </div>
+
+    <!-- CAMPAÑAS -->
+    <div class="section-title"><span class="dot"></span>Campañas registradas</div>
+    <div class="campanas-card">
+      <div id="campanasContent"></div>
+    </div>
+
+  </div><!-- /dash-body -->
+</div><!-- /dashboard -->
+
+<script>
+// ─── STATE ──────────────────────────────────────────────────────────────────
+let _key = '';
+let _trendChart = null;
+let _canalChart = null;
+
+// ─── LOGIN ───────────────────────────────────────────────────────────────────
+function showDash()  { document.getElementById('loginScreen').style.display='none'; document.getElementById('dashboard').style.display='block'; }
+function showLogin() { document.getElementById('dashboard').style.display='none'; document.getElementById('loginScreen').style.display='flex'; }
+function loading(on) { document.getElementById('loadingOverlay').style.display = on ? 'flex' : 'none'; }
+
+document.getElementById('loginBtn').addEventListener('click', tryLogin);
+document.getElementById('keyInput').addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
+
+async function tryLogin() {
+  const k = document.getElementById('keyInput').value.trim();
+  if (!k) return;
+  document.getElementById('loginError').style.display = 'none';
+  loading(true);
+  const ok = await fetchData(k);
+  loading(false);
+  if (ok) {
+    _key = k;
+    sessionStorage.setItem('dash_key', k);
+    showDash();
+  } else {
+    document.getElementById('loginError').style.display = 'block';
+  }
+}
+
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  sessionStorage.removeItem('dash_key');
+  _key = '';
+  showLogin();
+});
+
+document.getElementById('refreshBtn').addEventListener('click', async () => {
+  loading(true);
+  await fetchData(_key);
+  loading(false);
+});
+
+// Auto-login si hay key guardada
+const savedKey = sessionStorage.getItem('dash_key');
+if (savedKey) {
+  loading(true);
+  fetchData(savedKey).then(ok => {
+    loading(false);
+    if (ok) { _key = savedKey; showDash(); }
+  });
+}
+
+// ─── DATA FETCH ──────────────────────────────────────────────────────────────
+async function fetchData(key) {
+  try {
+    const res = await fetch('/api/dashboard-data', {
+      headers: { 'x-dashboard-key': key }
+    });
+    if (!res.ok) return false;
+    const d = await res.json();
+    render(d);
+    return true;
+  } catch (e) {
+    console.error('fetchData error:', e);
+    return false;
+  }
+}
+
+// ─── RENDER ──────────────────────────────────────────────────────────────────
+function render(d) {
+  const ts = new Date(d.generado_at);
+  document.getElementById('updatedAt').textContent = 'Actualizado: ' + ts.toLocaleTimeString('es-UY');
+
+  renderStats(d.totales);
+  renderFuente(d.por_fuente);
+  renderTrend(d.por_dia);
+  renderCanal(d.por_canal);
+  renderDominios(d.top_dominios);
+  renderTelefonos(d.top_telefonos);
+  renderEmails(d.top_emails);
+  renderEntidades(d.top_entidades);
+  renderDist('depDist', d.por_departamento, 'dep', '#2D5A3D');
+  renderDist('edadDist', d.por_edad, 'edad', '#D4A017');
+  renderDist('entidadDist', d.top_entidades.slice(0,10), 'entidad', '#C0392B');
+  renderCampanas(d.campanas);
+}
+
+function renderStats(t) {
+  const items = [
+    { label: 'Total reportes', value: t.total.toLocaleString('es'), cls: 'accent' },
+    { label: 'Últimos 7 días', value: t.ultimos_7.toLocaleString('es'), cls: 'yellow' },
+    { label: 'Últimos 30 días', value: t.ultimos_30.toLocaleString('es'), cls: '' },
+  ];
+  document.getElementById('statGrid').innerHTML = items.map(i =>
+    `<div class="stat-card ${i.cls}">
+       <div class="stat-label">${i.label}</div>
+       <div class="stat-value">${i.value}</div>
+     </div>`
+  ).join('');
+}
+
+function renderFuente(arr) {
+  const colors = { web: '#2D5A3D', whatsapp: '#25D366', default: '#6B6B80' };
+  document.getElementById('fuenteRow').innerHTML = arr.map(f => {
+    const color = colors[f.fuente] || colors.default;
+    return `<div class="fuente-badge">
+      <div class="fuente-dot" style="background:${color}"></div>
+      <span class="fuente-label">${f.fuente === 'web' ? 'Web (fraude.uy)' : f.fuente === 'whatsapp' ? 'Bot WhatsApp' : f.fuente}</span>
+      <span class="fuente-val">${f.total}</span>
+    </div>`;
+  }).join('');
+}
+
+function renderTrend(arr) {
+  // Rellenar días sin datos en el rango de 30 días
+  const today = new Date();
+  const labels = [], values = [];
+  for (let i = 29; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
+    const key = d.toISOString().slice(0, 10);
+    labels.push(key.slice(5)); // MM-DD
+    const found = arr.find(r => {
+      const rd = typeof r.dia === 'string' ? r.dia.slice(0, 10) : new Date(r.dia).toISOString().slice(0, 10);
+      return rd === key;
+    });
+    values.push(found ? found.total : 0);
+  }
+
+  if (_trendChart) _trendChart.destroy();
+  _trendChart = new Chart(document.getElementById('trendChart'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Reportes',
+        data: values,
+        backgroundColor: 'rgba(45,90,61,.15)',
+        borderColor: '#2D5A3D',
+        borderWidth: 1.5,
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 10 }, maxRotation: 0, autoSkip: true, maxTicksLimit: 10 } },
+        y: { grid: { color: 'rgba(0,0,0,.04)' }, ticks: { font: { size: 11 }, stepSize: 1 }, beginAtZero: true }
+      }
+    }
+  });
+}
+
+function renderCanal(c) {
+  const labels = ['Email','SMS','WhatsApp','Llamada','Sitio web','Marketplace','Publicidad'];
+  const values = [c.email, c.sms, c.whatsapp, c.llamada, c.sitio_web, c.marketplace, c.publicidad];
+  const colors = ['#3A5ABF','#D4A017','#25D366','#C0392B','#2D5A3D','#8E44AD','#E67E22'];
+
+  if (_canalChart) _canalChart.destroy();
+  _canalChart = new Chart(document.getElementById('canalChart'), {
+    type: 'doughnut',
+    data: {
+      labels,
+      datasets: [{ data: values, backgroundColor: colors, borderWidth: 0, hoverOffset: 6 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'right', labels: { font: { size: 11 }, boxWidth: 12, padding: 10 } }
+      },
+      cutout: '65%',
+    }
+  });
+}
+
+function renderDominios(arr) {
+  if (!arr.length) { document.getElementById('dominiosTable').innerHTML = '<tr><td style="padding:20px 0;color:var(--text-soft);font-size:13px">Sin datos</td></tr>'; return; }
+  document.getElementById('dominiosTable').innerHTML =
+    '<thead><tr><th>Dominio</th><th>Rep.</th><th>Score</th><th>Estado</th></tr></thead><tbody>' +
+    arr.map(r => `
+      <tr>
+        <td class="mono" style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r.dominio}">${r.dominio}</td>
+        <td style="font-weight:700;color:var(--red)">${r.reportes}</td>
+        <td>
+          <div class="score-bar">
+            <div class="score-bg"><div class="score-fill" style="width:${Math.round(r.score*100)}%"></div></div>
+            <span style="font-size:11px;color:var(--text-soft);min-width:28px">${(r.score*100).toFixed(0)}%</span>
+          </div>
+        </td>
+        <td><span class="badge ${r.estado}">${r.estado}</span></td>
+      </tr>`).join('') + '</tbody>';
+}
+
+function renderTelefonos(arr) {
+  if (!arr.length) { document.getElementById('telefonosTable').innerHTML = '<tr><td style="padding:20px 0;color:var(--text-soft);font-size:13px">Sin datos</td></tr>'; return; }
+  document.getElementById('telefonosTable').innerHTML =
+    '<thead><tr><th>Teléfono</th><th>Rep.</th><th>Canal</th></tr></thead><tbody>' +
+    arr.map(r => `
+      <tr>
+        <td class="mono">${r.telefono}</td>
+        <td style="font-weight:700;color:var(--red)">${r.reportes}</td>
+        <td style="color:var(--text-soft);font-size:12px">${r.canal}</td>
+      </tr>`).join('') + '</tbody>';
+}
+
+function renderEmails(arr) {
+  if (!arr.length) { document.getElementById('emailsTable').innerHTML = '<tr><td style="padding:20px 0;color:var(--text-soft);font-size:13px">Sin datos</td></tr>'; return; }
+  document.getElementById('emailsTable').innerHTML =
+    '<thead><tr><th>Email</th><th>Rep.</th><th>Entidad</th></tr></thead><tbody>' +
+    arr.map(r => `
+      <tr>
+        <td class="mono" style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r.email}">${r.email}</td>
+        <td style="font-weight:700;color:var(--red)">${r.reportes}</td>
+        <td style="color:var(--text-soft);font-size:12px">${r.entidad}</td>
+      </tr>`).join('') + '</tbody>';
+}
+
+function renderEntidades(arr) {
+  if (!arr.length) { document.getElementById('entidadesTable').innerHTML = '<tr><td style="padding:20px 0;color:var(--text-soft);font-size:13px">Sin datos</td></tr>'; return; }
+  document.getElementById('entidadesTable').innerHTML =
+    '<thead><tr><th>Entidad</th><th>Reportes</th></tr></thead><tbody>' +
+    arr.map(r => `
+      <tr>
+        <td style="font-weight:600">${r.entidad}</td>
+        <td style="font-weight:700;color:var(--accent)">${r.total}</td>
+      </tr>`).join('') + '</tbody>';
+}
+
+function renderDist(containerId, arr, labelKey, color) {
+  const el = document.getElementById(containerId);
+  if (!arr || !arr.length) { el.innerHTML = '<p style="font-size:13px;color:var(--text-soft)">Sin datos</p>'; return; }
+  const max = Math.max(...arr.map(r => r.total), 1);
+  el.innerHTML = arr.slice(0, 10).map(r =>
+    `<div class="dist-item">
+       <div class="dist-label" title="${r[labelKey]}">${r[labelKey]}</div>
+       <div class="dist-bar-wrap"><div class="dist-bar" style="width:${Math.round(r.total/max*100)}%;background:${color}"></div></div>
+       <div class="dist-count">${r.total}</div>
+     </div>`
+  ).join('');
+}
+
+function renderCampanas(arr) {
+  const el = document.getElementById('campanasContent');
+  if (!arr || !arr.length) {
+    el.innerHTML = '<p class="campanas-empty">No hay campañas registradas</p>';
+    return;
+  }
+  el.innerHTML = `<table class="data-table" style="width:100%">
+    <thead><tr><th>Nombre</th><th>Entidad</th><th>Canal</th><th>Estado</th><th>Reportes</th><th>Inicio</th></tr></thead>
+    <tbody>` +
+    arr.map(c => `
+      <tr>
+        <td style="font-weight:600">${c.nombre}</td>
+        <td style="color:var(--text-soft)">${c.entidad}</td>
+        <td style="color:var(--text-soft)">${c.canal}</td>
+        <td><span class="badge ${c.estado}">${c.estado}</span></td>
+        <td style="font-weight:700;color:var(--red)">${c.reportes}</td>
+        <td style="color:var(--text-soft);font-size:12px">${c.inicio ? new Date(c.inicio).toLocaleDateString('es-UY') : '—'}</td>
+      </tr>`).join('') +
+    '</tbody></table>';
+}
+</script>
+</body>
+</html>

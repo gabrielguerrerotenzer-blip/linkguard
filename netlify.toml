@@ -11,3 +11,8 @@
   from = "/api/report"
   to   = "/.netlify/functions/report"
   status = 200
+
+[[redirects]]
+  from = "/api/dashboard-data"
+  to   = "/.netlify/functions/dashboard-data"
+  status = 200
