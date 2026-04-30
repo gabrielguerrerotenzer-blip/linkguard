@@ -295,6 +295,14 @@ section[id]{scroll-margin-top:70px;}
 .report-success-numero{font-family:'Fraunces',serif;font-size:24px;font-weight:700;color:var(--accent);margin-bottom:6px;}
 .report-success-text{font-size:14px;color:var(--text-soft);line-height:1.6;}
 @media(max-width:600px){.report-edad-grid{grid-template-columns:repeat(2,1fr);}}
+.report-entidad-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+.report-entidad-btn{padding:12px 8px;border:2px solid var(--border);border-radius:10px;background:var(--bg);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;text-align:center;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.report-entidad-btn.selected{border-color:var(--red);background:var(--red-light);color:var(--red);font-weight:700;}
+.report-entidad-btn:hover:not(.selected){border-color:var(--text-soft);}
+.report-entidad-emoji{font-size:20px;line-height:1;}
+.report-entidad-nombre{font-size:12px;line-height:1.2;}
+.report-dato-bancario{width:100%;min-height:60px;max-height:120px;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);background:var(--card);resize:vertical;outline:none;transition:border-color .2s;display:block;margin-bottom:4px;}
+.report-dato-bancario:focus{border-color:var(--accent);}
 
 /* WEB SEARCH BLOCK */
 .web-search-section{margin-top:14px;}
@@ -1870,28 +1878,82 @@ async function generarFingerprint(){
 // REPORT WIZARD
 let _reportEdad=null;
 let _reportCanal=null;
+let _reportEntidad=null;
+let _wizardNeedsEntidad=false;
+
+const ENTIDADES_WIZ=[
+  {key:'BROU',          emoji:'🏦'},
+  {key:'Itaú',          emoji:'🏦'},
+  {key:'Santander',     emoji:'🏦'},
+  {key:'BBVA',          emoji:'🏦'},
+  {key:'Scotiabank',    emoji:'🏦'},
+  {key:'HSBC',          emoji:'🏦'},
+  {key:'Prex',          emoji:'💳'},
+  {key:'OCA',           emoji:'💳'},
+  {key:'MiDinero',      emoji:'💰'},
+  {key:'Mercado Pago',  emoji:'🟢'},
+  {key:'Antel',         emoji:'📱'},
+  {key:'UTE',           emoji:'⚡'},
+  {key:'SUCIVE',        emoji:'🚗'},
+  {key:'DGI',           emoji:'📋'},
+  {key:'BPS',           emoji:'🏛️'},
+  {key:'Correo Uruguayo',emoji:'📮'},
+  {key:'MercadoLibre',  emoji:'🛒'},
+  {key:'Otro',          emoji:'✏️'},
+];
 
 function abrirReporte(){
   _reportEdad=null;
   _reportCanal=null;
+  _reportEntidad=null;
   document.getElementById('reportBtn').style.display='none';
   document.getElementById('reportBtnTop').style.display='none';
+
+  const r=window._lastResult||{};
+  const entidad=window._lastEntidad;
+  const entidadConocida=(r.empresa&&r.empresa!=='null')||entidad?.nombre;
+  _wizardNeedsEntidad=!entidadConocida;
+
+  let entidadBlock='';
+  if(!entidadConocida){
+    const entBtns=ENTIDADES_WIZ.map(e=>{
+      const kEsc=e.key.replace(/'/g,"\\'");
+      return `<button class="report-entidad-btn" onclick="seleccionarEntidad('${kEsc}',this)"><span class="report-entidad-emoji">${e.emoji}</span><span class="report-entidad-nombre">${e.key}</span></button>`;
+    }).join('');
+    entidadBlock=`
+      <div class="report-question">¿A qué banco o empresa decían representar?</div>
+      <div class="report-entidad-grid" id="entidadGrid">${entBtns}</div>
+      <div id="entidadOtraBox" style="display:none;margin-bottom:14px;">
+        <input type="text" id="entidadOtraInput" placeholder="Nombre de la entidad..."
+          style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);background:var(--card);outline:none;"
+          oninput="_reportEntidad=this.value.trim()||null"
+          onfocus="this.style.borderColor='var(--red)'"
+          onblur="this.style.borderColor='var(--border)'">
+      </div>`;
+  }
+
   const canales=[
-    {key:'sms',label:'SMS'},
-    {key:'whatsapp',label:'WhatsApp'},
-    {key:'email',label:'Email'},
-    {key:'llamada',label:'Llamada'},
-    {key:'sitio_web',label:'Sitio web'},
+    {key:'sms',        label:'SMS'},
+    {key:'whatsapp',   label:'WhatsApp'},
+    {key:'email',      label:'Email'},
+    {key:'llamada',    label:'Llamada'},
+    {key:'sitio_web',  label:'Sitio web'},
     {key:'marketplace',label:'Marketplace'},
-    {key:'publicidad',label:'Redes sociales / Publicidad'},
-    {key:'otro',label:'Otro'},
+    {key:'publicidad', label:'Redes / Publicidad'},
+    {key:'otro',       label:'Otro'},
   ];
-  let canalBtns=canales.map(c=>`<button class="report-edad-btn" onclick="seleccionarCanal('${c.key}',this)">${c.label}</button>`).join('');
+  const canalBtns=canales.map(c=>`<button class="report-edad-btn" onclick="seleccionarCanal('${c.key}',this)">${c.label}</button>`).join('');
+
   const edades=['Menos de 18','18-29','30-44','45-59','60+','Prefiero no decir'];
-  let edadBtns=edades.map(e=>`<button class="report-edad-btn" onclick="seleccionarEdad('${e}',this)">${e}</button>`).join('');
+  const edadBtns=edades.map(e=>`<button class="report-edad-btn" onclick="seleccionarEdad('${e}',this)">${e}</button>`).join('');
+
   document.getElementById('reportSection').innerHTML=`<div class="report-section">
     <div class="report-title">🚨 Reportar este fraude</div>
     <div class="report-subtitle">Tu reporte es anónimo y ayuda a alertar a otras personas en Uruguay.</div>
+    ${entidadBlock}
+    <div class="report-question">¿Te pasaron algún número de cuenta, CBU o dato bancario? <span style="font-weight:400;font-size:13px;color:var(--text-soft);">Opcional</span></div>
+    <textarea id="reportDatoBancario" class="report-dato-bancario" placeholder="Ej: 12345678-9, CBU 0000003100..."></textarea>
+    <button onclick="document.getElementById('reportDatoBancario').value=''" style="background:none;border:none;font-size:13px;color:var(--text-soft);cursor:pointer;padding:0 0 16px;text-decoration:underline;">No tengo / Saltear</button>
     <div class="report-question">¿Por dónde te llegó el fraude?</div>
     <div class="report-edad-grid">${canalBtns}</div>
     <div class="report-question" style="margin-top:20px;">¿En qué rango de edad estás?</div>
@@ -1902,13 +1964,27 @@ function abrirReporte(){
   setTimeout(()=>document.getElementById('reportSection').scrollIntoView({behavior:'smooth',block:'start'}),60);
 }
 
+function seleccionarEntidad(entidad,el){
+  if(entidad==='Otro'){
+    _reportEntidad=null;
+    document.getElementById('entidadOtraBox').style.display='block';
+    document.getElementById('entidadOtraInput').focus();
+  }else{
+    _reportEntidad=entidad;
+    const otraBox=document.getElementById('entidadOtraBox');
+    if(otraBox){otraBox.style.display='none';}
+    const inp=document.getElementById('entidadOtraInput');
+    if(inp)inp.value='';
+  }
+  document.querySelectorAll('.report-entidad-btn').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
 function seleccionarCanal(canal,el){
   _reportCanal=canal;
-  // solo desmarcar botones del grupo de canales (los primeros 8)
   document.querySelectorAll('.report-edad-btn').forEach(b=>{
-    if(['SMS','WhatsApp','Email','Llamada','Sitio web','Marketplace','Redes sociales / Publicidad','Otro'].includes(b.textContent)){
+    if(['SMS','WhatsApp','Email','Llamada','Sitio web','Marketplace','Redes / Publicidad','Otro'].includes(b.textContent))
       b.classList.remove('selected');
-    }
   });
   el.classList.add('selected');
 }
@@ -1916,9 +1992,8 @@ function seleccionarCanal(canal,el){
 function seleccionarEdad(edad,el){
   _reportEdad=edad;
   document.querySelectorAll('.report-edad-btn').forEach(b=>{
-    if(['Menos de 18','18-29','30-44','45-59','60+','Prefiero no decir'].includes(b.textContent)){
+    if(['Menos de 18','18-29','30-44','45-59','60+','Prefiero no decir'].includes(b.textContent))
       b.classList.remove('selected');
-    }
   });
   el.classList.add('selected');
 }
@@ -1926,6 +2001,8 @@ function seleccionarEdad(edad,el){
 function cerrarReporte(){
   _reportEdad=null;
   _reportCanal=null;
+  _reportEntidad=null;
+  _wizardNeedsEntidad=false;
   document.getElementById('reportSection').innerHTML='';
   if(window._lastResult?.verdict!=='safe'){
     document.getElementById('reportBtn').style.display='flex';
@@ -1934,6 +2011,13 @@ function cerrarReporte(){
 }
 
 async function enviarReporte(){
+  // Validar entidad si era requerida
+  if(_wizardNeedsEntidad&&!_reportEntidad){
+    document.querySelectorAll('.report-entidad-btn').forEach(b=>{b.style.outline='2px solid var(--red)';});
+    document.getElementById('entidadGrid')?.scrollIntoView({behavior:'smooth',block:'nearest'});
+    return;
+  }
+  // Validar edad
   if(!_reportEdad){
     document.querySelectorAll('.report-edad-btn').forEach(b=>{
       if(['Menos de 18','18-29','30-44','45-59','60+','Prefiero no decir'].includes(b.textContent))
@@ -1953,9 +2037,15 @@ async function enviarReporte(){
   const urlMatch=(inp.text||'').match(/https?:\/\/[^\s]+/);
   const linkFraudulento=urlMatch?urlMatch[0]:null;
 
-  // Canal elegido por el usuario en el wizard; "otro" no mapea a columna específica → array vacío
+  // Canal elegido por el usuario en el wizard
   const CANAL_MAP={sms:'sms',whatsapp:'whatsapp',email:'email',llamada:'llamada',sitio_web:'sitio_web',marketplace:'marketplace',publicidad:'publicidad'};
   const canales=_reportCanal&&CANAL_MAP[_reportCanal]?[CANAL_MAP[_reportCanal]]:[];
+
+  // Entidad: usar la seleccionada en wizard si la IA no la detectó
+  const institucion=r.empresa&&r.empresa!=='null'?r.empresa:(entidad?.nombre||_reportEntidad||null);
+
+  // Dato bancario opcional
+  const datoBancario=(document.getElementById('reportDatoBancario')?.value||'').trim()||null;
 
   try{
     const fingerprint=await generarFingerprint();
@@ -1965,8 +2055,8 @@ async function enviarReporte(){
       body:JSON.stringify({
         link_fraudulento:linkFraudulento,
         link_sitio_web:linkFraudulento,
-        institucion:r.empresa&&r.empresa!=='null'?r.empresa:(entidad?.nombre||null),
-        motivo:null,
+        institucion,
+        motivo:datoBancario,
         edad:_reportEdad,
         canales,
         fingerprint
