@@ -328,8 +328,8 @@ section[id]{scroll-margin-top:70px;}
   .upload-zone-text{font-size:16px;}
   .upload-zone-hint{font-size:13px;}
 
-  .signal-badge{font-size:12px;padding:3px 10px;}
-  .signal-item{font-size:14px;}
+  .signal-badge{font-size:12px;padding:3px 10px;align-self:flex-start;}
+  .signal-item{font-size:14px;flex-direction:column;align-items:flex-start;gap:5px;}
   .result-advice{font-size:15px;}
   .result-title{font-size:20px;}
 
@@ -1379,11 +1379,11 @@ function localAnalysis(input){
 
   allUrls.forEach(hostname=>{
     if(THREAT_DB.fraudulentDomains.includes(hostname)){
-      findings.push({type:'CRITICAL',detail:`Dominio "${hostname}" está en nuestra base de sitios fraudulentos reportados.`});
+      findings.push({type:'CRITICAL',detail:`Este sitio ya fue reportado como fraude.`});
       hasDangerDomain=true;allSafe=false;return;
     }
     if(isLegitimate(hostname)){
-      findings.push({type:'OK',detail:`Dominio "${hostname}" verificado como sitio oficial.`});
+      findings.push({type:'OK',detail:`Sitio oficial verificado.`});
       hasOfficialDomain=true;return;
     }
     allSafe=false;
@@ -1393,7 +1393,7 @@ function localAnalysis(input){
         const isLegitHost=sp.legitHostnames.some(lh=>hostname===lh||hostname.endsWith('.'+lh));
         if(!isLegitHost){
           const realSite=sp.legit?` (el sitio real es ${sp.legit})`:'';
-          findings.push({type:'CRITICAL',detail:`"${hostname}" intenta suplantar a ${sp.brand}${realSite}. Este dominio es FALSO.`});
+          findings.push({type:'CRITICAL',detail:`Este link imita a ${sp.brand}, pero es falso.`});
           hasDangerDomain=true;spoofFound=true;break;
         }
       }
@@ -1401,7 +1401,7 @@ function localAnalysis(input){
     if(!spoofFound){
       const trashTLDs=/\.(top|xyz|digital|site|online|cloud|work|click|link)$/i;
       if(trashTLDs.test(hostname)){
-        findings.push({type:'CRITICAL',detail:`"${hostname}" usa un dominio .${hostname.split('.').pop()} — ningún banco ni organismo uruguayo usa este tipo de extensión. Es típico de sitios fraudulentos.`});
+        findings.push({type:'CRITICAL',detail:`La extensión .${hostname.split('.').pop()} es rara. Ningún banco ni organismo uruguayo la usa.`});
         hasDangerDomain=true;
         hasUnknownDomain=true;
         return;
@@ -1410,70 +1410,70 @@ function localAnalysis(input){
       const fullUrl=fullUrls.find(u=>u.includes(hostname))||'';
       const utmCount=(fullUrl.match(/utm_/gi)||[]).length;
       if(utmCount>=3&&/cuenta|banco|seguridad|token/i.test(fullUrl)){
-        findings.push({type:'CRITICAL',detail:`Link con ${utmCount} parámetros de marketing (utm_) y palabras bancarias. Es inusual que instituciones bancarias utilicen links de marketing para comunicaciones de seguridad.`});
+        findings.push({type:'CRITICAL',detail:`Link de marketing con palabras de banco. Tu banco no manda links así.`});
         hasDangerDomain=true;
         return;
       }
 
       if(suspiciousUrlWords.test(hostname)){
-        findings.push({type:'HIGH',detail:`"${hostname}" contiene palabras sospechosas típicas de sitios fraudulentos.`});
+        findings.push({type:'HIGH',detail:`La dirección del link tiene palabras sospechosas.`});
       } else {
-        findings.push({type:'MEDIUM',detail:`"${hostname}" no está en nuestra lista de sitios verificados. No podemos confirmar que sea seguro.`});
+        findings.push({type:'MEDIUM',detail:`Este sitio no está verificado. No sabemos si es seguro.`});
       }
       hasUnknownDomain=true;
     }
   });
 
   const dangerCombos=[
-    {patterns:[/suspensi[oó]n/i,/cuenta/i],detail:'Combinación sospechosa: "suspensión" + "cuenta". Táctica típica de fraude.'},
-    {patterns:[/premio/i,/whatsapp/i],detail:'Combinación sospechosa: "premio" + "WhatsApp". Los premios por WhatsApp son siempre fraude.'},
-    {patterns:[/actualiz/i,/token/i],detail:'Combinación sospechosa: "actualizar" + "token". Tu banco nunca pide actualizar el token por mensaje.'},
-    {patterns:[/devoluci[oó]n/i,/impuesto/i],detail:'Combinación sospechosa: "devolución" + "impuestos". La DGI no devuelve dinero por links.'},
-    {patterns:[/verific/i,/identidad/i],detail:'Combinación sospechosa: "verificar" + "identidad". Es poco común que los bancos soliciten verificación de identidad mediante links enviados por mensaje.'},
-    {patterns:[/bloque/i,/cuenta/i],detail:'Combinación sospechosa: "bloqueo" + "cuenta". Táctica de miedo para que actúes sin pensar.'},
-    {patterns:[/reactiv/i,/cuenta/i],detail:'Combinación sospechosa: "reactivar" + "cuenta". Es inusual que los bancos reactiven cuentas mediante links enviados por mensaje.'},
-    {patterns:[/transferi/i,/urgent/i],detail:'Combinación sospechosa: "transferir" + "urgente". Presión para que muevas dinero rápido.'},
-    {patterns:[/punto/i,/vence/i],detail:'Combinación sospechosa: "puntos" + "vencen". Táctica para crear urgencia con supuestos beneficios.'},
-    {patterns:[/punto/i,/perder/i],detail:'Combinación sospechosa: "puntos" + "perder". Miedo a perder algo que probablemente no existe.'},
-    {patterns:[/cuenta/i,/inusual/i],detail:'Combinación sospechosa: "cuenta" + "inusual". Simula una alerta de seguridad falsa.'},
-    {patterns:[/movimiento/i,/inusual/i],detail:'Combinación sospechosa: "movimiento inusual". Es poco común que los bancos notifiquen movimientos inusuales de esta forma.'},
-    {patterns:[/premio/i,/reclamar/i],detail:'Combinación sospechosa: "premio" + "reclamar". Nadie regala nada, es fraude.'},
-    {patterns:[/regalo/i,/clic/i],detail:'Combinación sospechosa: "regalo" + "clic". Si tenés que hacer clic para un regalo, es mentira.'},
+    {patterns:[/suspensi[oó]n/i,/cuenta/i],detail:'Dicen que tu cuenta está suspendida. Es una táctica clásica de engaño.'},
+    {patterns:[/premio/i,/whatsapp/i],detail:'Premio por WhatsApp: siempre es mentira.'},
+    {patterns:[/actualiz/i,/token/i],detail:'Tu banco NUNCA te pide el token por mensaje.'},
+    {patterns:[/devoluci[oó]n/i,/impuesto/i],detail:'La DGI no devuelve dinero por links.'},
+    {patterns:[/verific/i,/identidad/i],detail:'Tu banco no verifica tu identidad por mensaje.'},
+    {patterns:[/bloque/i,/cuenta/i],detail:'Dicen que tu cuenta está bloqueada para asustarte.'},
+    {patterns:[/reactiv/i,/cuenta/i],detail:'Tu banco no reactiva cuentas por link.'},
+    {patterns:[/transferi/i,/urgent/i],detail:'Te presionan a mover dinero rápido. Eso es fraude.'},
+    {patterns:[/punto/i,/vence/i],detail:'Urgencia con puntos que "vencen". Truco para que actúes sin pensar.'},
+    {patterns:[/punto/i,/perder/i],detail:'Te amenazan con perder puntos. Probablemente no existen.'},
+    {patterns:[/cuenta/i,/inusual/i],detail:'Alerta de seguridad falsa. Tu banco no avisa así.'},
+    {patterns:[/movimiento/i,/inusual/i],detail:'Alerta de movimiento inusual falsa. Tu banco no avisa así.'},
+    {patterns:[/premio/i,/reclamar/i],detail:'Nadie te da premios por mensaje. Es mentira.'},
+    {patterns:[/regalo/i,/clic/i],detail:'Ningún regalo real requiere hacer clic.'},
   ];
   dangerCombos.forEach(combo=>{
     if(combo.patterns.every(p=>p.test(lower)))findings.push({type:'CRITICAL',detail:combo.detail});
   });
 
-  if(/\burgente\b/i.test(input))findings.push({type:'HIGH',detail:'Usa la palabra "urgente" para presionarte.'});
-  if(/\b24\s*h(ora)?s?\b/i.test(input))findings.push({type:'HIGH',detail:'Te da un plazo de "24 horas". Los bancos reales no ponen plazos así.'});
+  if(/\burgente\b/i.test(input))findings.push({type:'HIGH',detail:'Te meten presión con la palabra "urgente" para que no pienses.'});
+  if(/\b24\s*h(ora)?s?\b/i.test(input))findings.push({type:'HIGH',detail:'Te dan un plazo de "24 horas". Los bancos reales no hacen eso.'});
 
   if(/token|contraseña|password|clave\s*(de\s*)?seguridad|pin\s*de|código\s*de\s*(seguridad|verificación)/i.test(input)){
-    findings.push({type:'CRITICAL',detail:'Solicita token, contraseña o código de seguridad. Tu banco NUNCA pide esto por mensaje.'});
+    findings.push({type:'CRITICAL',detail:'Pide tu clave, token o contraseña. Ningún banco hace eso por mensaje.'});
   }
 
   if(/premio|ganaste|ganador|gratis|regala|reembolso|retorno garantizado|inversión.*%|devoluci[oó]n/i.test(input)){
-    findings.push({type:'HIGH',detail:'Promete premios, regalos, reembolsos o retornos irrealistas.'});
+    findings.push({type:'HIGH',detail:'Promete premios o dinero. Nadie regala nada, es una trampa.'});
   }
 
   const hasShortLink=/bit\.ly|goo\.gl|tinyurl|t\.co|short\.link|is\.gd|ow\.ly|buff\.ly/i.test(input);
   const asksSensitiveData=/token|contraseña|password|clave|pin|código|cédula|tarjeta|cuenta\s*bancaria|datos\s*(personal|bancari)/i.test(input);
 
   if(hasShortLink&&asksSensitiveData){
-    findings.push({type:'CRITICAL',detail:'Link acortado + pedido de datos sensibles. Combinación típica de fraude.'});
+    findings.push({type:'CRITICAL',detail:'Link disfrazado que pide datos. Señal clara de fraude.'});
   } else if(hasShortLink){
-    findings.push({type:'HIGH',detail:'Link acortado que esconde el destino. Es poco común que bancos e instituciones oficiales utilicen links acortados en sus comunicaciones.'});
+    findings.push({type:'HIGH',detail:'Este link está disfrazado. No se puede ver a dónde lleva.'});
   }
 
   const hasShareLink=/share\.google|bit\.ly|t\.co|goo\.gl|tinyurl|ow\.ly/i.test(input);
   const mentionsBanking=/banco|brou|itau|santander|bbva|scotia|cuenta\s*bancaria|tarjeta|crédito|débito/i.test(input);
   if(hasShareLink&&mentionsBanking&&!asksSensitiveData){
-    findings.push({type:'HIGH',detail:'Link acortado o de redireccionamiento en un mensaje que menciona bancos. Es inusual que los bancos utilicen links acortados o de redireccionamiento. Le recomendamos verificar directamente con su banco.'});
+    findings.push({type:'HIGH',detail:'Link disfrazado en un mensaje que menciona bancos. Verificá llamando al banco.'});
   }
 
   const phones=input.match(/(\+598\s?|0)\d{2}\s?\d{3}\s?\d{3,4}|\d{3}\s\d{3}\s\d{3}/g)||[];
   phones.forEach(p=>{const c=p.replace(/\s/g,'');
-    if(THREAT_DB.scamPhones.includes(c))findings.push({type:'CRITICAL',detail:`Número ${p} reportado como fraudulento.`});
-    else if(/^09/.test(c))findings.push({type:'HIGH',detail:`Celular ${p}. Es poco común que los bancos contacten desde números de celular. Le recomendamos verificar llamando al número oficial de su banco.`});
+    if(THREAT_DB.scamPhones.includes(c))findings.push({type:'CRITICAL',detail:`El número ${p} ya fue denunciado como estafa.`});
+    else if(/^09/.test(c))findings.push({type:'HIGH',detail:`El número ${p} es un celular. Los bancos usan líneas fijas o 0800, no celulares.`});
   });
 
   return{findings,hasUnknownDomain,allSafe:(allSafe&&allUrls.length>0&&!hasDangerDomain),hasDangerDomain};
@@ -1608,8 +1608,16 @@ REGLAS DE VEREDICTO:
 - "warning": dominio desconocido, señales sospechosas no concluyentes
 - "safe": SOLO si el dominio está en la lista de legítimos Y no hay señales sospechosas
 
+CÓMO ESCRIBIR LAS SEÑALES — MUY IMPORTANTE:
+- Cada señal: máximo 1-2 oraciones, sin tecnicismos, como si le hablaras a alguien de 70 años que no sabe de tecnología
+- MAL: "El enlace 'qrco.de' es un acortador de URL. Esta entidad no utiliza este tipo de redirección."
+- BIEN: "Este link está disfrazado. El Correo Uruguayo nunca manda links así."
+- MAL: "Se detectó una potencial suplantación de identidad institucional mediante técnicas de ingeniería social."
+- BIEN: "Se hacen pasar por tu banco para robarte los datos."
+- Usá palabras simples: "link" no "URL", "clave" no "credenciales", "disfrazado" no "ofuscado"
+
 Respondé SOLO con JSON válido (sin markdown, sin backticks):
-{"verdict":"danger|warning|safe","title":"título corto","subtitle":"subtítulo","signals":[{"badge":"etiqueta","text":"explicación simple para persona de 70 años"}],"advice":"consejo directo. Incluí número oficial del banco si aplica.","confidence":0.0-1.0,"empresa":"nombre de la empresa/organismo/banco/marca suplantada o mencionada (ej: 'BROU', 'MercadoLibre', 'DGI', 'Correo Uruguayo'). null si no hay entidad identificable."}`;
+{"verdict":"danger|warning|safe","title":"título corto","subtitle":"subtítulo","signals":[{"badge":"etiqueta corta","text":"1-2 oraciones simples, sin tecnicismos"}],"advice":"consejo directo en lenguaje simple. Incluí número oficial del banco si aplica.","confidence":0.0-1.0,"empresa":"nombre de la empresa/organismo/banco/marca suplantada o mencionada (ej: 'BROU', 'MercadoLibre', 'DGI', 'Correo Uruguayo'). null si no hay entidad identificable."}`;
 
   const content=[];
 
