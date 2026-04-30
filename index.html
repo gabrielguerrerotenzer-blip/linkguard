@@ -291,6 +291,13 @@ section[id]{scroll-margin-top:70px;}
 .report-success-icon{font-size:40px;margin-bottom:10px;}
 .report-success-numero{font-family:'Fraunces',serif;font-size:24px;font-weight:700;color:var(--accent);margin-bottom:6px;}
 .report-success-text{font-size:14px;color:var(--text-soft);line-height:1.6;}
+.report-success-community{margin-top:18px;padding:16px;background:var(--accent-light);border-radius:12px;text-align:left;}
+.report-success-community-title{font-size:15px;font-weight:700;color:var(--accent);margin-bottom:6px;}
+.report-success-community-body{font-size:13px;color:var(--text);line-height:1.6;margin-bottom:14px;}
+.report-share-btn{width:100%;padding:12px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .2s;}
+.report-share-btn:hover{background:var(--accent-hover);}
+.report-copy-btn{width:100%;padding:12px;background:var(--bg);color:var(--accent);border:1.5px solid var(--accent);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;margin-top:8px;}
+.report-copy-btn:hover{background:var(--accent-light);}
 @media(max-width:600px){.report-edad-grid{grid-template-columns:repeat(2,1fr);}}
 .report-entidad-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
 .report-entidad-btn{padding:12px 8px;border:2px solid var(--border);border-radius:10px;background:var(--bg);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;text-align:center;display:flex;flex-direction:column;align-items:center;gap:4px;}
@@ -2068,11 +2075,20 @@ async function enviarReporte(){
     });
     const data=await res.json();
     if(!data.ok)throw new Error(data.error||'Error');
+    const shareSupported=typeof navigator.share==='function';
     document.getElementById('reportSection').innerHTML=`<div class="report-section report-success">
       <div class="report-success-icon">✅</div>
       <div class="report-success-numero">${data.numero_reporte}</div>
       <div style="font-size:14px;font-weight:600;color:var(--accent);margin-bottom:8px">Reporte registrado</div>
-      <div class="report-success-text">Gracias por tu reporte. Tu número de referencia es <strong>${data.numero_reporte}</strong>.<br>Tu información ayuda a proteger a otras personas en Uruguay.</div>
+      <div class="report-success-text">Tu número de referencia es <strong>${data.numero_reporte}</strong>.</div>
+      <div class="report-success-community">
+        <div class="report-success-community-title">Gracias por cuidarnos a todos 💪</div>
+        <div class="report-success-community-body">Tu reporte ayuda a proteger a otras personas en Uruguay. Cada denuncia fortalece nuestra base de datos y hace más difícil que los estafadores sigan operando.<br><br>Si conocés a alguien que recibió un mensaje parecido, compartile <strong>fraude.uy</strong></div>
+        ${shareSupported
+          ? `<button class="report-share-btn" onclick="compartirFraudeUY()">📤 Compartir fraude.uy</button>`
+          : `<button class="report-copy-btn" id="copyFraudeBtn" onclick="copiarFraudeUY()">🔗 Copiar link de fraude.uy</button>`
+        }
+      </div>
     </div>`;
   }catch(e){
     submitBtn.disabled=false;
@@ -2086,6 +2102,29 @@ async function enviarReporte(){
       sec.querySelector('.report-section').prepend(d);
     }
     console.error('[report]',e.message);
+  }
+}
+
+// SHARE fraude.uy
+async function compartirFraudeUY(){
+  try{
+    await navigator.share({
+      title:'fraude.uy',
+      text:'Verificá si un mensaje es fraude en fraude.uy',
+      url:'https://fraude.uy'
+    });
+  }catch(e){
+    if(e.name!=='AbortError')console.error('[share]',e.message);
+  }
+}
+
+async function copiarFraudeUY(){
+  try{
+    await navigator.clipboard.writeText('https://fraude.uy');
+    const btn=document.getElementById('copyFraudeBtn');
+    if(btn){btn.textContent='✅ Link copiado';btn.disabled=true;}
+  }catch(e){
+    console.error('[copy]',e.message);
   }
 }
 
