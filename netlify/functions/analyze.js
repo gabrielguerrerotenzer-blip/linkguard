@@ -95,8 +95,8 @@ export const handler = async (event) => {
 
     // ====== CACHE: solo para requests sin imagen ======
     let contentHash = null;
-    if (!hasImage && textContent?.text && process.env.DATABASE_URL) {
-      const sql = neon(process.env.DATABASE_URL);
+    if (!hasImage && textContent?.text && process.env.NEON_DATABASE_URL) {
+      const sql = neon(process.env.NEON_DATABASE_URL);
       contentHash = createHash('sha256').update(textContent.text).digest('hex');
 
       try {
@@ -134,11 +134,11 @@ export const handler = async (event) => {
     console.log('[analyze] raw_response:', rawText);
 
     // ====== CACHE WRITE + CLEANUP ======
-    if (response.ok && contentHash && process.env.DATABASE_URL) {
+    if (response.ok && contentHash && process.env.NEON_DATABASE_URL) {
       _requestCount++;
 
       // Fire-and-forget cache write
-      const sql = neon(process.env.DATABASE_URL);
+      const sql = neon(process.env.NEON_DATABASE_URL);
       sql`
         INSERT INTO cache_analisis (hash_contenido, resultado, modelo)
         VALUES (${contentHash}, ${JSON.stringify(data)}::jsonb, ${parsed.model || null})
