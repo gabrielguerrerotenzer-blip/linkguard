@@ -16,3 +16,8 @@
   from = "/api/dashboard-data"
   to   = "/.netlify/functions/dashboard-data"
   status = 200
+
+[[redirects]]
+  from = "/api/lookup"
+  to   = "/.netlify/functions/api-lookup"
+  status = 200
