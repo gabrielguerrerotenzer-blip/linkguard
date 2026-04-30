@@ -410,6 +410,7 @@ section[id]{scroll-margin-top:70px;}
         <div class="tool-input-label">Mensaje, SMS o link</div>
         <div class="tool-hint">Pegá el mensaje completo de WhatsApp, SMS, email o solo el link.</div>
         <textarea class="tool-textarea" id="msgInput" placeholder="Ej: Estimado cliente, su cuenta ha sido bloqueada. Ingrese a https://bancco-republica.com para verificar..."></textarea>
+        <input type="text" name="website" id="honeypot" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" aria-hidden="true">
         <div class="demo-row">
           <button class="demo-pill" onclick="loadDemo('sms')">📱 SMS falso</button>
           <button class="demo-pill" onclick="loadDemo('whatsapp')">💬 WhatsApp</button>
@@ -841,11 +842,11 @@ section[id]{scroll-margin-top:70px;}
 <section class="cta-section">
   <div class="cta-inner">
     <h2>¿Recibiste algo sospechoso?</h2>
-    <p>Verificalo gratis en segundos. Compartí LinkGuard con tu familia para protegerlos.</p>
+    <p>Verificalo gratis en segundos. Compartí fraude.uy con tu familia para protegerlos.</p>
     <a href="#verificar" class="btn-white"><svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 16l-4-4 1.41-1.41L11 14.17l6.59-6.59L19 9l-8 8z"/></svg>Verificar ahora</a>
     <div class="cta-social">
-      <a href="https://x.com/LinkGuardUY" target="_blank">𝕏 @LinkGuardUY</a>
-      <a href="https://instagram.com/linkguard.uy" target="_blank">📷 @linkguard.uy</a>
+      <a href="https://x.com/fraudeuy" target="_blank">𝕏 @fraudeuy</a>
+      <a href="https://instagram.com/fraude.uy" target="_blank">📷 @fraude.uy</a>
     </div>
   </div>
 </section>
@@ -855,8 +856,8 @@ section[id]{scroll-margin-top:70px;}
   <div class="partner-inner" style="max-width:700px;">
     <div class="partner-card" style="text-align:left;">
       <div class="partner-label">Sobre este proyecto</div>
-      <div class="partner-logo" style="font-size:22px;margin-bottom:12px;">LinkGuard · fraude.uy</div>
-      <div class="partner-desc" style="margin-bottom:16px;">LinkGuard es un proyecto ciudadano independiente creado en Uruguay con el objetivo de ayudar a las personas —especialmente las más vulnerables— a detectar fraudes digitales antes de caer en ellos.</div>
+      <div class="partner-logo" style="font-size:22px;margin-bottom:12px;">fraude.uy</div>
+      <div class="partner-desc" style="margin-bottom:16px;">fraude.uy es un proyecto ciudadano independiente creado en Uruguay con el objetivo de ayudar a las personas —especialmente las más vulnerables— a detectar fraudes digitales antes de caer en ellos.</div>
       <div class="partner-desc" style="margin-bottom:16px;">No somos un banco, no somos una empresa de seguridad, y no estamos afiliados a ninguna institución financiera. Somos un equipo pequeño que cree que la tecnología puede proteger a la gente si se usa bien.</div>
       <div class="partner-desc" style="margin-bottom:16px;"><strong>¿Cómo funciona el análisis?</strong> Cuando verificás un mensaje, usamos una combinación de reglas locales (base de dominios fraudulentos y legítimos de Uruguay), Google Safe Browsing, y el modelo de inteligencia artificial Claude (de Anthropic) para evaluar si el contenido es sospechoso. El resultado es orientativo y no reemplaza el criterio profesional.</div>
       <div class="partner-desc" style="margin-bottom:0;"><strong>¿Qué pasa con mis datos?</strong> No almacenamos los mensajes, links ni imágenes que verificás. El contenido se envía al modelo de IA para analizarlo y se descarta inmediatamente después. No creamos perfiles, no pedimos registro, y no compartimos información con terceros. Para más detalle, consultá nuestra <a href="#privacidad" style="color:var(--accent);text-decoration:underline;">Política de Privacidad</a>.</div>
@@ -914,8 +915,8 @@ section[id]{scroll-margin-top:70px;}
       <a href="#sobre">Sobre el proyecto</a>
       <a href="#privacidad">Privacidad</a>
       <a href="mailto:contacto@fraude.uy">contacto@fraude.uy</a>
-      <a href="https://x.com/LinkGuardUY" target="_blank">Twitter</a>
-      <a href="https://instagram.com/linkguard.uy" target="_blank">Instagram</a>
+      <a href="https://x.com/fraudeuy" target="_blank">Twitter</a>
+      <a href="https://instagram.com/fraude.uy" target="_blank">Instagram</a>
     </div>
   </div>
 </footer>
@@ -942,6 +943,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a=>{
 let currentTab = 'text';
 let uploadedImage = null;
 let adUploadedImage = null;
+let _pageLoadTime = Date.now();
 
 // THREAT DB
 const THREAT_DB={
@@ -1171,6 +1173,20 @@ async function checkGoogleSafeBrowsing(urls){
 
 // ANALYZE
 async function analyze(){
+  // Honeypot check
+  if(document.getElementById('honeypot')?.value){
+    console.log('[analyze] honeypot triggered');
+    // Silently fake a safe result to not alert bots
+    displayResult({verdict:'safe',title:'Parece seguro',subtitle:'No detectamos señales de fraude',signals:[],advice:'✅ No encontramos señales de fraude.'});
+    return;
+  }
+  // Minimum time check (< 1s = bot)
+  if(Date.now() - _pageLoadTime < 1000){
+    console.log('[analyze] too fast, likely bot');
+    displayResult({verdict:'safe',title:'Parece seguro',subtitle:'No detectamos señales de fraude',signals:[],advice:'✅ No encontramos señales de fraude.'});
+    return;
+  }
+
   let input='';let imageData=null;let analysisType='message';
 
   if(currentTab==='text'){
@@ -1903,7 +1919,7 @@ function shareResult(){
   } else {
     contenido=(i.text||'').slice(0,300)+(i.text&&i.text.length>300?'…':'');
   }
-  const t=`🛡️ LinkGuard analizó esto:\n---\n${contenido}\n---\n\nResultado: ${v[r.verdict]}\n${r.title}\n\n${r.advice.replace(/<[^>]*>/g,'')}\n\nVerificá vos también en fraude.uy`;
+  const t=`🛡️ fraude.uy analizó esto:\n---\n${contenido}\n---\n\nResultado: ${v[r.verdict]}\n${r.title}\n\n${r.advice.replace(/<[^>]*>/g,'')}\n\nVerificá vos también en fraude.uy`;
   window.open(`https://wa.me/?text=${encodeURIComponent(t)}`,'_blank');
 }
 

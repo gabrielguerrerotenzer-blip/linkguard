@@ -64,6 +64,14 @@ export const handler = async (event) => {
     return { statusCode: 403, headers, body: JSON.stringify({ error: 'Forbidden' }) };
   }
 
+  // Bot User-Agent check
+  const ua = event.headers['user-agent'] || '';
+  const botPatterns = /^$|curl|python-requests|scrapy|httpx|wget|axios|node-fetch|go-http|java\/|ruby|perl|php\/|libwww|bot|spider|crawler/i;
+  if (botPatterns.test(ua)) {
+    console.log(`[analyze] blocked bot ua="${ua}"`);
+    return { statusCode: 403, headers, body: JSON.stringify({ error: 'Forbidden' }) };
+  }
+
   // Obtener IP del cliente (Netlify expone x-nf-client-connection-ip)
   const ip =
     event.headers['x-nf-client-connection-ip'] ||
