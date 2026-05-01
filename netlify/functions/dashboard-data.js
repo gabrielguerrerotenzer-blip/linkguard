@@ -55,12 +55,12 @@ export const handler = async (event) => {
         ORDER BY total DESC
       `,
 
-      // 3. Top 10 entidades suplantadas
+      // 3. Top 10 entidades suplantadas (agrupadas sin distinguir mayúsculas)
       sql`
-        SELECT institucion AS entidad, COUNT(*) AS total
+        SELECT INITCAP(MIN(institucion)) AS entidad, COUNT(*) AS total
         FROM reportes
         WHERE institucion IS NOT NULL AND institucion <> ''
-        GROUP BY institucion
+        GROUP BY LOWER(institucion)
         ORDER BY total DESC
         LIMIT 10
       `,

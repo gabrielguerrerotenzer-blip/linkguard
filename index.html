@@ -2217,13 +2217,13 @@ function abrirReporte(){
     <div class="report-title">🚨 Reportar este fraude</div>
     <div class="report-subtitle">Tu reporte es anónimo y ayuda a alertar a otras personas en Uruguay.</div>
     ${entidadBlock}
-    <div class="report-question">¿Te pasaron algún número de cuenta, CBU o dato bancario? <span style="font-weight:400;font-size:13px;color:var(--text-soft);">Opcional</span></div>
-    <textarea id="reportDatoBancario" class="report-dato-bancario" placeholder="Ej: 12345678-9, CBU 0000003100..."></textarea>
-    <button onclick="document.getElementById('reportDatoBancario').value=''" style="background:none;border:none;font-size:13px;color:var(--text-soft);cursor:pointer;padding:0 0 16px;text-decoration:underline;">No tengo / Saltear</button>
     <div class="report-question">¿Por dónde te llegó el fraude?</div>
     <div class="report-edad-grid">${canalBtns}</div>
     <div class="report-question" style="margin-top:20px;">¿En qué rango de edad estás?</div>
     <div class="report-edad-grid">${edadBtns}</div>
+    <div class="report-question" style="margin-top:20px;">¿El estafador te pasó algún dato? <span style="font-weight:400;">(número de cuenta, teléfono, nombre)</span> <span style="font-weight:400;font-size:13px;color:var(--text-soft);">Opcional</span></div>
+    <textarea id="reportDatoBancario" class="report-dato-bancario" placeholder="Ej: 12345678-9, teléfono 099 123 456..."></textarea>
+    <button onclick="document.getElementById('reportDatoBancario').value=''" style="background:none;border:none;font-size:13px;color:var(--text-soft);cursor:pointer;padding:0 0 16px;text-decoration:underline;">No tengo / Saltear</button>
     <button class="report-submit-btn" id="reportSubmitBtn" onclick="enviarReporte()">📤 Confirmar reporte</button>
     <button class="report-cancel-link" onclick="cerrarReporte()">Cancelar</button>
   </div>`;
