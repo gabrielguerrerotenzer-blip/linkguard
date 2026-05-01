@@ -2577,6 +2577,9 @@ document.getElementById('pwaModal').addEventListener('click',function(e){
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('/sw.js').catch(()=>{});
 }
+
+// PAGE VIEW TRACKING (fire and forget, silencioso)
+fetch('/api/track',{method:'POST',headers:{'x-linkguard':'fraude-uy-2026'}}).catch(()=>{});
 </script>
 
 </body>

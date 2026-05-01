@@ -36,3 +36,8 @@
   from = "/api/feedback"
   to   = "/.netlify/functions/feedback"
   status = 200
+
+[[redirects]]
+  from = "/api/track"
+  to   = "/.netlify/functions/track"
+  status = 200

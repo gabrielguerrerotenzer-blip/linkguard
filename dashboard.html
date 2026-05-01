@@ -323,7 +323,7 @@ function render(d) {
   const ts = new Date(d.generado_at);
   document.getElementById('updatedAt').textContent = 'Actualizado: ' + ts.toLocaleTimeString('es-UY');
 
-  renderStats(d.totales);
+  renderStats(d.totales, d.page_views);
   renderFuente(d.por_fuente);
   renderTrend(d.por_dia);
   renderCanal(d.por_canal);
@@ -338,11 +338,15 @@ function render(d) {
   renderFeedback(d.feedback);
 }
 
-function renderStats(t) {
+function renderStats(t, pv) {
+  const v = pv || { total: 0, ultimos_7: 0, ultimos_30: 0 };
   const items = [
     { label: 'Total reportes', value: t.total.toLocaleString('es'), cls: 'accent' },
-    { label: 'Últimos 7 días', value: t.ultimos_7.toLocaleString('es'), cls: 'yellow' },
-    { label: 'Últimos 30 días', value: t.ultimos_30.toLocaleString('es'), cls: '' },
+    { label: 'Reportes 7 días', value: t.ultimos_7.toLocaleString('es'), cls: 'yellow' },
+    { label: 'Reportes 30 días', value: t.ultimos_30.toLocaleString('es'), cls: '' },
+    { label: 'Visitas totales', value: v.total.toLocaleString('es'), cls: '' },
+    { label: 'Visitas 7 días', value: v.ultimos_7.toLocaleString('es'), cls: '' },
+    { label: 'Visitas 30 días', value: v.ultimos_30.toLocaleString('es'), cls: '' },
   ];
   document.getElementById('statGrid').innerHTML = items.map(i =>
     `<div class="stat-card ${i.cls}">

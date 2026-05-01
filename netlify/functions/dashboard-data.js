@@ -36,6 +36,7 @@ export const handler = async (event) => {
       porDia,
       campanas,
       feedback,
+      pageViews,
     ] = await Promise.all([
 
       // 1. Totales generales
@@ -147,6 +148,15 @@ export const handler = async (event) => {
         ORDER BY created_at DESC
         LIMIT 20
       `.catch(() => []),
+
+      // 13. Visitas (page_views)
+      sql`
+        SELECT
+          COUNT(*)                                                          AS total,
+          COUNT(*) FILTER (WHERE created_at >= NOW() - INTERVAL '7 days')  AS ultimos_7,
+          COUNT(*) FILTER (WHERE created_at >= NOW() - INTERVAL '30 days') AS ultimos_30
+        FROM page_views
+      `.catch(() => [{ total: 0, ultimos_7: 0, ultimos_30: 0 }]),
     ]);
 
     const t = totales[0];
@@ -197,6 +207,11 @@ export const handler = async (event) => {
           comentario:  r.comentario,
           created_at:  r.created_at,
         })),
+        page_views: {
+          total:      Number(pageViews[0]?.total      || 0),
+          ultimos_7:  Number(pageViews[0]?.ultimos_7  || 0),
+          ultimos_30: Number(pageViews[0]?.ultimos_30 || 0),
+        },
         campanas:  campanas.map(r => ({
           id:       r.id,
           nombre:   r.nombre || '—',
