@@ -7,8 +7,8 @@
 <title>fraude.uy — Verificá si es fraude</title>
 <meta name="description" content="Verificá mensajes, links, capturas de pantalla y publicidades sospechosas. Protección contra phishing y estafas en Uruguay.">
 <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#2D5A3D">
-<link rel="apple-touch-icon" href="/icon.svg">
+<meta name="theme-color" content="#0d0d0d">
+<link rel="apple-touch-icon" href="/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&display=swap" rel="stylesheet">
 <style>
@@ -372,9 +372,108 @@ section[id]{scroll-margin-top:70px;}
   body{overflow-x:hidden;}
   .tool-inner{max-width:100%;padding:0 4px;}
 }
+
+/* PWA INSTALL BANNER */
+.pwa-banner{position:fixed;bottom:0;left:0;right:0;z-index:200;background:#1A1A2E;color:#fff;padding:16px 20px;display:flex;align-items:center;gap:14px;box-shadow:0 -4px 24px rgba(0,0,0,.3);transform:translateY(100%);transition:transform .4s cubic-bezier(.2,.8,.2,1);}
+.pwa-banner.visible{transform:translateY(0);}
+.pwa-banner-icon{font-size:28px;flex-shrink:0;}
+.pwa-banner-text{flex:1;min-width:0;}
+.pwa-banner-title{font-size:16px;font-weight:700;margin-bottom:2px;}
+.pwa-banner-sub{font-size:13px;opacity:.75;}
+.pwa-banner-btn{background:#F4D03F;color:#1A1A2E;border:none;border-radius:10px;padding:10px 18px;font-size:15px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;}
+.pwa-banner-btn:hover{background:#f0c830;}
+.pwa-banner-close{background:none;border:none;color:#fff;opacity:.6;font-size:22px;cursor:pointer;padding:4px 8px;flex-shrink:0;line-height:1;}
+.pwa-banner-close:hover{opacity:1;}
+
+/* PWA INSTALL MODAL */
+.pwa-modal-overlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.7);display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s;}
+.pwa-modal-overlay.visible{opacity:1;pointer-events:auto;}
+.pwa-modal{background:#fff;border-radius:24px 24px 0 0;padding:28px 24px 32px;max-width:480px;width:100%;box-shadow:0 -8px 40px rgba(0,0,0,.15);}
+.pwa-modal-header{display:flex;align-items:center;gap:12px;margin-bottom:24px;}
+.pwa-modal-logo{width:48px;height:48px;border-radius:12px;background:#1A1A2E;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.pwa-modal-logo-text{font-family:'Fraunces',Georgia,serif;font-size:11px;font-weight:700;text-align:center;line-height:1.2;}
+.pwa-modal-logo-fraude{color:#7BB8E0;}
+.pwa-modal-logo-uy{color:#F4D03F;}
+.pwa-modal-title{font-size:20px;font-weight:700;color:#1A1A2E;line-height:1.2;}
+.pwa-modal-subtitle{font-size:14px;color:#6B6B80;margin-top:2px;}
+.pwa-modal h3{font-size:15px;font-weight:700;color:#1A1A2E;margin-bottom:16px;}
+.pwa-modal-device{background:#F2F0EB;border-radius:16px;padding:18px 20px;margin-bottom:14px;}
+.pwa-modal-device-title{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:700;color:#1A1A2E;margin-bottom:12px;}
+.pwa-modal-step{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;}
+.pwa-modal-step:last-child{margin-bottom:0;}
+.pwa-modal-step-num{width:28px;height:28px;border-radius:50%;background:#1A1A2E;color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.pwa-modal-step-text{font-size:15px;color:#1A1A2E;line-height:1.4;padding-top:4px;}
+.pwa-modal-step-icon{font-size:18px;flex-shrink:0;padding-top:3px;}
+.pwa-modal-close{width:100%;background:#1A1A2E;color:#fff;border:none;border-radius:14px;padding:14px;font-size:16px;font-weight:700;cursor:pointer;margin-top:16px;}
+.pwa-modal-close:hover{background:#2a2a4a;}
 </style>
 </head>
 <body>
+
+<!-- PWA INSTALL BANNER -->
+<div class="pwa-banner" id="pwaBanner" role="banner" aria-label="Instalar aplicación">
+  <div class="pwa-banner-icon">📱</div>
+  <div class="pwa-banner-text">
+    <div class="pwa-banner-title">¿Querés tener fraude.uy en tu celular?</div>
+    <div class="pwa-banner-sub">Como una app, sin ocupar espacio</div>
+  </div>
+  <button class="pwa-banner-btn" onclick="abrirModalPWA()">Tocá acá</button>
+  <button class="pwa-banner-close" onclick="cerrarBannerPWA()" aria-label="Cerrar">✕</button>
+</div>
+
+<!-- PWA INSTALL MODAL -->
+<div class="pwa-modal-overlay" id="pwaModal" role="dialog" aria-modal="true" aria-label="Cómo instalar fraude.uy">
+  <div class="pwa-modal">
+    <div class="pwa-modal-header">
+      <div class="pwa-modal-logo">
+        <div class="pwa-modal-logo-text">
+          <div class="pwa-modal-logo-fraude">fraude</div>
+          <div class="pwa-modal-logo-uy">.uy</div>
+        </div>
+      </div>
+      <div>
+        <div class="pwa-modal-title">Agregá fraude.uy a tu pantalla</div>
+        <div class="pwa-modal-subtitle">Es gratis y no instala nada</div>
+      </div>
+    </div>
+
+    <h3>Seguí los pasos según tu celular:</h3>
+
+    <div class="pwa-modal-device">
+      <div class="pwa-modal-device-title">🍎 iPhone / iPad</div>
+      <div class="pwa-modal-step">
+        <div class="pwa-modal-step-num">1</div>
+        <div class="pwa-modal-step-text">Tocá el botón de compartir — es el cuadrado con una flecha apuntando hacia arriba, que está en la parte de abajo de la pantalla</div>
+      </div>
+      <div class="pwa-modal-step">
+        <div class="pwa-modal-step-num">2</div>
+        <div class="pwa-modal-step-text">Buscá y tocá <strong>"Agregar a pantalla de inicio"</strong></div>
+      </div>
+      <div class="pwa-modal-step">
+        <div class="pwa-modal-step-num">3</div>
+        <div class="pwa-modal-step-text">Tocá <strong>"Agregar"</strong> arriba a la derecha — ¡listo!</div>
+      </div>
+    </div>
+
+    <div class="pwa-modal-device">
+      <div class="pwa-modal-device-title">🤖 Android</div>
+      <div class="pwa-modal-step">
+        <div class="pwa-modal-step-num">1</div>
+        <div class="pwa-modal-step-text">Tocá los 3 puntitos que están arriba a la derecha de la pantalla</div>
+      </div>
+      <div class="pwa-modal-step">
+        <div class="pwa-modal-step-num">2</div>
+        <div class="pwa-modal-step-text">Tocá <strong>"Agregar a pantalla de inicio"</strong> o <strong>"Instalar aplicación"</strong></div>
+      </div>
+      <div class="pwa-modal-step">
+        <div class="pwa-modal-step-num">3</div>
+        <div class="pwa-modal-step-text">Tocá <strong>"Agregar"</strong> — ¡y ya aparece en tu pantalla!</div>
+      </div>
+    </div>
+
+    <button class="pwa-modal-close" onclick="cerrarModalPWA()">Entendido ✓</button>
+  </div>
+</div>
 
 <!-- NAV -->
 <nav class="nav" id="nav">
@@ -2314,6 +2413,43 @@ function resetEmergency(){
   document.getElementById(id).addEventListener('keydown',e=>{
     if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();analyze();}
   });
+});
+
+// PWA INSTALL BANNER
+(function(){
+  const KEY='pwa_banner_shown_v1';
+  // Mostrar el banner solo si nunca se mostró
+  if(!localStorage.getItem(KEY)){
+    // Esperar 4s para no interrumpir la carga inicial
+    setTimeout(()=>{
+      const b=document.getElementById('pwaBanner');
+      if(b) b.classList.add('visible');
+    },4000);
+  }
+})();
+
+function cerrarBannerPWA(){
+  const b=document.getElementById('pwaBanner');
+  if(b) b.classList.remove('visible');
+  localStorage.setItem('pwa_banner_shown_v1','1');
+}
+
+function abrirModalPWA(){
+  cerrarBannerPWA();
+  const m=document.getElementById('pwaModal');
+  if(m) m.classList.add('visible');
+  document.body.style.overflow='hidden';
+}
+
+function cerrarModalPWA(){
+  const m=document.getElementById('pwaModal');
+  if(m) m.classList.remove('visible');
+  document.body.style.overflow='';
+}
+
+// Cerrar modal al tocar el fondo
+document.getElementById('pwaModal').addEventListener('click',function(e){
+  if(e.target===this) cerrarModalPWA();
 });
 
 // Service worker
