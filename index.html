@@ -501,7 +501,7 @@ section[id]{scroll-margin-top:70px;}
   </a>
   <div class="nav-links">
     <a href="#como-funciona" class="nav-link">Cómo funciona</a>
-    <a href="#tutorial" class="nav-link nav-link--tutorial">¿Cómo copiar?</a>
+    <a href="#tutorial" class="nav-link nav-link--tutorial">Ayuda</a>
     <a href="#consejos" class="nav-link">Consejos</a>
     <a href="#sobre" class="nav-link">Sobre el proyecto</a>
     <a href="#emergencia" class="nav-link" style="color:var(--red);font-weight:600;">🚨 Ya compartí mis datos</a>
@@ -556,7 +556,7 @@ section[id]{scroll-margin-top:70px;}
           <button class="demo-pill" onclick="loadDemo('whatsapp')">💬 WhatsApp</button>
           <button class="demo-pill" onclick="loadDemo('safe')">✅ Legítimo</button>
         </div>
-        <button class="howto-inline-btn" onclick="document.getElementById('tutorial').scrollIntoView({behavior:'smooth'})" type="button">
+        <button class="howto-inline-btn" onclick="irAlTutorial()" type="button">
           📋 ¿No sabés cómo copiar el mensaje? Tocá acá →
         </button>
       </div>
@@ -608,10 +608,10 @@ section[id]{scroll-margin-top:70px;}
 
     <!-- How-to helper -->
     <div id="tutorial">
-    <button class="howto-toggle" id="howtoToggle" onclick="toggleHowto()" aria-expanded="false">
+    <button class="howto-toggle open" id="howtoToggle" onclick="toggleHowto()" aria-expanded="true">
       📖 ¿Cómo copio un mensaje o saco una foto? <span class="howto-toggle-arrow">▾</span>
     </button>
-    <div class="howto-panel" id="howtoPanel" role="region">
+    <div class="howto-panel open" id="howtoPanel" role="region">
 
       <div class="howto-block">
         <div class="howto-block-title">💬 Copiar un mensaje de WhatsApp</div>
@@ -1105,6 +1105,15 @@ function toggleHowto(){
   const open=panel.classList.toggle('open');
   btn.classList.toggle('open',open);
   btn.setAttribute('aria-expanded',open);
+}
+function irAlTutorial(){
+  // Asegura que el panel esté abierto antes de scrollear
+  const btn=document.getElementById('howtoToggle');
+  const panel=document.getElementById('howtoPanel');
+  panel.classList.add('open');
+  btn.classList.add('open');
+  btn.setAttribute('aria-expanded','true');
+  document.getElementById('tutorial').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 // NAV
@@ -2434,16 +2443,16 @@ function resetEmergency(){
   });
 });
 
-// PWA INSTALL BANNER
+// PWA INSTALL BANNER — solo en mobile
 (function(){
+  const isMobile=window.matchMedia('(max-width:767px)').matches;
+  if(!isMobile) return;
   const KEY='pwa_banner_shown_v1';
-  // Mostrar el banner solo si nunca se mostró
   if(!localStorage.getItem(KEY)){
-    // Esperar 4s para no interrumpir la carga inicial
     setTimeout(()=>{
       const b=document.getElementById('pwaBanner');
       if(b) b.classList.add('visible');
-    },4000);
+    },1500);
   }
 })();
 
