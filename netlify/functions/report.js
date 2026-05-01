@@ -1,5 +1,12 @@
 import { neon } from '@neondatabase/serverless';
 
+function normalizarEntidad(nombre) {
+  if (!nombre || typeof nombre !== 'string') return nombre;
+  const s = nombre.trim();
+  if (!s) return null;
+  return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+}
+
 function generarNumeroReporte(contador) {
   const hoy = new Date();
   const dia  = String(hoy.getDate()).padStart(2, '0');
@@ -28,7 +35,7 @@ function extraerDominio(url) {
 
 async function procesarIndicadoresWeb(sql, body, reporteId, institucion) {
   try {
-    const entidad = institucion || null;
+    const entidad = normalizarEntidad(institucion) || null;
 
     // --- Dominio ---
     const urlFuente = body.link_fraudulento || body.link_sitio_web || null;
@@ -349,11 +356,11 @@ export const handler = async (event) => {
         ${canales.includes('publicidad')},
         ${body.link_fraudulento || null},
         ${body.link_sitio_web   || null},
-        ${body.institucion      || null},
+        ${normalizarEntidad(body.institucion) || null},
         ${body.motivo           || null},
         ${body.edad             || null},
         false, false, false, false, false, false, false, false, false,
-        false, 'web', ${reportante.id}
+        false, ${body.fuente_override||'web'}, ${reportante.id}
       ) RETURNING id
     `;
 

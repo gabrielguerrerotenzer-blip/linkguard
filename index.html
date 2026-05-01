@@ -35,6 +35,8 @@ section[id]{scroll-margin-top:70px;}
 .nav-link:hover{color:var(--text);background:var(--bg-alt);}
 .nav-cta{padding:8px 20px;background:var(--accent);color:#fff;border-radius:10px;font-size:14px;font-weight:600;text-decoration:none;transition:all .2s;}
 .nav-cta:hover{background:var(--accent-hover);transform:translateY(-1px);}
+.nav-link--tutorial{color:#c9920a;font-weight:600;}
+.nav-link--tutorial:hover{color:#F4D03F;}
 @media(max-width:700px){.nav-links{display:none;}.nav{padding:14px 20px;}}
 
 /* HERO */
@@ -107,6 +109,10 @@ section[id]{scroll-margin-top:70px;}
 .demo-row{display:flex;gap:6px;margin-top:16px;flex-wrap:wrap;justify-content:center;}
 .demo-pill{padding:7px 12px;border:1px solid var(--border);border-radius:20px;background:var(--card);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;color:var(--text-soft);cursor:pointer;transition:all .2s;}
 .demo-pill:hover{border-color:var(--accent);color:var(--accent);}
+
+/* How-to inline button */
+.howto-inline-btn{width:100%;margin-top:10px;padding:11px 16px;background:var(--yellow-light);color:#c9920a;border:1.5px dashed #F4D03F;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;text-align:left;transition:all .2s;}
+.howto-inline-btn:hover{background:#F4D03F;color:#7a5a00;}
 
 /* How-to helper */
 .howto-toggle{margin-top:14px;width:100%;background:none;border:none;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text-soft);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;padding:6px 0;transition:color .2s;}
@@ -377,6 +383,7 @@ section[id]{scroll-margin-top:70px;}
   </a>
   <div class="nav-links">
     <a href="#como-funciona" class="nav-link">Cómo funciona</a>
+    <a href="#tutorial" class="nav-link nav-link--tutorial">¿Cómo copiar?</a>
     <a href="#consejos" class="nav-link">Consejos</a>
     <a href="#sobre" class="nav-link">Sobre el proyecto</a>
     <a href="#emergencia" class="nav-link" style="color:var(--red);font-weight:600;">🚨 Ya compartí mis datos</a>
@@ -431,6 +438,9 @@ section[id]{scroll-margin-top:70px;}
           <button class="demo-pill" onclick="loadDemo('whatsapp')">💬 WhatsApp</button>
           <button class="demo-pill" onclick="loadDemo('safe')">✅ Legítimo</button>
         </div>
+        <button class="howto-inline-btn" onclick="document.getElementById('tutorial').scrollIntoView({behavior:'smooth'})" type="button">
+          📋 ¿No sabés cómo copiar el mensaje? Tocá acá →
+        </button>
       </div>
 
       <!-- Image input -->
@@ -479,8 +489,9 @@ section[id]{scroll-margin-top:70px;}
     </div>
 
     <!-- How-to helper -->
+    <div id="tutorial">
     <button class="howto-toggle" id="howtoToggle" onclick="toggleHowto()" aria-expanded="false">
-      ❓ ¿No sabés cómo copiar o sacar captura? <span class="howto-toggle-arrow">▾</span>
+      📖 ¿Cómo copio un mensaje o saco una foto? <span class="howto-toggle-arrow">▾</span>
     </button>
     <div class="howto-panel" id="howtoPanel" role="region">
 
@@ -504,6 +515,7 @@ section[id]{scroll-margin-top:70px;}
         </ol>
       </div>
 
+    </div>
     </div>
 
     <!-- Loading -->
@@ -534,9 +546,12 @@ section[id]{scroll-margin-top:70px;}
         <svg viewBox="0 0 24 24" width="20" height="20" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.558 4.107 1.535 5.823L.057 23.18a.75.75 0 00.916.919l5.433-1.479A11.943 11.943 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.943 9.943 0 01-5.354-1.557l-.38-.229-3.965 1.079 1.079-3.887-.247-.393A9.944 9.944 0 012 12C2 6.486 6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/></svg>
         Enviá este resultado por WhatsApp
       </button>
-      <button class="result-report-btn" id="reportBtn" onclick="abrirReporte()">
-        🚨 Reportar este fraude
-      </button>
+      <div id="reportBtn" style="text-align:center;display:none;">
+        <button class="result-report-btn result-report-btn--top" onclick="abrirReporte()" style="margin-bottom:6px;">
+          🚨 Reportar este fraude
+        </button>
+        <div style="font-size:12px;color:var(--text-soft);">Cada reporte protege a otros uruguayos</div>
+      </div>
       <div id="reportSection"></div>
     </div>
   </div>
@@ -1137,6 +1152,7 @@ function handleFile(input){
       document.getElementById('previewImg').src=compressed;
       document.getElementById('imgPreview').classList.add('active');
       document.getElementById('uploadZone').style.display='none';
+      setTimeout(()=>document.getElementById('verifyBtn')?.scrollIntoView({behavior:'smooth',block:'center'}),300);
     });
   };
   reader.readAsDataURL(file);
@@ -1260,6 +1276,7 @@ async function analyze(){
   window._lastEntidad=detectEntidad(input);
   hideResult();
   showLoading(true);
+  setTimeout(()=>document.getElementById('loading')?.scrollIntoView({behavior:'smooth',block:'center'}),100);
 
   try{
     // ====== PRE-STEP: cargar amenazas dinámicas de Neon (rápido si ya están cacheadas) ======
@@ -1924,7 +1941,7 @@ function displayResult(r){
 
   // Botones de reporte (top y bottom)
   const showReport=r.verdict!=='safe';
-  document.getElementById('reportBtn').style.display=showReport?'flex':'none';
+  document.getElementById('reportBtn').style.display=showReport?'block':'none';
   document.getElementById('reportBtnTop').style.display=showReport?'flex':'none';
   document.getElementById('reportSection').innerHTML='';
 
@@ -1939,7 +1956,11 @@ function displayResult(r){
   }
 
   window._lastResult=r;
-  card.scrollIntoView({behavior:'smooth',block:'center'});
+  // Auto-reporte silencioso para resultados peligrosos/sospechosos
+  if(r.verdict==='danger'||r.verdict==='warning'){
+    _autoReportarSilencioso(r);
+  }
+  card.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 async function analizarConSonnet(){
@@ -2123,8 +2144,35 @@ function cerrarReporte(){
   _wizardNeedsEntidad=false;
   document.getElementById('reportSection').innerHTML='';
   if(window._lastResult?.verdict!=='safe'){
-    document.getElementById('reportBtn').style.display='flex';
+    document.getElementById('reportBtn').style.display='block';
     document.getElementById('reportBtnTop').style.display='flex';
+  }
+}
+
+async function _autoReportarSilencioso(r){
+  try{
+    const inp=window._lastInput||{};
+    const urlMatch=(inp.text||'').match(/https?:\/\/[^\s]+/);
+    const linkFraudulento=urlMatch?urlMatch[0]:null;
+    const CANAL_MAP={sms:'sms',whatsapp:'whatsapp',email:'email',ad:'publicidad',image:'publicidad'};
+    const canalInferido=inp.tab&&CANAL_MAP[inp.tab]?[CANAL_MAP[inp.tab]]:[];
+    const fingerprint=await generarFingerprint();
+    await fetch('/api/report',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-linkguard':'fraude-uy-2026'},
+      body:JSON.stringify({
+        link_fraudulento:linkFraudulento,
+        link_sitio_web:linkFraudulento,
+        institucion:r.empresa&&r.empresa!=='null'?r.empresa:null,
+        motivo:null,
+        edad:null,
+        canales:canalInferido,
+        fingerprint,
+        fuente_override:'web-auto'
+      })
+    });
+  }catch(e){
+    console.debug('[auto-report]',e.message);
   }
 }
 
