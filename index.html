@@ -40,7 +40,31 @@ section[id]{scroll-margin-top:70px;}
 .nav-cta:hover{background:var(--accent-hover);transform:translateY(-1px);}
 .nav-link--tutorial{color:#c9920a;font-weight:600;}
 .nav-link--tutorial:hover{color:#F4D03F;}
-@media(max-width:700px){.nav-links{display:none;}.nav{padding:14px 20px;}}
+.nav-hamburger{display:none;background:none;border:none;font-size:26px;cursor:pointer;color:var(--text);padding:2px 6px;line-height:1;transition:opacity .2s;}
+.nav-hamburger:hover{opacity:.7;}
+@media(max-width:767px){
+  .nav-links{display:none;}
+  .nav{padding:14px 20px;}
+  .nav-hamburger{display:block;}
+}
+/* MOBILE MENU DRAWER */
+.nav-mobile-menu{display:none;position:fixed;inset:0;z-index:300;}
+.nav-mobile-menu.open{display:block;}
+.nav-mobile-overlay{position:absolute;inset:0;background:rgba(0,0,0,.45);}
+.nav-mobile-drawer{position:absolute;top:0;right:0;width:min(300px,85vw);height:100%;background:var(--bg);display:flex;flex-direction:column;padding:0;overflow-y:auto;box-shadow:-6px 0 32px rgba(0,0,0,.18);animation:slideInRight .25s ease;}
+@keyframes slideInRight{from{transform:translateX(100%);}to{transform:translateX(0);}}
+.nav-mobile-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);}
+.nav-mobile-logo{font-family:'Fraunces',serif;font-size:20px;font-weight:700;}
+.nav-mobile-close{background:none;border:none;font-size:24px;cursor:pointer;color:var(--text-soft);padding:4px;line-height:1;transition:color .2s;}
+.nav-mobile-close:hover{color:var(--text);}
+.nav-mobile-links{display:flex;flex-direction:column;padding:12px 12px 24px;}
+.nav-mobile-link{display:block;padding:14px 16px;font-size:16px;font-weight:500;color:var(--text);text-decoration:none;border-radius:10px;transition:background .15s;}
+.nav-mobile-link:hover{background:var(--bg-alt);}
+.nav-mobile-link--tutorial{color:#c9920a;font-weight:600;}
+.nav-mobile-link--emergency{color:var(--red);font-weight:600;}
+.nav-mobile-divider{height:1px;background:var(--border);margin:8px 16px;}
+.nav-mobile-cta{margin:8px 12px 0;display:block;padding:14px;background:var(--accent);color:#fff;border-radius:12px;font-size:16px;font-weight:700;text-decoration:none;text-align:center;transition:background .2s;}
+.nav-mobile-cta:hover{background:var(--accent-hover);}
 
 /* HERO */
 .hero{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:120px 24px 80px;position:relative;overflow:hidden;}
@@ -509,7 +533,28 @@ section[id]{scroll-margin-top:70px;}
     <a href="#emergencia" class="nav-link" style="color:var(--red);font-weight:600;">🚨 Ya compartí mis datos</a>
     <a href="#verificar" class="nav-cta">Verificar ahora</a>
   </div>
+  <button class="nav-hamburger" id="navHamburger" onclick="toggleMobileMenu()" aria-label="Abrir menú" aria-expanded="false">☰</button>
 </nav>
+
+<!-- MOBILE MENU DRAWER -->
+<div class="nav-mobile-menu" id="navMobileMenu" role="dialog" aria-modal="true" aria-label="Menú de navegación">
+  <div class="nav-mobile-overlay" onclick="closeMobileMenu()"></div>
+  <div class="nav-mobile-drawer">
+    <div class="nav-mobile-header">
+      <span class="nav-mobile-logo"><span style="color:#7BB8E0">fraude</span><span style="color:#F4D03F">.uy</span></span>
+      <button class="nav-mobile-close" onclick="closeMobileMenu()" aria-label="Cerrar menú">✕</button>
+    </div>
+    <div class="nav-mobile-links">
+      <a href="#como-funciona" class="nav-mobile-link" onclick="closeMobileMenu()">📖 Cómo funciona</a>
+      <a href="#tutorial" class="nav-mobile-link nav-mobile-link--tutorial" onclick="closeMobileMenu()">❓ Ayuda</a>
+      <a href="#consejos" class="nav-mobile-link" onclick="closeMobileMenu()">🛡️ Consejos</a>
+      <a href="#sobre" class="nav-mobile-link" onclick="closeMobileMenu()">ℹ️ Sobre el proyecto</a>
+      <div class="nav-mobile-divider"></div>
+      <a href="#emergencia" class="nav-mobile-link nav-mobile-link--emergency" onclick="closeMobileMenu()">🚨 Ya compartí mis datos</a>
+    </div>
+    <a href="#verificar" class="nav-mobile-cta" onclick="closeMobileMenu()">Verificar ahora →</a>
+  </div>
+</div>
 
 <!-- HERO -->
 <section class="hero">
@@ -1146,6 +1191,26 @@ function irAlTutorial(){
 
 // NAV
 window.addEventListener('scroll',()=>{document.getElementById('nav').classList.toggle('scrolled',window.scrollY>20);});
+
+// MOBILE MENU
+function toggleMobileMenu(){
+  const menu=document.getElementById('navMobileMenu');
+  const btn=document.getElementById('navHamburger');
+  const open=menu.classList.toggle('open');
+  btn.textContent=open?'✕':'☰';
+  btn.setAttribute('aria-expanded',open);
+  document.body.style.overflow=open?'hidden':'';
+}
+function closeMobileMenu(){
+  const menu=document.getElementById('navMobileMenu');
+  const btn=document.getElementById('navHamburger');
+  menu.classList.remove('open');
+  btn.textContent='☰';
+  btn.setAttribute('aria-expanded','false');
+  document.body.style.overflow='';
+}
+// Close mobile menu on Escape key
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMobileMenu();});
 
 // Smooth scroll fallback for all anchor links
 document.querySelectorAll('a[href^="#"]').forEach(a=>{
