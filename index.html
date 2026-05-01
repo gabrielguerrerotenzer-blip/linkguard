@@ -22,7 +22,8 @@
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
-body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);overflow-x:hidden;}
+html{overflow-x:hidden;max-width:100vw;}
+body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);overflow-x:hidden;max-width:100vw;}
 section[id]{scroll-margin-top:70px;}
 
 /* NAV */
@@ -58,7 +59,7 @@ section[id]{scroll-margin-top:70px;}
 @keyframes fadeInDown{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
 
 /* TOOL SECTION */
-.tool-section{padding:80px 24px;background:var(--bg-alt);position:relative;}
+.tool-section{padding:80px 24px;background:var(--bg-alt);position:relative;overflow:hidden;}
 .tool-section::before{content:'';position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;}
 .tool-inner{max-width:540px;margin:0 auto;position:relative;z-index:1;}
 .section-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--accent);text-align:center;margin-bottom:12px;}
@@ -371,6 +372,24 @@ section[id]{scroll-margin-top:70px;}
 
   body{overflow-x:hidden;}
   .tool-inner{max-width:100%;padding:0 4px;}
+
+  /* Prevent any child from causing horizontal overflow */
+  .tool-section,.tool-card,.tool-result,.report-section,
+  .how-section,.stats-section,.tips-section,.emergency-section,
+  .cta-section,.partner-section,.footer,.hero{max-width:100vw;}
+
+  /* Entity grid: 2 columns on small screens */
+  .report-entidad-grid{grid-template-columns:repeat(2,1fr);}
+
+  /* Ensure long words/URLs break */
+  .result-advice,.signal-item,.report-success-community-body,
+  .web-search-item-title,.web-search-item-snippet{
+    word-break:break-word;overflow-wrap:anywhere;
+  }
+
+  /* Nav: never overflow */
+  .nav{max-width:100vw;box-sizing:border-box;}
+  .nav-logo-text{max-width:calc(100vw - 120px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 }
 
 /* PWA INSTALL BANNER */
@@ -531,7 +550,7 @@ section[id]{scroll-margin-top:70px;}
         <div class="tool-input-label">Mensaje, SMS o link</div>
         <div class="tool-hint">Pegá el mensaje completo de WhatsApp, SMS, email o solo el link.</div>
         <textarea class="tool-textarea" id="msgInput" placeholder="Ej: Estimado cliente, su cuenta ha sido bloqueada. Ingrese a https://bancco-republica.com para verificar..."></textarea>
-        <input type="text" name="website" id="honeypot" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" aria-hidden="true">
+        <input type="text" name="website" id="honeypot" tabindex="-1" autocomplete="off" style="position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;opacity:0;" aria-hidden="true">
         <div class="demo-row">
           <button class="demo-pill" onclick="loadDemo('sms')">📱 SMS falso</button>
           <button class="demo-pill" onclick="loadDemo('whatsapp')">💬 WhatsApp</button>
