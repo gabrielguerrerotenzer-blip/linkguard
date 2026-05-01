@@ -1363,8 +1363,61 @@ function switchTab(tab){
   hideResult();
 }
 
-// DEMOS
-function loadDemo(type){switchTab('text');document.getElementById('msgInput').value=demos[type];analyze();}
+// DEMOS — respuestas predefinidas (sin llamar a la API)
+const DEMO_RESULTS={
+  sms:{
+    verdict:'danger',
+    title:'ESTAFA detectada',
+    subtitle:'Este SMS tiene múltiples señales de phishing bancario',
+    empresa:'BROU',
+    _isDemo:true,
+    signals:[
+      {badge:'🔗 PELIGRO',    text:'Link falso: "brou-verificacion.com" no es el sitio oficial del BROU (brou.com.uy)'},
+      {badge:'⚡ URGENCIA',   text:'"Tiene 24hs" es presión artificial para que actúes sin pensar'},
+      {badge:'🔑 TOKEN',      text:'Solicita tu token digital — el BROU nunca pide el token por SMS'},
+      {badge:'📱 SMS',        text:'Canal SMS no oficial: el BROU no envía alertas con links para ingresar datos'},
+    ],
+    advice:'🚨 <strong>No ingresés al link.</strong> El BROU nunca te manda un SMS con un link para ingresar tu token. Si recibiste este mensaje, ignoralo y llamá al BROU al <strong>1896</strong> para confirmar el estado de tu cuenta.'
+  },
+  whatsapp:{
+    verdict:'danger',
+    title:'ESTAFA detectada',
+    subtitle:'Suplantación de identidad bancaria por WhatsApp',
+    empresa:'Itaú',
+    _isDemo:true,
+    signals:[
+      {badge:'🎭 SUPLANTACIÓN', text:'Dice ser el "departamento de seguridad del Banco Itaú" — los bancos no contactan por WhatsApp'},
+      {badge:'🔑 TOKEN',        text:'Solicita tu token de 6 dígitos — ningún banco pide el token para "bloquear" algo'},
+      {badge:'📞 TELÉFONO',     text:'Número sospechoso (099 847 231) — no es un número oficial del banco'},
+      {badge:'⚡ URGENCIA',     text:'"Es urgente" — táctica clásica para que no tengas tiempo de verificar'},
+    ],
+    advice:'🚨 <strong>No des ningún dato.</strong> Cortá la comunicación inmediatamente. Ningún banco te pide el token por WhatsApp. Si dudás, llamá al Itaú al <strong>1784</strong>.'
+  },
+  safe:{
+    verdict:'safe',
+    title:'Sin señales de fraude',
+    subtitle:'Este link corresponde al sitio oficial del BROU',
+    empresa:null,
+    _isDemo:true,
+    signals:[
+      {badge:'✅ DOMINIO OK',   text:'brou.com.uy es el dominio oficial y verificado del Banco República Oriental del Uruguay'},
+      {badge:'✅ SIN URGENCIA', text:'No hay presión, amenazas ni solicitud de datos sensibles en el mensaje'},
+      {badge:'✅ HTTPS',        text:'El sitio usa conexión segura con certificado válido'},
+    ],
+    advice:'✅ <strong>Este mensaje parece legítimo.</strong> El link lleva al sitio oficial del BROU. Aun así, siempre verificá que la dirección empiece con <strong>brou.com.uy</strong> antes de ingresar cualquier dato.'
+  }
+};
+
+function loadDemo(type){
+  switchTab('text');
+  const text=demos[type];
+  document.getElementById('msgInput').value=text;
+  window._lastInput={tab:'text',text};
+  window._lastEntidad=detectEntidad(text);
+  window._lastModel='demo'; // evita el botón "Analizar con más profundidad"
+  hideResult();
+  displayResult(DEMO_RESULTS[type]);
+}
 function loadAdDemo(type){switchTab('ad');document.getElementById('adInput').value=adDemos[type];analyze();}
 
 // IMAGE HANDLING
@@ -2182,8 +2235,8 @@ function displayResult(r){
   }
 
   window._lastResult=r;
-  // Auto-reporte silencioso para resultados peligrosos/sospechosos
-  if(r.verdict==='danger'||r.verdict==='warning'){
+  // Auto-reporte silencioso para resultados peligrosos/sospechosos (no para demos)
+  if(!r._isDemo&&(r.verdict==='danger'||r.verdict==='warning')){
     _autoReportarSilencioso(r);
   }
   setTimeout(()=>card.scrollIntoView({behavior:'smooth',block:'start'}),300);
