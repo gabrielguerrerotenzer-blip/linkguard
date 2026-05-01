@@ -1270,7 +1270,7 @@ function handleFile(input){
       document.getElementById('previewImg').src=compressed;
       document.getElementById('imgPreview').classList.add('active');
       document.getElementById('uploadZone').style.display='none';
-      setTimeout(()=>document.getElementById('verifyBtn')?.scrollIntoView({behavior:'smooth',block:'center'}),300);
+      setTimeout(()=>document.getElementById('verifyBtn')?.scrollIntoView({behavior:'smooth',block:'start'}),300);
     });
   };
   reader.readAsDataURL(file);
@@ -1394,7 +1394,7 @@ async function analyze(){
   window._lastEntidad=detectEntidad(input);
   hideResult();
   showLoading(true);
-  setTimeout(()=>document.getElementById('loading')?.scrollIntoView({behavior:'smooth',block:'center'}),100);
+  setTimeout(()=>document.getElementById('loading')?.scrollIntoView({behavior:'smooth',block:'start'}),100);
 
   try{
     // ====== PRE-STEP: cargar amenazas dinámicas de Neon (rápido si ya están cacheadas) ======
