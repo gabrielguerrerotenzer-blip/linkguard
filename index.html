@@ -269,11 +269,13 @@ section[id]{scroll-margin-top:70px;}
 /* Emergency steps */
 .emergency-steps{display:none;animation:slideUp .4s ease;}
 .emergency-steps.active{display:block;}
-.emergency-step{display:flex;gap:16px;padding:20px;background:var(--bg);border-radius:14px;margin-bottom:12px;align-items:flex-start;}
+.emergency-step{display:flex;gap:16px;padding:20px;background:var(--bg);border-radius:14px;margin-bottom:12px;align-items:flex-start;overflow:hidden;}
 .step-number{width:36px;height:36px;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0;}
+/* min-width:0 es crítico para que un flex-child pueda achicarse */
+.step-content{min-width:0;overflow:hidden;}
 .step-content h4{font-size:16px;font-weight:700;margin-bottom:4px;}
-.step-content p{font-size:14px;color:var(--text-soft);line-height:1.6;}
-.step-call-btn{display:inline-flex;align-items:center;gap:8px;margin-top:10px;padding:10px 20px;background:var(--red);color:#fff;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;transition:all .2s;}
+.step-content p{font-size:14px;color:var(--text-soft);line-height:1.6;word-break:break-word;overflow-wrap:anywhere;}
+.step-call-btn{display:flex;align-items:center;gap:8px;margin-top:10px;padding:10px 20px;background:var(--red);color:#fff;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;transition:all .2s;width:100%;box-sizing:border-box;white-space:normal;word-break:break-all;overflow-wrap:anywhere;}
 .step-call-btn:hover{background:#A93226;transform:translateY(-1px);}
 .step-call-btn.green{background:var(--green);}
 .step-call-btn.green:hover{background:#1E7A3E;}
@@ -376,8 +378,12 @@ section[id]{scroll-margin-top:70px;}
   .input-tab{min-height:48px;font-size:13px;}
   .demo-pill{min-height:40px;padding:9px 14px;font-size:12px;}
   .wizard-option{min-height:56px;font-size:16px;}
-  .step-call-btn{min-height:48px;font-size:15px;padding:12px 22px;}
+  .step-call-btn{min-height:48px;font-size:14px;padding:12px 16px;}
   .emergency-back{min-height:44px;}
+  /* Evita overflow de emails y URLs largos en sección de emergencia */
+  .emergency-step{padding:14px 12px;}
+  .emergency-extra{word-break:break-word;overflow-wrap:anywhere;}
+  .step-content h4,.step-content p{word-break:break-word;overflow-wrap:anywhere;}
 
   .tool-textarea{font-size:16px;min-height:120px;}
   .tool-input-label,.tool-hint{font-size:14px;}
