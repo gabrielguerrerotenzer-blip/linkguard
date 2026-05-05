@@ -110,6 +110,21 @@ body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);min
 .campanas-card{background:var(--card);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:32px;}
 .campanas-empty{font-size:14px;color:var(--text-soft);text-align:center;padding:24px 0;}
 
+/* BANNER CAMPAÑAS ACTIVAS */
+.campanas-banner{background:#c0392b;color:#fff;border-radius:8px;padding:14px 20px;margin-bottom:20px;font-size:0.95rem;}
+.campanas-banner ul{margin:8px 0 0 0;padding-left:20px;}
+.campanas-banner li{margin:3px 0;}
+
+/* INDICADORES CALIENTES */
+.seccion-calientes{margin:24px 0;}
+.seccion-calientes h2{font-size:1.1rem;margin-bottom:14px;}
+.calientes-grid{display:flex;gap:16px;flex-wrap:wrap;}
+.caliente-tabla{flex:1;min-width:200px;background:#1a1a2e;border-radius:8px;padding:12px;}
+.caliente-tabla h3{font-size:0.9rem;color:#7bb8e0;margin:0 0 8px 0;}
+.caliente-tabla table{width:100%;border-collapse:collapse;font-size:0.82rem;}
+.caliente-tabla td{padding:4px 6px;border-bottom:1px solid #2a2a4a;word-break:break-all;}
+.caliente-tabla td:last-child{text-align:right;white-space:nowrap;color:#f4d03f;}
+
 /* LOADING OVERLAY */
 #loadingOverlay{position:fixed;inset:0;background:rgba(250,250,247,.8);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:200;}
 .spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;}
@@ -175,6 +190,12 @@ body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);min
 
   <div class="dash-body">
 
+    <!-- BANNER CAMPAÑAS ACTIVAS -->
+    <div id="bannerCampanas" style="display:none" class="campanas-banner">
+      <span id="bannerCampanasTexto"></span>
+      <ul id="bannerCampanasList"></ul>
+    </div>
+
     <!-- RESUMEN -->
     <div class="section-title"><span class="dot"></span>Resumen general</div>
     <div class="stat-grid" id="statGrid"></div>
@@ -193,6 +214,26 @@ body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);min
         <div class="chart-wrap"><canvas id="canalChart"></canvas></div>
       </div>
     </div>
+
+    <!-- INDICADORES CALIENTES 48hs -->
+    <section class="seccion-calientes">
+      <h2>🔥 Indicadores calientes — últimas 48hs</h2>
+      <div class="calientes-grid" id="calientes-grid">
+        <div class="caliente-tabla">
+          <h3>Dominios</h3>
+          <table id="tblDominiosCalientes"><tbody></tbody></table>
+        </div>
+        <div class="caliente-tabla">
+          <h3>Teléfonos</h3>
+          <table id="tblTelefonosCalientes"><tbody></tbody></table>
+        </div>
+        <div class="caliente-tabla">
+          <h3>Emails</h3>
+          <table id="tblEmailsCalientes"><tbody></tbody></table>
+        </div>
+      </div>
+      <p id="sinCalientes" style="display:none;color:#888;text-align:center">Sin indicadores calientes en las últimas 48hs</p>
+    </section>
 
     <!-- TOP DOMINIOS Y TELÉFONOS -->
     <div class="tables-row">
@@ -336,6 +377,8 @@ function render(d) {
   renderDist('entidadDist', d.top_entidades.slice(0,10), 'entidad', '#C0392B');
   renderCampanas(d.campanas);
   renderFeedback(d.feedback);
+  renderBannerCampanas(d.campanas_activas);
+  renderCalientes(d.dominios_calientes, d.telefonos_calientes, d.emails_calientes);
 }
 
 function renderStats(t, pv) {
@@ -534,6 +577,38 @@ function renderCampanas(arr) {
         <td style="color:var(--text-soft);font-size:12px">${c.inicio ? new Date(c.inicio).toLocaleDateString('es-UY') : '—'}</td>
       </tr>`).join('') +
     '</tbody></table>';
+}
+
+function renderBannerCampanas(campanas) {
+  const banner = document.getElementById('bannerCampanas');
+  if (!campanas || campanas.length === 0) { banner.style.display = 'none'; return; }
+  banner.style.display = 'block';
+  document.getElementById('bannerCampanasTexto').textContent =
+    `🚨 ${campanas.length} campaña${campanas.length > 1 ? 's activas' : ' activa'} detectada${campanas.length > 1 ? 's' : ''}`;
+  const list = document.getElementById('bannerCampanasList');
+  list.innerHTML = campanas.map(c =>
+    `<li><strong>${c.entidad}</strong> vía ${c.canal}: ${c.cantidad_reportes} reportes en últimos 7 días</li>`
+  ).join('');
+}
+
+function renderCalientes(dominios, telefonos, emails) {
+  dominios  = dominios  || [];
+  telefonos = telefonos || [];
+  emails    = emails    || [];
+
+  const llenar = (tbodyId, rows, keyFn) => {
+    const tbody = document.querySelector(`#${tbodyId} tbody`);
+    tbody.innerHTML = rows.length
+      ? rows.map(r => `<tr><td>${keyFn(r)}</td><td>${r.reportes}</td></tr>`).join('')
+      : '<tr><td colspan="2" style="color:#888;text-align:center">—</td></tr>';
+  };
+  llenar('tblDominiosCalientes',  dominios,  r => r.dominio);
+  llenar('tblTelefonosCalientes', telefonos, r => r.telefono);
+  llenar('tblEmailsCalientes',    emails,    r => r.email);
+
+  const vacio = dominios.length === 0 && telefonos.length === 0 && emails.length === 0;
+  document.getElementById('calientes-grid').style.display = vacio ? 'none' : 'flex';
+  document.getElementById('sinCalientes').style.display   = vacio ? 'block' : 'none';
 }
 </script>
 </body>

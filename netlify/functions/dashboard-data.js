@@ -37,6 +37,10 @@ export const handler = async (event) => {
       campanas,
       feedback,
       pageViews,
+      campanasActivas,
+      dominiosCalientes,
+      telefonosCalientes,
+      emailsCalientes,
     ] = await Promise.all([
 
       // 1. Totales generales
@@ -157,6 +161,54 @@ export const handler = async (event) => {
           COUNT(*) FILTER (WHERE created_at >= NOW() - INTERVAL '30 days') AS ultimos_30
         FROM page_views
       `.catch(() => [{ total: 0, ultimos_7: 0, ultimos_30: 0 }]),
+
+      // 14. Campañas activas on-the-fly (3+ reportes misma institución + canal dominante, últimos 7 días)
+      sql`
+        SELECT
+          INITCAP(MIN(institucion)) AS entidad,
+          COUNT(*) AS cantidad_reportes,
+          MIN(fin_flujo) AS primer_reporte,
+          MAX(fin_flujo) AS ultimo_reporte,
+          CASE
+            WHEN SUM(canal_email::int) >= SUM(canal_sms::int) AND SUM(canal_email::int) >= SUM(canal_whatsapp::int) THEN 'email'
+            WHEN SUM(canal_sms::int) >= SUM(canal_whatsapp::int) THEN 'sms'
+            ELSE 'whatsapp'
+          END AS canal
+        FROM reportes
+        WHERE fin_flujo >= NOW() - INTERVAL '7 days'
+          AND institucion IS NOT NULL AND institucion <> ''
+        GROUP BY LOWER(institucion)
+        HAVING COUNT(*) >= 3
+        ORDER BY cantidad_reportes DESC
+        LIMIT 10
+      `.catch(() => []),
+
+      // 15. Dominios calientes (últimas 48hs)
+      sql`
+        SELECT dominio, total_reportes AS reportes
+        FROM dominios_fraudulentos
+        WHERE ultima_vez >= NOW() - INTERVAL '48 hours'
+          AND total_reportes >= 2
+        ORDER BY total_reportes DESC LIMIT 10
+      `.catch(() => []),
+
+      // 16. Teléfonos calientes (últimas 48hs)
+      sql`
+        SELECT telefono, total_reportes AS reportes
+        FROM telefonos_fraudulentos
+        WHERE ultima_vez >= NOW() - INTERVAL '48 hours'
+          AND total_reportes >= 2
+        ORDER BY total_reportes DESC LIMIT 10
+      `.catch(() => []),
+
+      // 17. Emails calientes (últimas 48hs)
+      sql`
+        SELECT email, total_reportes AS reportes
+        FROM emails_fraudulentos
+        WHERE ultima_vez >= NOW() - INTERVAL '48 hours'
+          AND total_reportes >= 2
+        ORDER BY total_reportes DESC LIMIT 10
+      `.catch(() => []),
     ]);
 
     const t = totales[0];
@@ -221,6 +273,16 @@ export const handler = async (event) => {
           reportes: Number(r.total_reportes),
           inicio:   r.inicio,
         })),
+        campanas_activas: (campanasActivas || []).map(r => ({
+          entidad:           r.entidad,
+          canal:             r.canal,
+          cantidad_reportes: Number(r.cantidad_reportes),
+          primer_reporte:    r.primer_reporte,
+          ultimo_reporte:    r.ultimo_reporte,
+        })),
+        dominios_calientes:  (dominiosCalientes  || []).map(r => ({ dominio:  r.dominio,  reportes: Number(r.reportes) })),
+        telefonos_calientes: (telefonosCalientes || []).map(r => ({ telefono: r.telefono, reportes: Number(r.reportes) })),
+        emails_calientes:    (emailsCalientes    || []).map(r => ({ email:    r.email,    reportes: Number(r.reportes) })),
       }),
     };
 
