@@ -275,7 +275,7 @@ section[id]{scroll-margin-top:70px;}
 .step-content{min-width:0;overflow:hidden;}
 .step-content h4{font-size:16px;font-weight:700;margin-bottom:4px;}
 .step-content p{font-size:14px;color:var(--text-soft);line-height:1.6;word-break:break-word;overflow-wrap:anywhere;}
-.step-call-btn{display:flex;align-items:center;gap:8px;margin-top:10px;padding:10px 20px;background:var(--red);color:#fff;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;transition:all .2s;width:100%;box-sizing:border-box;white-space:normal;word-break:break-all;overflow-wrap:anywhere;}
+.step-call-btn{display:flex;align-items:center;gap:8px;margin-top:10px;padding:10px 20px;background:var(--red);color:#fff;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;transition:all .2s;width:100%;box-sizing:border-box;white-space:normal;word-break:break-all;overflow-wrap:anywhere;overflow:hidden;}
 .step-call-btn:hover{background:#A93226;transform:translateY(-1px);}
 .step-call-btn.green{background:var(--green);}
 .step-call-btn.green:hover{background:#1E7A3E;}
@@ -378,7 +378,8 @@ section[id]{scroll-margin-top:70px;}
   .input-tab{min-height:48px;font-size:13px;}
   .demo-pill{min-height:40px;padding:9px 14px;font-size:12px;}
   .wizard-option{min-height:56px;font-size:16px;}
-  .step-call-btn{min-height:48px;font-size:14px;padding:12px 16px;}
+  /* En mobile: display:block para que word-break funcione en texto largo */
+  .step-call-btn{display:block;min-height:48px;font-size:14px;padding:12px 16px;word-break:break-all;overflow-wrap:anywhere;overflow:hidden;}
   .emergency-back{min-height:44px;}
   /* Evita overflow de emails y URLs largos en sección de emergencia */
   .emergency-step{padding:14px 12px;}
