@@ -1,10 +1,24 @@
 import { neon } from '@neondatabase/serverless';
 
+const SIGLAS_UY = new Set([
+  'sucive','brou','oca','ute','ose','bbva','bcu','antel','anep',
+  'asse','bps','dgi','mides','mtop','msp','bse','imm','ancap',
+  'mef','miem','agesic',
+]);
+
 function normalizarEntidad(nombre) {
   if (!nombre || typeof nombre !== 'string') return nombre;
   const s = nombre.trim();
   if (!s) return null;
-  return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+  // Sigla pura (sin espacios) → MAYÚSCULAS
+  if (SIGLAS_UY.has(s.toLowerCase())) return s.toUpperCase();
+  // Compuesto: capitalizar cada palabra, preservando siglas conocidas
+  return s.replace(/\w+/g, w => {
+    const wl = w.toLowerCase();
+    return SIGLAS_UY.has(wl)
+      ? wl.toUpperCase()
+      : w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
+  });
 }
 
 function generarNumeroReporte(contador) {
