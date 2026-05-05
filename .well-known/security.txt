@@ -1,0 +1,4 @@
+Contact: mailto:contacto@fraude.uy
+Expires: 2027-05-05T23:59:59.000Z
+Preferred-Languages: es, en
+Canonical: https://fraude.uy/.well-known/security.txt
