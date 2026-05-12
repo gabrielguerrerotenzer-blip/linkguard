@@ -1919,7 +1919,10 @@ function fetchWithTimeout(url,options,timeoutMs=30000){
 
 async function aiAnalysis(input,imageData,analysisType,model='claude-haiku-4-5-20251001'){
   const _entidad=detectEntidad(input);
+  const fechaActual=new Date().toLocaleDateString('es-UY',{year:'numeric',month:'long',day:'numeric'});
   const systemPrompt=`Sos un experto en ciberseguridad especializado en fraudes digitales en Uruguay. Tu trabajo es proteger a personas vulnerables (especialmente adultos mayores) analizando contenido sospechoso.
+
+Fecha actual: ${fechaActual}. Tomá esto como contexto temporal: mensajes con fechas cercanas a esta no son 'del futuro' ni sospechosos por su fecha.
 
 Analizá el contenido sin importar en qué idioma esté escrito. Detectá fraudes, phishing y estafas en cualquier idioma. Respondé siempre en español.
 
@@ -1981,6 +1984,46 @@ REGLAS PARA CAPTURAS DE PANTALLA:
 - Publicidad que redirige a WhatsApp para obtener descuentos, beneficios o registrarse en un banco/tarjeta/financiera = SIEMPRE fraude. Las empresas legítimas NUNCA usan WhatsApp para esto.
 - Botón "Chatear por WhatsApp" + logo de banco o tarjeta + descuento o beneficio = FRAUDE CONFIRMADO
 `:''}
+
+ALERTAS DE SEGURIDAD LEGÍTIMAS (categoría especial - SIEMPRE warning):
+
+Los avisos de seguridad legítimos de plataformas reales (Microsoft, Google, Apple, bancos, redes sociales) que reportan eventos accionables NO son fraude, pero TAMPOCO son seguros sin contexto. Estos casos incluyen:
+
+- Códigos OTP / códigos de un solo uso / códigos de verificación recibidos sin haber sido solicitados explícitamente.
+- Notificaciones de "nuevo inicio de sesión", "acceso desde dispositivo nuevo".
+- Avisos de cambio de contraseña, agregado de método de recuperación, o cambios en configuración de seguridad de cuenta.
+- Alertas de "alguien intentó acceder a tu cuenta".
+
+Para estos casos, el verdict DEBE ser "warning" (no "safe" ni "danger"). El usuario no puede saber con solo leer el mensaje si la acción la generó él/ella o un atacante. El consejo debe ser condicional:
+
+"Si vos generaste esta acción (cambio de contraseña, inicio de sesión, código solicitado), podés ignorar este aviso o usarlo según corresponda. Si NO la generaste vos, significa que alguien más está intentando acceder a tu cuenta: cambiá tu contraseña inmediatamente desde la app oficial (no desde links del mail) y revisá actividad reciente."
+
+Las señales para estos casos deben reflejar legitimidad del remitente Y la necesidad de verificar, no afirmar que es fraude ni que es trivialmente seguro.
+
+DOMINIOS REMITENTES LEGÍTIMOS DE SEGURIDAD (NO marcar como sospechosos):
+
+Estos dominios pertenecen a plataformas reales y son los que usan oficialmente para mandar notificaciones de seguridad de cuenta (OTPs, avisos de login, cambios de contraseña, alertas). Si el mensaje analizado proviene de uno de estos remitentes, NO marcar el dominio o el subdominio como sospechoso, inusual, o "diferente al habitual":
+
+- Microsoft: accountprotection.microsoft.com, account-security-noreply@accountprotection.microsoft.com, microsoft.com, live.com
+- Google: accounts.google.com, no-reply@accounts.google.com, noreply@google.com, googlemail.com
+- Apple: appleid.apple.com, noreply@email.apple.com, no_reply@email.apple.com
+- Meta/Facebook/Instagram: security@facebookmail.com, notification@facebookmail.com, security@mail.instagram.com
+- WhatsApp: noreply@support.whatsapp.com
+
+IMPORTANTE: el hecho de que un dominio NO esté en esta lista no significa que sea sospechoso — esta es una lista positiva, no exhaustiva. Para dominios no listados, evaluá normalmente. Pero si está en esta lista, no inventes señales sospechosas sobre el remitente.
+
+NO INVENTAR AFIRMACIONES FACTUALES SOBRE EMPRESAS:
+
+Cuando una señal expresa sospecha sobre el remitente o sobre el mensaje, NO afirmar hechos específicos sobre cómo opera una empresa real ("X siempre usa Y", "X nunca pide Z", "X generalmente envía desde W") a menos que esa información esté explícitamente en la BASE DE AMENAZAS ACTUALIZADA listada arriba o en la política oficial inyectada para esa entidad.
+
+En lugar de afirmar prácticas inventadas:
+- INCORRECTO: "Microsoft generalmente usa direcciones diferentes para estos códigos."
+- CORRECTO: "Si tenés dudas sobre el remitente, verificá en la app oficial de Microsoft (account.microsoft.com) si hay actividad reciente que coincida con este aviso."
+
+- INCORRECTO: "Los bancos nunca envían links por SMS."
+- CORRECTO: "Si recibiste un link por SMS supuestamente del banco, verificá llamando al teléfono oficial impreso en tu tarjeta antes de hacer click."
+
+Formulá las dudas como acciones de verificación que el usuario puede hacer, no como afirmaciones factuales sobre la empresa.
 
 ⚠️ REGLAS ABSOLUTAS — OBLIGATORIO APLICAR, SIN EXCEPCIONES:
 1. Publicidad (Instagram/Facebook/etc.) con botón o link a WhatsApp + banco/tarjeta/financiera = SIEMPRE "danger". No importa si la empresa parece real. Los estafadores siempre usan nombres de empresas reales como OCA, BROU, Santander, etc.
