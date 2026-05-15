@@ -1830,8 +1830,14 @@ function localAnalysis(input){
   if(/\burgente\b/i.test(input))findings.push({type:'HIGH',detail:'Te meten presión con la palabra "urgente" para que no pienses.'});
   if(/\b24\s*h(ora)?s?\b/i.test(input))findings.push({type:'HIGH',detail:'Te dan un plazo de "24 horas". Los bancos reales no hacen eso.'});
 
+  // OTP saliente: el mensaje TE ENVÍA un código (legítimo o phishing — el AI evalúa el patrón global).
+  // No es lo mismo que pedir tu código, que sí es siempre fraude.
+  const isOtpDelivery=/(tu|your)\b[^:]{0,40}(c[oó]digo|code)[^:]{0,40}(es|is|:|—|-)\s*\d{4,8}/i.test(input);
+
   if(/token|contraseña|password|clave\s*(de\s*)?seguridad|pin\s*de|código\s*de\s*(seguridad|verificación)/i.test(input)){
-    findings.push({type:'CRITICAL',detail:'Pide tu clave, token o contraseña. Ningún banco hace eso por mensaje.'});
+    if(!isOtpDelivery){
+      findings.push({type:'CRITICAL',detail:'Pide tu clave, token o contraseña. Ningún banco hace eso por mensaje.'});
+    }
   }
 
   if(/premio|ganaste|ganador|gratis|regala|reembolso|retorno garantizado|inversión.*%|devoluci[oó]n/i.test(input)){
