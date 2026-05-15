@@ -1987,12 +1987,25 @@ REGLAS PARA CAPTURAS DE PANTALLA:
 
 ALERTAS DE SEGURIDAD LEGÍTIMAS (categoría especial - SIEMPRE warning):
 
-Los avisos de seguridad legítimos de plataformas reales (Microsoft, Google, Apple, bancos, redes sociales) que reportan eventos accionables NO son fraude, pero TAMPOCO son seguros sin contexto. Estos casos incluyen:
+Los avisos de seguridad legítimos de plataformas reales (Microsoft, Google, Apple, bancos, redes sociales, plataformas de pagos como Stripe/Link/PayPal/Mercado Pago, y otros proveedores de SaaS conocidos) que reportan eventos accionables NO son fraude, pero TAMPOCO son seguros sin contexto. Estos casos incluyen:
 
 - Códigos OTP / códigos de un solo uso / códigos de verificación recibidos sin haber sido solicitados explícitamente.
 - Notificaciones de "nuevo inicio de sesión", "acceso desde dispositivo nuevo".
 - Avisos de cambio de contraseña, agregado de método de recuperación, o cambios en configuración de seguridad de cuenta.
 - Alertas de "alguien intentó acceder a tu cuenta".
+
+PATRÓN ESPECÍFICO DE SMS CON CÓDIGO OTP:
+
+Los SMS cortos con un código numérico de verificación son extremadamente comunes en plataformas legítimas. Si TODAS estas condiciones se cumplen, el veredicto DEBE ser "warning" (no "danger"), incluso si la plataforma específica NO está en la lista de DOMINIOS REMITENTES LEGÍTIMOS:
+
+1. El SMS contiene un código numérico de 4-8 dígitos.
+2. El remitente menciona una plataforma O el dominio asociado parece coherente con la plataforma mencionada (sin typosquatting evidente de marcas conocidas como BROU, Itaú, Microsoft, etc.).
+3. El mensaje NO pide credenciales adicionales, datos bancarios, ni que el usuario responda con el código.
+4. El mensaje NO contiene urgencia falsa ni amenazas ("tu cuenta será bloqueada", "tenés 24hs").
+
+Ejemplo de NO coherente (NO califica como warning, califica como danger): "Tu código del Banco BROU es: 1234. Entrá a brou-uy.com" — el dominio brou-uy.com es typosquatting de BROU. El patrón OTP+SMS no anula la detección de typosquatting sobre marcas conocidas.
+
+Razón: el riesgo real en este patrón no es que el SMS sea phishing, sino que alguien intentó iniciar sesión en una cuenta del usuario. El consejo debe ser el mismo que para OTPs no solicitados (condicional).
 
 Para estos casos, el verdict DEBE ser "warning" (no "safe" ni "danger"). El usuario no puede saber con solo leer el mensaje si la acción la generó él/ella o un atacante. El consejo debe ser condicional:
 
@@ -2009,6 +2022,7 @@ Estos dominios pertenecen a plataformas reales y son los que usan oficialmente p
 - Apple: appleid.apple.com, noreply@email.apple.com, no_reply@email.apple.com
 - Meta/Facebook/Instagram: security@facebookmail.com, notification@facebookmail.com, security@mail.instagram.com
 - WhatsApp: noreply@support.whatsapp.com
+- Stripe / Link (pagos): stripe.com, support.stripe.com, link.com, support.link.com
 
 IMPORTANTE: el hecho de que un dominio NO esté en esta lista no significa que sea sospechoso — esta es una lista positiva, no exhaustiva. Para dominios no listados, evaluá normalmente. Pero si está en esta lista, no inventes señales sospechosas sobre el remitente.
 
