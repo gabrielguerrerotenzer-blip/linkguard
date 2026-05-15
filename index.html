@@ -1932,7 +1932,7 @@ Fecha actual: ${fechaActual}. Tomá esto como contexto temporal: mensajes con fe
 
 Analizá el contenido sin importar en qué idioma esté escrito. Detectá fraudes, phishing y estafas en cualquier idioma. Respondé siempre en español.
 
-PRINCIPIO FUNDAMENTAL: Es mejor dar una falsa alarma que dejar pasar un fraude. Ante la duda, siempre warning o danger, NUNCA safe.
+PRINCIPIO FUNDAMENTAL: Ante la duda, "warning" (amarillo). NUNCA "safe" sin verificación. NUNCA "danger" sin señales concretas de fraude. El veredicto "danger" requiere EVIDENCIA específica (ver CRITERIO DE INCERTIDUMBRE más abajo); en su ausencia, default a "warning".
 
 BASE DE AMENAZAS ACTUALIZADA (Uruguay):
 - Dominios fraudulentos reportados: ${THREAT_DB.fraudulentDomains.join(', ')}
@@ -2032,6 +2032,22 @@ Estos dominios pertenecen a plataformas reales y son los que usan oficialmente p
 
 IMPORTANTE: el hecho de que un dominio NO esté en esta lista no significa que sea sospechoso — esta es una lista positiva, no exhaustiva. Para dominios no listados, evaluá normalmente. Pero si está en esta lista, no inventes señales sospechosas sobre el remitente.
 
+MARCAS URUGUAYAS CRÍTICAS (referencia para detectar typosquatting):
+
+Las siguientes marcas son las más suplantadas en fraudes en Uruguay. Si el contenido analizado menciona el nombre de una de estas marcas pero el dominio asociado NO es el oficial correspondiente (ver "Dominios legítimos verificados" arriba) ni una variante coherente (subdominios oficiales como portal.X.com.uy, mi.X.com.uy, e-X.com.uy), es typosquatting → "danger".
+
+Bancos: BROU (Banco República), Itaú, Santander, BBVA, Scotiabank, HSBC, Heritage, Banque Total, BHU (Banco Hipotecario), BCU (Banco Central), BSE (Banco de Seguros del Estado), Citibank.
+Tarjetas y pagos: OCA, Visa, Mastercard, Prex, Passcard, RedPagos, Abitab, MercadoPago.
+E-commerce y servicios: MercadoLibre, PedidosYa, TiendaMia.
+Telecomunicaciones: Antel, Claro, Movistar.
+Estatales y gobierno: UTE, OSE, ANCAP, BPS, DGI, MEF, MSP, MTSS, MEC, MIEM, AGESIC, IMM (Intendencia de Montevideo), Presidencia, Parlamento, SUCIVE.
+Correo y logística: Correo Uruguayo, DAC.
+Salud: ASSE, CASMU, Hospital de Clínicas, Asociación Española, MUCAM, SMEC.
+Medios: El País, El Observador, Montevideo Portal, Subrayado, Telemundo, Canal 10.
+Educación: UdelaR, ORT, UCU, UM, ANEP.
+
+Esta lista NO es exhaustiva — cualquier marca uruguaya conocida que el contenido suplante debe ser tratada igual. Pero las marcas listadas arriba tienen prioridad: si una de ellas aparece + dominio no-oficial, asumí typosquatting con alta confianza.
+
 NO INVENTAR AFIRMACIONES FACTUALES SOBRE EMPRESAS:
 
 Cuando una señal expresa sospecha sobre el remitente o sobre el mensaje, NO afirmar hechos específicos sobre cómo opera una empresa real ("X siempre usa Y", "X nunca pide Z", "X generalmente envía desde W") a menos que esa información esté explícitamente en la BASE DE AMENAZAS ACTUALIZADA listada arriba o en la política oficial inyectada para esa entidad.
@@ -2051,10 +2067,25 @@ Formulá las dudas como acciones de verificación que el usuario puede hacer, no
 3. Promesa de dinero, reembolso, o premio que requiere datos = SIEMPRE "danger".
 Si detectás cualquiera de estas situaciones, el veredicto DEBE ser "danger" independientemente de cualquier otra señal.
 
+CRITERIO DE INCERTIDUMBRE — "danger" requiere EVIDENCIA, no sospecha:
+
+Marcar "danger" SOLO si detectás al menos UNA de estas señales concretas:
+
+1. Typosquatting evidente de marca reconocida (ver "MARCAS URUGUAYAS CRÍTICAS" más arriba + marcas internacionales en DOMINIOS REMITENTES LEGÍTIMOS). Ejemplos: brou-uy.com imita brou.com.uy; microsft.com imita microsoft.com; oca-promos.xyz imita oca.com.uy.
+2. Dominio en la lista de "Dominios fraudulentos reportados" de la BASE DE AMENAZAS ACTUALIZADA arriba.
+3. Urgencia falsa explícita ("tenés 24hs", "tu cuenta será bloqueada hoy", "última oportunidad").
+4. Pedido directo de credenciales, datos bancarios, CVV, PIN, contraseña, token (que el usuario los ingrese o responda).
+5. Promesas claramente irreales (ganaste un premio sin entrar a un sorteo, devolución de impuestos vía link, etc.).
+6. Inconsistencia evidente entre la entidad mencionada y el dominio asociado (ej: el mensaje dice "BROU" y el link es brou-promo.xyz).
+
+Si una marca/sitio NO está en lista positiva conocida (DOMINIOS REMITENTES LEGÍTIMOS, dominios oficiales uruguayos, plataformas conocidas) Y NO se cumple ninguna de las 6 señales concretas anteriores, el veredicto DEBE ser "warning", NO "danger". El razonamiento "no la conozco, por las dudas danger" NO es válido — ante incertidumbre se usa warning.
+
+Para estos casos warning-por-incertidumbre, el advice debe sugerir cómo el usuario puede verificar por sus propios medios: buscar la empresa en redes sociales oficiales, contactar a quien lo recomendó, verificar el sitio desde otra fuente, llamar a la empresa por un canal oficial conocido, etc.
+
 REGLAS DE VEREDICTO:
-- "danger": pide token/contraseña, dominio fraudulento, typosquatting, promete dinero gratis, empresa estatal + oferta financiera, publicidad con WhatsApp + banco/tarjeta/descuento
-- "warning": dominio desconocido, señales sospechosas no concluyentes
-- "safe": SOLO si el dominio está en la lista de legítimos Y no hay señales sospechosas
+- "danger": pide token/contraseña, dominio en lista de fraude, typosquatting evidente de marca reconocida, urgencia falsa explícita, promete dinero gratis, empresa estatal + oferta financiera, publicidad con WhatsApp + banco/tarjeta/descuento. Requiere EVIDENCIA, no sospecha (ver CRITERIO DE INCERTIDUMBRE).
+- "warning": dominio o marca desconocida sin señales concretas de fraude, señales sospechosas no concluyentes, OTPs no solicitados, alertas de seguridad legítimas, plataformas no identificables pero sin red flags. ANTE LA DUDA, USAR ESTE.
+- "safe": SOLO si el dominio está en la lista de legítimos Y no hay señales sospechosas. Si dudás, NO marques safe — usá warning.
 
 CÓMO ESCRIBIR LAS SEÑALES — MUY IMPORTANTE:
 - Cada señal: máximo 1-2 oraciones, sin tecnicismos, como si le hablaras a alguien de 70 años que no sabe de tecnología
@@ -2065,7 +2096,7 @@ CÓMO ESCRIBIR LAS SEÑALES — MUY IMPORTANTE:
 - Usá palabras simples: "link" no "URL", "clave" no "credenciales", "disfrazado" no "ofuscado"
 
 Respondé SOLO con JSON válido (sin markdown, sin backticks):
-{"verdict":"danger|warning|safe","title":"título corto","subtitle":"subtítulo","signals":[{"badge":"etiqueta corta","text":"1-2 oraciones simples, sin tecnicismos"}],"advice":"consejo directo en lenguaje simple. Incluí número oficial del banco si aplica.","confidence":0.0-1.0,"empresa":"nombre de la empresa/organismo/banco/marca suplantada o mencionada (ej: 'BROU', 'MercadoLibre', 'DGI', 'Correo Uruguayo'). null si no hay entidad identificable."}`;
+{"verdict":"danger|warning|safe","title":"título corto","subtitle":"subtítulo","signals":[{"badge":"etiqueta corta","text":"1-2 oraciones simples, sin tecnicismos"}],"advice":"consejo directo en lenguaje simple. Incluí número oficial del banco si aplica.","confidence":0.0-1.0,"empresa":"nombre LIMPIO de la empresa/organismo/banco/marca mencionada (ej: 'BROU', 'MercadoLibre', 'DGI', 'Correo Uruguayo', 'Toque y Toque'). NO agregar sufijos tipo '(No Verificado)', '(Sin Verificación)', '(Dudoso)' — si no podés verificar la marca, indicalo en el advice o en una signal, NO en este campo. null si no hay entidad identificable."}`;
 
   const content=[];
 
