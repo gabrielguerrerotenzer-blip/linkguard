@@ -21,10 +21,52 @@
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@fraudeuy">
 <meta name="twitter:url" content="https://fraude.uy/">
 <meta name="twitter:title" content="fraude.uy — Verificá si un mensaje, link o publicidad es fraude">
 <meta name="twitter:description" content="Herramienta uruguaya gratuita para verificar mensajes, links, capturas y publicidades sospechosas.">
 <meta name="twitter:image" content="https://fraude.uy/og-image.png">
+
+<!-- Schema.org (rich snippets) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://fraude.uy/#organization",
+      "name": "fraude.uy",
+      "url": "https://fraude.uy/",
+      "logo": "https://fraude.uy/icon-512.png",
+      "sameAs": [
+        "https://twitter.com/fraudeuy",
+        "https://instagram.com/fraude.uy"
+      ],
+      "description": "Observatorio ciudadano de fraude digital en Uruguay. Herramienta gratuita para verificar mensajes, links, capturas y publicidades sospechosas.",
+      "areaServed": {
+        "@type": "Country",
+        "name": "Uruguay"
+      }
+    },
+    {
+      "@type": "WebApplication",
+      "@id": "https://fraude.uy/#webapp",
+      "name": "fraude.uy",
+      "url": "https://fraude.uy/",
+      "applicationCategory": "SecurityApplication",
+      "operatingSystem": "Web",
+      "browserRequirements": "Requires JavaScript",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "UYU"
+      },
+      "description": "Verificá si un mensaje, link o publicidad es fraude. Análisis automático con IA y bases de amenazas conocidas.",
+      "inLanguage": "es-UY"
+    }
+  ]
+}
+</script>
 
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#111111">
@@ -487,6 +529,18 @@ section[id]{scroll-margin-top:70px;}
 </style>
 </head>
 <body>
+
+<noscript>
+  <div style="position:fixed;top:0;left:0;right:0;bottom:0;z-index:99999;background:#1A1A2E;color:#FAFAF7;display:flex;align-items:center;justify-content:center;font-family:system-ui,-apple-system,sans-serif;line-height:1.5;padding:24px;box-sizing:border-box;">
+    <div style="max-width:500px;text-align:center;">
+      <h2 style="margin:0 0 12px 0;color:#F4D03F;">fraude.uy necesita JavaScript</h2>
+      <p style="margin:0 0 12px 0;">Esta herramienta requiere JavaScript activado en tu navegador. Activalo desde Configuración y recargá la página.</p>
+      <p style="margin:0;font-size:14px;opacity:0.9;">
+        <strong>¿Caíste en una estafa?</strong> Llamá a Cibercrimen Uruguay: <a href="tel:25999777" style="color:#7BB8E0;font-weight:600;">2 599 9777</a>
+      </p>
+    </div>
+  </div>
+</noscript>
 
 <!-- PWA INSTALL BANNER -->
 <div class="pwa-banner" id="pwaBanner" role="banner" aria-label="Instalar aplicación">
