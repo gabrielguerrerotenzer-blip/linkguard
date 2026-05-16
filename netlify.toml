@@ -5,6 +5,28 @@
 [build.environment]
   SECRETS_SCAN_OMIT_KEYS = "SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES"
 
+# Bloquear archivos de build/config que Netlify serviría por default.
+# `to` apunta a un path inexistente → Netlify devuelve su 404 page genérica con status 404.
+# `force = true` intercepta la request antes de que Netlify sirva el archivo del bundle.
+
+[[redirects]]
+  from = "/package.json"
+  to = "/404"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/package-lock.json"
+  to = "/404"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/gen-favicons.mjs"
+  to = "/404"
+  status = 404
+  force = true
+
 [[redirects]]
   from = "/api/analyze"
   to   = "/.netlify/functions/analyze"
@@ -44,6 +66,24 @@
   from = "/api/track"
   to   = "/.netlify/functions/track"
   status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # Anti-clickjacking (refuerzo de frame-ancestors en CSP para browsers viejos)
+    X-Frame-Options = "DENY"
+    # Anti MIME-sniffing
+    X-Content-Type-Options = "nosniff"
+    # Mandar referrer completo a same-origin, solo origin a cross-origin HTTPS, nada a HTTP
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    # Deshabilitar features del browser que el sitio no usa (anti-abuse en caso de XSS)
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), usb=(), midi=(), accelerometer=(), gyroscope=(), magnetometer=()"
+    # HSTS conservador: 6 meses, sin includeSubDomains, sin preload (preload es irreversible)
+    Strict-Transport-Security = "max-age=15552000"
+    # CSP: 'unsafe-inline' es compromiso para no romper inline onclick/style del sitio (49+111 ocurrencias).
+    # Recursos externos permitidos: fonts.googleapis.com (CSS), fonts.gstatic.com (fonts), safebrowsing.googleapis.com (anti-phishing).
+    # data: + blob: en img-src para uploads del verificador.
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://safebrowsing.googleapis.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests"
 
 [[headers]]
   for = "/.well-known/security.txt"

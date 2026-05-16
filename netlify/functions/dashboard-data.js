@@ -1,8 +1,47 @@
 import { neon } from '@neondatabase/serverless';
 
+// CORS: solo orígenes específicos (fraude.uy + localhost dev). Si el Origin no matchea,
+// el header queda vacío y el browser bloquea la respuesta cross-origin.
+const ALLOWED_ORIGINS = ['https://fraude.uy', 'https://www.fraude.uy', 'http://localhost:8888'];
+
+// Rate limiting: 60 requests por hora por IP. El Map persiste mientras el contenedor Lambda
+// esté caliente. Se aplica ANTES de la verificación de la key para evitar bruteforce.
+const rateLimitMap = new Map();
+const RATE_WINDOW_MS = 60 * 60 * 1000; // 1 hora
+const RATE_LIMIT = 60;
+
+function checkRateLimit(ip) {
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+
+  if (!entry || now - entry.windowStart >= RATE_WINDOW_MS) {
+    rateLimitMap.set(ip, { count: 1, windowStart: now });
+    return false; // no limitado
+  }
+
+  if (entry.count >= RATE_LIMIT) {
+    return true; // limitado
+  }
+
+  entry.count++;
+  return false;
+}
+
+function cleanupRateMap() {
+  const now = Date.now();
+  for (const [ip, entry] of rateLimitMap) {
+    if (now - entry.windowStart >= RATE_WINDOW_MS) {
+      rateLimitMap.delete(ip);
+    }
+  }
+}
+
 export const handler = async (event) => {
+  const origin = event.headers.origin || event.headers.Origin;
+  const corsOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : '';
+
   const headers = {
-    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Origin': corsOrigin,
     'Access-Control-Allow-Headers': 'Content-Type, x-dashboard-key',
     'Access-Control-Allow-Methods': 'GET, OPTIONS',
     'Content-Type': 'application/json',
@@ -10,6 +49,23 @@ export const handler = async (event) => {
 
   if (event.httpMethod === 'OPTIONS') return { statusCode: 200, headers, body: '' };
   if (event.httpMethod !== 'GET')     return { statusCode: 405, headers, body: JSON.stringify({ error: 'Method not allowed' }) };
+
+  // Rate limit (antes de la key check para que intentos de bruteforce consuman cuota)
+  const ip =
+    event.headers['x-nf-client-connection-ip'] ||
+    event.headers['x-forwarded-for']?.split(',')[0].trim() ||
+    'unknown';
+
+  if (rateLimitMap.size > 50) cleanupRateMap();
+
+  if (checkRateLimit(ip)) {
+    console.log(`[dashboard-data] rate_limited ip=${ip}`);
+    return {
+      statusCode: 429,
+      headers,
+      body: JSON.stringify({ error: 'Rate limit exceeded. Máximo 60 requests por hora.' }),
+    };
+  }
 
   const key = event.headers['x-dashboard-key'];
   if (!key || key !== process.env.DASHBOARD_KEY) {
