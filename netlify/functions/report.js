@@ -80,51 +80,68 @@ async function procesarIndicadoresWeb(sql, body, reporteId, institucion) {
       }
     }
 
-    // --- Teléfono ---
-    const telefono = body.telefono ? String(body.telefono).replace(/[^\d+]/g, '').slice(0, 20) || null : null;
-    if (telefono) {
+    // Canal principal para enriquecer telefonos_fraudulentos.canal.
+    // Usa el primero del array de canales reportados; el upsert ya hace COALESCE
+    // para no sobrescribir un canal previo con NULL si este reporte no lo trae.
+    const canalPrincipal = (Array.isArray(body.canales) && body.canales[0]) || null;
+
+    // --- Teléfonos (arrays con backcompat singular) ---
+    // body.telefonos: array nuevo. body.telefono: singular legacy.
+    // Aplicamos slice(0, MAX_IOCS) por defensa server-side aunque el cliente ya lo hizo.
+    const MAX_IOCS = 5;
+    const telefonosRaw = (Array.isArray(body.telefonos) ? body.telefonos
+                       : (body.telefono ? [body.telefono] : []))
+                       .slice(0, MAX_IOCS);
+
+    for (const telRaw of telefonosRaw) {
+      // Cada teléfono en su propio try/catch: si el N-ésimo falla, los anteriores
+      // ya están commiteados y el loop continúa con el siguiente.
       try {
+        const tel = String(telRaw).replace(/[^\d+]/g, '').slice(0, 20) || null;
+        if (!tel) continue;
+        const digits = tel.replace(/\D/g, '');
+        if (digits.length < 4 || digits.length > 15) continue;
+
         await sql`
           INSERT INTO indicadores_fraude (reporte_id, tipo, valor)
-          VALUES (${reporteId}, 'telefono', ${telefono})
+          VALUES (${reporteId}, 'telefono', ${tel})
         `;
-      } catch (e) {
-        console.error('[procesarIndicadoresWeb] indicadores_fraude telefono:', e.message);
-      }
 
-      try {
         await sql`
-          INSERT INTO telefonos_fraudulentos (telefono, entidad_suplantada, total_reportes, primera_vez, ultima_vez)
-          VALUES (${telefono}, ${entidad}, 1, NOW(), NOW())
+          INSERT INTO telefonos_fraudulentos
+            (telefono, canal, entidad_suplantada, total_reportes, primera_vez, ultima_vez)
+          VALUES (${tel}, ${canalPrincipal}, ${entidad}, 1, NOW(), NOW())
           ON CONFLICT (telefono) DO UPDATE
             SET total_reportes     = telefonos_fraudulentos.total_reportes + 1,
                 ultima_vez         = NOW(),
-                entidad_suplantada = COALESCE(${entidad}, telefonos_fraudulentos.entidad_suplantada)
+                entidad_suplantada = COALESCE(${entidad}, telefonos_fraudulentos.entidad_suplantada),
+                canal              = COALESCE(${canalPrincipal}, telefonos_fraudulentos.canal)
         `;
-        await recalcularScoreRiesgoWeb(sql, 'telefono', telefono);
+        await recalcularScoreRiesgoWeb(sql, 'telefono', tel);
       } catch (e) {
-        console.error('[procesarIndicadoresWeb] telefonos_fraudulentos upsert:', e.message);
+        console.error('[procesarIndicadoresWeb] telefono fallido:', telRaw, e.message);
       }
     }
 
-    // --- Email ---
-    const email = body.email_estafador ? String(body.email_estafador).trim().toLowerCase() : null;
-    if (email) {
-      const partes = email.split('@');
-      const dominioEmail = partes.length === 2 ? partes[1] : null;
+    // --- Emails (arrays con backcompat singular) ---
+    const emailsRaw = (Array.isArray(body.emails) ? body.emails
+                    : (body.email_estafador ? [body.email_estafador] : []))
+                    .slice(0, MAX_IOCS);
 
+    for (const emailRaw of emailsRaw) {
       try {
+        const email = String(emailRaw).trim().toLowerCase();
+        if (!email || !email.includes('@')) continue;
+        const dominioEmail = email.split('@')[1] || null;
+
         await sql`
           INSERT INTO indicadores_fraude (reporte_id, tipo, valor)
           VALUES (${reporteId}, 'email', ${email})
         `;
-      } catch (e) {
-        console.error('[procesarIndicadoresWeb] indicadores_fraude email:', e.message);
-      }
 
-      try {
         await sql`
-          INSERT INTO emails_fraudulentos (email, dominio_email, entidad_suplantada, total_reportes, primera_vez, ultima_vez)
+          INSERT INTO emails_fraudulentos
+            (email, dominio_email, entidad_suplantada, total_reportes, primera_vez, ultima_vez)
           VALUES (${email}, ${dominioEmail}, ${entidad}, 1, NOW(), NOW())
           ON CONFLICT (email) DO UPDATE
             SET total_reportes     = emails_fraudulentos.total_reportes + 1,
@@ -133,7 +150,7 @@ async function procesarIndicadoresWeb(sql, body, reporteId, institucion) {
         `;
         await recalcularScoreRiesgoWeb(sql, 'email', email);
       } catch (e) {
-        console.error('[procesarIndicadoresWeb] emails_fraudulentos upsert:', e.message);
+        console.error('[procesarIndicadoresWeb] email fallido:', emailRaw, e.message);
       }
     }
 
