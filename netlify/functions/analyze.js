@@ -154,6 +154,22 @@ export const handler = async (event) => {
       }
     }
 
+    // Construir explícitamente el body que va a Anthropic.
+    // Allowlist defensiva: solo reenviamos los campos documentados de Messages API.
+    // Cualquier campo interno del cliente (prompt_version, feature flags futuros, etc.)
+    // queda fuera por diseño. Evita errores tipo "Extra inputs are not permitted".
+    const anthropicBody = {
+      model: parsed.model,
+      max_tokens: parsed.max_tokens,
+      system: parsed.system,
+      messages: parsed.messages,
+    };
+
+    // Opcionales documentados: solo incluir si están presentes para no mandar undefined.
+    if (parsed.temperature !== undefined) anthropicBody.temperature = parsed.temperature;
+    if (parsed.tools !== undefined) anthropicBody.tools = parsed.tools;
+    if (parsed.tool_choice !== undefined) anthropicBody.tool_choice = parsed.tool_choice;
+
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -161,7 +177,7 @@ export const handler = async (event) => {
         'x-api-key': process.env.ANTHROPIC_API_KEY,
         'anthropic-version': '2023-06-01',
       },
-      body: event.body,
+      body: JSON.stringify(anthropicBody),
     });
 
     const data = await response.json();
