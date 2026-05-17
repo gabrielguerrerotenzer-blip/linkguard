@@ -1,4 +1,4 @@
-// Rate limiting: 10 requests por hora por IP
+// Rate limiting: 30 requests por hora por IP
 // El Map persiste mientras el contenedor Lambda esté caliente.
 import { createHash } from 'crypto';
 import { neon } from '@neondatabase/serverless';
@@ -14,7 +14,7 @@ import { neon } from '@neondatabase/serverless';
 
 const rateLimitMap = new Map();
 const RATE_WINDOW_MS = 60 * 60 * 1000; // 1 hora
-const RATE_LIMIT = 10;
+const RATE_LIMIT = 30;
 
 let _requestCount = 0;
 
@@ -86,7 +86,7 @@ export const handler = async (event) => {
     return {
       statusCode: 429,
       headers,
-      body: JSON.stringify({ error: 'Too many requests. Máximo 10 análisis por hora.' }),
+      body: JSON.stringify({ error: `Too many requests. Máximo ${RATE_LIMIT} análisis por hora.` }),
     };
   }
 
