@@ -1,3 +1,7 @@
 node_modules/
 .netlify/
 .claude/
+.env
+.env.local
+test-alerta.js
+*-sample.png
