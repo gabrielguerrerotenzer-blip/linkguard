@@ -1,5 +1,37 @@
 import { neon } from '@neondatabase/serverless';
 
+// Rate limiting: 30 requests por hora por IP
+// El Map persiste mientras el contenedor Lambda esté caliente.
+const rateLimitMap = new Map();
+const RATE_WINDOW_MS = 60 * 60 * 1000; // 1 hora
+const RATE_LIMIT = 30;
+
+function checkRateLimit(ip) {
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+
+  if (!entry || now - entry.windowStart >= RATE_WINDOW_MS) {
+    rateLimitMap.set(ip, { count: 1, windowStart: now });
+    return false; // no limitado
+  }
+
+  if (entry.count >= RATE_LIMIT) {
+    return true; // limitado
+  }
+
+  entry.count++;
+  return false;
+}
+
+function cleanupRateMap() {
+  const now = Date.now();
+  for (const [ip, entry] of rateLimitMap) {
+    if (now - entry.windowStart >= RATE_WINDOW_MS) {
+      rateLimitMap.delete(ip);
+    }
+  }
+}
+
 const SIGLAS_UY = new Set([
   'sucive','brou','oca','ute','ose','bbva','bcu','antel','anep',
   'asse','bps','dgi','mides','mtop','msp','bse','imm','ancap',
@@ -346,6 +378,32 @@ export const handler = async (event) => {
 
   if (event.headers['x-linkguard'] !== 'fraude-uy-2026') {
     return { statusCode: 403, headers, body: JSON.stringify({ error: 'Forbidden' }) };
+  }
+
+  // Bot User-Agent check (mismo regex que analyze.js para mantener defensa simétrica)
+  const ua = event.headers['user-agent'] || '';
+  const botPatterns = /^$|curl|python-requests|scrapy|httpx|wget|axios|node-fetch|go-http|java\/|ruby|perl|php\/|libwww|bot|spider|crawler/i;
+  if (botPatterns.test(ua)) {
+    console.log(`[report] blocked bot ua="${ua}"`);
+    return { statusCode: 403, headers, body: JSON.stringify({ error: 'Forbidden' }) };
+  }
+
+  // Obtener IP del cliente (Netlify expone x-nf-client-connection-ip)
+  const ip =
+    event.headers['x-nf-client-connection-ip'] ||
+    event.headers['x-forwarded-for']?.split(',')[0].trim() ||
+    'unknown';
+
+  // Limpiar entradas viejas cada 50 requests para no acumular memoria
+  if (rateLimitMap.size > 50) cleanupRateMap();
+
+  if (checkRateLimit(ip)) {
+    console.log(`[report] rate_limited ip=${ip}`);
+    return {
+      statusCode: 429,
+      headers,
+      body: JSON.stringify({ error: `Too many requests. Máximo ${RATE_LIMIT} reportes por hora.` }),
+    };
   }
 
   if (!process.env.NEON_DATABASE_URL) {
