@@ -102,10 +102,37 @@ export const handler = async (event) => {
     console.log(`[analyze] ip=${ip} count=${rateLimitMap.get(ip)?.count}`);
 
     // ====== CACHE: solo para requests sin imagen ======
+    //
+    // El hash del cache se saltea con `prompt_version` (string tipo "vN") que envía
+    // el cliente en el body. Esto invalida el cache automáticamente cuando se cambia
+    // el system prompt o la fuente única de contactos (ENTIDADES_OFICIALES en
+    // index.html): bumpear PROMPT_VERSION en el cliente → el hash cambia → cache miss
+    // forzado → respuestas viejas con números incorrectos quedan huérfanas.
+    //
+    // Convención: "vN" donde N es un entero. No usar fechas ni hashes.
+    //
+    // FASE 1 (este PR): backwards-compatible. Si el cliente no envía prompt_version,
+    // se usa 'v1' como default. Las respuestas cacheadas pre-refactor tenían el hash
+    // computado sin salt, así que de todas formas quedan huérfanas (no van a matchear
+    // con el nuevo formato "v1|texto").
+    //
+    // TODO (FASE 2, objetivo 2026-05-18 / ~48h después del deploy de FASE 1):
+    // endurecer el contrato: rechazar 400 si falta prompt_version. Borrar este TODO
+    // y el fallback `|| 'v1'` cuando se haga FASE 2.
     let contentHash = null;
     if (!hasImage && textContent?.text && process.env.NEON_DATABASE_URL) {
       const sql = neon(process.env.NEON_DATABASE_URL);
-      contentHash = createHash('sha256').update(textContent.text).digest('hex');
+      const rawPromptVersion = parsed.prompt_version || 'v1';
+      if (!/^v\d+$/.test(rawPromptVersion)) {
+        return {
+          statusCode: 400,
+          headers,
+          body: JSON.stringify({ error: 'prompt_version inválido. Esperado: /^v\\d+$/' }),
+        };
+      }
+      contentHash = createHash('sha256')
+        .update(`${rawPromptVersion}|${textContent.text}`)
+        .digest('hex');
 
       try {
         const cached = await sql`
@@ -127,6 +154,22 @@ export const handler = async (event) => {
       }
     }
 
+    // Construir explícitamente el body que va a Anthropic.
+    // Allowlist defensiva: solo reenviamos los campos documentados de Messages API.
+    // Cualquier campo interno del cliente (prompt_version, feature flags futuros, etc.)
+    // queda fuera por diseño. Evita errores tipo "Extra inputs are not permitted".
+    const anthropicBody = {
+      model: parsed.model,
+      max_tokens: parsed.max_tokens,
+      system: parsed.system,
+      messages: parsed.messages,
+    };
+
+    // Opcionales documentados: solo incluir si están presentes para no mandar undefined.
+    if (parsed.temperature !== undefined) anthropicBody.temperature = parsed.temperature;
+    if (parsed.tools !== undefined) anthropicBody.tools = parsed.tools;
+    if (parsed.tool_choice !== undefined) anthropicBody.tool_choice = parsed.tool_choice;
+
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -134,7 +177,7 @@ export const handler = async (event) => {
         'x-api-key': process.env.ANTHROPIC_API_KEY,
         'anthropic-version': '2023-06-01',
       },
-      body: event.body,
+      body: JSON.stringify(anthropicBody),
     });
 
     const data = await response.json();
