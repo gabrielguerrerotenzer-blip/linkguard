@@ -347,6 +347,19 @@ section[id]{scroll-margin-top:70px;}
 .step-call-btn:hover{background:#A93226;transform:translateY(-1px);}
 .step-call-btn.green{background:var(--green);}
 .step-call-btn.green:hover{background:#1E7A3E;}
+.step-call-btn.unverified{opacity:.88;}
+/* Agrupación visual cuando un banco tiene 2+ teléfonos (BROU, Itaú) */
+.bank-group{margin-top:10px;padding:12px 14px;background:rgba(192,57,43,.05);border-left:3px solid var(--red);border-radius:10px;}
+.bank-group.unverified{border-left-color:#F4D03F;background:rgba(244,208,63,.06);}
+.bank-group-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px;letter-spacing:.3px;display:flex;align-items:center;gap:4px;}
+.bank-group-item{margin-top:8px !important;font-size:13px;}
+.bank-group-item:first-of-type{margin-top:0 !important;}
+/* Indicador de número pendiente de verificación */
+.unverified-indicator{display:inline-block;color:#B8860B;font-weight:700;margin-left:4px;cursor:help;font-size:.9em;}
+/* Footnote con fecha de verificación + link a reporte */
+.verification-footnote{margin-top:16px;padding-top:10px;font-size:12px;color:var(--text-soft);line-height:1.5;border-top:1px dashed var(--border);}
+.verification-footnote a{color:var(--accent);text-decoration:underline;cursor:pointer;}
+.verification-footnote a:hover{text-decoration:none;}
 .emergency-back{margin-top:20px;padding:12px 24px;background:transparent;border:1px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;color:var(--text-soft);cursor:pointer;transition:all .2s;display:block;margin-left:auto;margin-right:auto;}
 .emergency-back:hover{border-color:var(--text);color:var(--text);}
 .emergency-extra{margin-top:20px;padding:18px;background:rgba(192,57,43,.06);border-radius:12px;font-size:14px;line-height:1.6;color:var(--text-soft);}
@@ -536,7 +549,9 @@ section[id]{scroll-margin-top:70px;}
       <h2 style="margin:0 0 12px 0;color:#F4D03F;">fraude.uy necesita JavaScript</h2>
       <p style="margin:0 0 12px 0;">Esta herramienta requiere JavaScript activado en tu navegador. Activalo desde Configuración y recargá la página.</p>
       <p style="margin:0;font-size:14px;opacity:0.9;">
-        <strong>¿Caíste en una estafa?</strong> Llamá a Cibercrimen Uruguay: <a href="tel:25999777" style="color:#7BB8E0;font-weight:600;">2 599 9777</a>
+        <strong>¿Caíste en una estafa?</strong><br>
+        Cibercrimen Uruguay: <a href="tel:25999777" style="color:#7BB8E0;font-weight:600;">2 599 9777</a><br>
+        Bloqueo de tarjeta bancaria 24/7 (BROU): <a href="tel:29026800" style="color:#7BB8E0;font-weight:600;">2902 6800</a>
       </p>
     </div>
   </div>
@@ -912,20 +927,11 @@ section[id]{scroll-margin-top:70px;}
           <div class="step-content">
             <h4>Llamá a tu banco AHORA</h4>
             <p>Pedí que bloqueen tu cuenta y anulen el token inmediatamente. Usá estos números oficiales:</p>
-            <a href="tel:1896" class="step-call-btn">📞 BROU: 1896</a>
-            <a href="tel:1784" class="step-call-btn">📞 Itaú: 1784</a>
-            <a href="tel:19001234" class="step-call-btn">📞 Santander: 1900 1234</a>
-            <a href="tel:08002382" class="step-call-btn">📞 BBVA: 0800 2382</a>
-            <a href="tel:29160000" class="step-call-btn">📞 Scotiabank: 2916 0000</a>
-            <a href="tel:29160642" class="step-call-btn">📞 HSBC: 2916 0642</a>
-            <a href="tel:29161929" class="step-call-btn">📞 Citibank: 2916 1929</a>
-            <a href="tel:29164422" class="step-call-btn">📞 Heritage: 2916 4422</a>
-            <a href="tel:29158426" class="step-call-btn">📞 Bandes: 2915 8426</a>
-            <a href="tel:08001739" class="step-call-btn">📞 Prex: 0800 1739</a>
-            <a href="tel:1730" class="step-call-btn">📞 OCA: 1730</a>
-            <a href="tel:08008004" class="step-call-btn">📞 MiDinero: 0800 8004</a>
-            <a href="https://www.mercadopago.com.uy/ayuda" class="step-call-btn" target="_blank" rel="noopener">📞 Mercado Pago: ayuda en la app</a>
-            <a href="tel:1967" class="step-call-btn">📞 BCU: 1967</a>
+            <div id="emergency-buttons-1">
+              <!-- Fallback estático si JS no corre. renderEmergencyButtons() reemplaza este contenido. -->
+              <a href="tel:29026800" class="step-call-btn">📞 Bloqueo de tarjeta 24/7 (BROU): 2902 6800</a>
+              <a href="tel:25999777" class="step-call-btn green">📞 Cibercrimen: 2 599 9777</a>
+            </div>
           </div>
         </div>
         <div class="emergency-step">
@@ -970,20 +976,11 @@ section[id]{scroll-margin-top:70px;}
           <div class="step-content">
             <h4>Llamá a tu banco y pedí bloqueo de tarjeta</h4>
             <p>Que bloqueen la tarjeta cuyos datos compartiste y te emitan una nueva.</p>
-            <a href="tel:1896" class="step-call-btn">📞 BROU: 1896</a>
-            <a href="tel:1784" class="step-call-btn">📞 Itaú: 1784</a>
-            <a href="tel:19001234" class="step-call-btn">📞 Santander: 1900 1234</a>
-            <a href="tel:08002382" class="step-call-btn">📞 BBVA: 0800 2382</a>
-            <a href="tel:29160000" class="step-call-btn">📞 Scotiabank: 2916 0000</a>
-            <a href="tel:29160642" class="step-call-btn">📞 HSBC: 2916 0642</a>
-            <a href="tel:29161929" class="step-call-btn">📞 Citibank: 2916 1929</a>
-            <a href="tel:29164422" class="step-call-btn">📞 Heritage: 2916 4422</a>
-            <a href="tel:29158426" class="step-call-btn">📞 Bandes: 2915 8426</a>
-            <a href="tel:08001739" class="step-call-btn">📞 Prex: 0800 1739</a>
-            <a href="tel:1730" class="step-call-btn">📞 OCA: 1730</a>
-            <a href="tel:08008004" class="step-call-btn">📞 MiDinero: 0800 8004</a>
-            <a href="https://www.mercadopago.com.uy/ayuda" class="step-call-btn" target="_blank" rel="noopener">📞 Mercado Pago: ayuda en la app</a>
-            <a href="tel:1967" class="step-call-btn">📞 BCU: 1967</a>
+            <div id="emergency-buttons-2">
+              <!-- Fallback estático si JS no corre. renderEmergencyButtons() reemplaza este contenido. -->
+              <a href="tel:29026800" class="step-call-btn">📞 Bloqueo de tarjeta 24/7 (BROU): 2902 6800</a>
+              <a href="tel:25999777" class="step-call-btn green">📞 Cibercrimen: 2 599 9777</a>
+            </div>
           </div>
         </div>
         <div class="emergency-step">
@@ -1021,20 +1018,11 @@ section[id]{scroll-margin-top:70px;}
           <div class="step-content">
             <h4>Avisá a tu banco</h4>
             <p>Llamá y contá lo que pasó. Pedí que agreguen una alerta de seguridad extra en tu cuenta por si intentan usarla con tu cédula.</p>
-            <a href="tel:1896" class="step-call-btn">📞 BROU: 1896</a>
-            <a href="tel:1784" class="step-call-btn">📞 Itaú: 1784</a>
-            <a href="tel:19001234" class="step-call-btn">📞 Santander: 1900 1234</a>
-            <a href="tel:08002382" class="step-call-btn">📞 BBVA: 0800 2382</a>
-            <a href="tel:29160000" class="step-call-btn">📞 Scotiabank: 2916 0000</a>
-            <a href="tel:29160642" class="step-call-btn">📞 HSBC: 2916 0642</a>
-            <a href="tel:29161929" class="step-call-btn">📞 Citibank: 2916 1929</a>
-            <a href="tel:29164422" class="step-call-btn">📞 Heritage: 2916 4422</a>
-            <a href="tel:29158426" class="step-call-btn">📞 Bandes: 2915 8426</a>
-            <a href="tel:08001739" class="step-call-btn">📞 Prex: 0800 1739</a>
-            <a href="tel:1730" class="step-call-btn">📞 OCA: 1730</a>
-            <a href="tel:08008004" class="step-call-btn">📞 MiDinero: 0800 8004</a>
-            <a href="https://www.mercadopago.com.uy/ayuda" class="step-call-btn" target="_blank" rel="noopener">📞 Mercado Pago: ayuda en la app</a>
-            <a href="tel:1967" class="step-call-btn">📞 BCU: 1967</a>
+            <div id="emergency-buttons-3">
+              <!-- Fallback estático si JS no corre. renderEmergencyButtons() reemplaza este contenido. -->
+              <a href="tel:29026800" class="step-call-btn">📞 Bloqueo de tarjeta 24/7 (BROU): 2902 6800</a>
+              <a href="tel:25999777" class="step-call-btn green">📞 Cibercrimen: 2 599 9777</a>
+            </div>
           </div>
         </div>
         <div class="emergency-step">
@@ -1073,20 +1061,11 @@ section[id]{scroll-margin-top:70px;}
           <div class="step-content">
             <h4>Llamá a tu banco</h4>
             <p>Contá exactamente qué datos ingresaste en la página falsa. El banco decidirá si necesitan bloquear algo.</p>
-            <a href="tel:1896" class="step-call-btn">📞 BROU: 1896</a>
-            <a href="tel:1784" class="step-call-btn">📞 Itaú: 1784</a>
-            <a href="tel:19001234" class="step-call-btn">📞 Santander: 1900 1234</a>
-            <a href="tel:08002382" class="step-call-btn">📞 BBVA: 0800 2382</a>
-            <a href="tel:29160000" class="step-call-btn">📞 Scotiabank: 2916 0000</a>
-            <a href="tel:29160642" class="step-call-btn">📞 HSBC: 2916 0642</a>
-            <a href="tel:29161929" class="step-call-btn">📞 Citibank: 2916 1929</a>
-            <a href="tel:29164422" class="step-call-btn">📞 Heritage: 2916 4422</a>
-            <a href="tel:29158426" class="step-call-btn">📞 Bandes: 2915 8426</a>
-            <a href="tel:08001739" class="step-call-btn">📞 Prex: 0800 1739</a>
-            <a href="tel:1730" class="step-call-btn">📞 OCA: 1730</a>
-            <a href="tel:08008004" class="step-call-btn">📞 MiDinero: 0800 8004</a>
-            <a href="https://www.mercadopago.com.uy/ayuda" class="step-call-btn" target="_blank" rel="noopener">📞 Mercado Pago: ayuda en la app</a>
-            <a href="tel:1967" class="step-call-btn">📞 BCU: 1967</a>
+            <div id="emergency-buttons-4">
+              <!-- Fallback estático si JS no corre. renderEmergencyButtons() reemplaza este contenido. -->
+              <a href="tel:29026800" class="step-call-btn">📞 Bloqueo de tarjeta 24/7 (BROU): 2902 6800</a>
+              <a href="tel:25999777" class="step-call-btn green">📞 Cibercrimen: 2 599 9777</a>
+            </div>
           </div>
         </div>
         <div class="emergency-step">
@@ -1121,20 +1100,11 @@ section[id]{scroll-margin-top:70px;}
           <div class="step-content">
             <h4>Llamá a tu banco AHORA MISMO</h4>
             <p>Pedí que intenten frenar o revertir la transferencia. Cuanto antes llames, más chances hay de recuperar el dinero. Cada minuto cuenta.</p>
-            <a href="tel:1896" class="step-call-btn">📞 BROU: 1896</a>
-            <a href="tel:1784" class="step-call-btn">📞 Itaú: 1784</a>
-            <a href="tel:19001234" class="step-call-btn">📞 Santander: 1900 1234</a>
-            <a href="tel:08002382" class="step-call-btn">📞 BBVA: 0800 2382</a>
-            <a href="tel:29160000" class="step-call-btn">📞 Scotiabank: 2916 0000</a>
-            <a href="tel:29160642" class="step-call-btn">📞 HSBC: 2916 0642</a>
-            <a href="tel:29161929" class="step-call-btn">📞 Citibank: 2916 1929</a>
-            <a href="tel:29164422" class="step-call-btn">📞 Heritage: 2916 4422</a>
-            <a href="tel:29158426" class="step-call-btn">📞 Bandes: 2915 8426</a>
-            <a href="tel:08001739" class="step-call-btn">📞 Prex: 0800 1739</a>
-            <a href="tel:1730" class="step-call-btn">📞 OCA: 1730</a>
-            <a href="tel:08008004" class="step-call-btn">📞 MiDinero: 0800 8004</a>
-            <a href="https://www.mercadopago.com.uy/ayuda" class="step-call-btn" target="_blank" rel="noopener">📞 Mercado Pago: ayuda en la app</a>
-            <a href="tel:1967" class="step-call-btn">📞 BCU: 1967</a>
+            <div id="emergency-buttons-5">
+              <!-- Fallback estático si JS no corre. renderEmergencyButtons() reemplaza este contenido. -->
+              <a href="tel:29026800" class="step-call-btn">📞 Bloqueo de tarjeta 24/7 (BROU): 2902 6800</a>
+              <a href="tel:25999777" class="step-call-btn green">📞 Cibercrimen: 2 599 9777</a>
+            </div>
           </div>
         </div>
         <div class="emergency-step">
@@ -1324,6 +1294,234 @@ let uploadedImage = null;
 let adUploadedImage = null;
 let _pageLoadTime = Date.now();
 
+// PROMPT_VERSION: bumpear cuando cambie el system prompt o ENTIDADES_OFICIALES.
+// Sirve como salt del cache de Neon para invalidar respuestas viejas.
+// Convención: vN donde N es un entero. No usar fechas ni hashes.
+const PROMPT_VERSION = "v2";
+
+// ========================================================================
+// FUENTE ÚNICA DE VERDAD: contactos oficiales de entidades uruguayas.
+// ========================================================================
+// Última auditoría: 2026-05-16. Para actualizar un número:
+//   1. Cambiar `numero` y `verificado` (formato YYYY-MM-DD)
+//   2. Actualizar `fuente` con la URL donde se verificó
+//   3. Bumpear PROMPT_VERSION arriba para invalidar el cache de Neon
+//
+// Estructura: `bancos` y `tarjetas_billeteras` se renderizan como botones
+// de emergencia (renderEmergencyButtons). `otras_entidades` NO se renderiza
+// como botón; sirve para enriquecer el system prompt y para detectar
+// suplantación. `cibercrimen` siempre va en el bloque verde.
+//
+// Bancos con 2 teléfonos (BROU, Itaú): el aplanamiento al prompt usa el
+// PRIMERO del array (prioridad implícita). Los botones de UI muestran ambos
+// agrupados visualmente. Ver buildOfficialContactsForPrompt y renderEmergencyButtons.
+const ENTIDADES_OFICIALES = {
+  bancos: [
+    {
+      nombre: "BROU",
+      telefonos: [
+        { tipo: "bloqueo_24_7", numero: "2902 6800", etiqueta: "Bloqueo tarjeta 24/7" },
+        { tipo: "fraude_hh", numero: "1996", etiqueta: "Central fraude (hábil 10-19h)", interno: "5" }
+      ],
+      verificado: "2026-05-16",
+      fuente: "brou.com.uy/contactenos y brou.com.uy/institucional/denuncia-de-tarjetas"
+    },
+    {
+      nombre: "Itaú",
+      telefonos: [
+        { tipo: "unificado", numero: "1784", etiqueta: "Denuncia fraude y bloqueo tarjeta" },
+        { tipo: "exterior", numero: "+598 2917 0555", etiqueta: "Desde el exterior" }
+      ],
+      verificado: "2026-05-16",
+      fuente: "itau.com.uy/inst/ciberseguridad.html"
+    },
+    { nombre: "Santander", telefonos: [{ tipo: "pendiente", numero: "1900 1234", etiqueta: "PENDIENTE VERIFICAR" }], verificado: null },
+    { nombre: "BBVA", telefonos: [{ tipo: "pendiente", numero: "0800 2382", etiqueta: "PENDIENTE VERIFICAR" }], verificado: null },
+    { nombre: "Scotiabank", telefonos: [{ tipo: "pendiente", numero: "2916 0000", etiqueta: "PENDIENTE VERIFICAR — discrepancia HTML vs prompt" }], verificado: null },
+    { nombre: "Heritage", telefonos: [{ tipo: "pendiente", numero: "2916 4422", etiqueta: "PENDIENTE VERIFICAR" }], verificado: null },
+    { nombre: "Bandes", telefonos: [{ tipo: "pendiente", numero: "2915 8426", etiqueta: "PENDIENTE VERIFICAR" }], verificado: null }
+  ],
+  tarjetas_billeteras: [
+    { nombre: "OCA", telefonos: [{ tipo: "pendiente", numero: "1730", etiqueta: "PENDIENTE VERIFICAR — discrepancia HTML vs prompt" }], verificado: null },
+    { nombre: "Prex", telefonos: [{ tipo: "pendiente", numero: "0800 1739", etiqueta: "PENDIENTE VERIFICAR" }], verificado: null },
+    { nombre: "MiDinero", telefonos: [{ tipo: "pendiente", numero: "0800 8004", etiqueta: "PENDIENTE VERIFICAR" }], verificado: null },
+    { nombre: "Mercado Pago", url: "https://www.mercadopago.com.uy/ayuda", etiqueta: "Ayuda en la app", verificado: "2026-05-16" }
+  ],
+  otras_entidades: [
+    // Para system prompt y detección de suplantación. NO se renderizan como botones de emergencia.
+    { nombre: "BCU", telefono: "1967", verificado: null },
+    { nombre: "UTE", telefono: "PENDIENTE", verificado: null },
+    { nombre: "OSE", telefono: "PENDIENTE", verificado: null },
+    { nombre: "ANTEL", telefono: "PENDIENTE", verificado: null },
+    { nombre: "ANCAP", telefono: "2604 2000", verificado: null },
+    { nombre: "BPS", telefono: "1997", verificado: null },
+    { nombre: "Correo", telefono: "0800 2637", verificado: null },
+    { nombre: "DGI", telefono: "1344", verificado: null },
+    { nombre: "SUCIVE", telefono: "2916 3288", verificado: null }
+  ],
+  cibercrimen: {
+    telefono: "2 599 9777",
+    email: "delitosinformaticos@policia.gub.uy",
+    denuncia_online: "https://denuncia.minterior.gub.uy/"
+  }
+};
+
+// Entidades que discontinuaron retail en Uruguay. Suplantarlas es señal fuerte
+// de fraude porque el atacante no puede pretender que el usuario tiene cuenta acá.
+const ENTIDADES_DISCONTINUADAS_RETAIL_UY = ["HSBC", "Citibank"];
+
+// Helper: busca un nombre de entidad de forma fuzzy (match bidireccional por substring).
+function _matchEntidad(nombre, candidato){
+  const n = nombre.toLowerCase();
+  const c = candidato.toLowerCase();
+  return n === c || n.includes(c) || c.includes(n);
+}
+
+// Devuelve el primer teléfono callable de una entidad por nombre, o null si no hay match
+// (o si la única opción es una URL — Mercado Pago — o un PENDIENTE sin número real).
+function getTelefonoPorNombre(nombre){
+  if(!nombre) return null;
+  for(const b of ENTIDADES_OFICIALES.bancos){
+    if(_matchEntidad(nombre, b.nombre)) return b.telefonos?.[0]?.numero || null;
+  }
+  for(const t of ENTIDADES_OFICIALES.tarjetas_billeteras){
+    if(_matchEntidad(nombre, t.nombre)) return t.telefonos?.[0]?.numero || null;
+  }
+  for(const o of ENTIDADES_OFICIALES.otras_entidades){
+    if(_matchEntidad(nombre, o.nombre)){
+      return (o.telefono && o.telefono !== 'PENDIENTE') ? o.telefono : null;
+    }
+  }
+  return null;
+}
+
+// Devuelve un teléfono específico por tipo (ej: BROU + "fraude_hh" → "1996"). null si no existe.
+function getTelefonoTipo(nombre, tipo){
+  for(const b of ENTIDADES_OFICIALES.bancos){
+    if(_matchEntidad(nombre, b.nombre)){
+      return b.telefonos.find(t => t.tipo === tipo)?.numero || null;
+    }
+  }
+  for(const t of ENTIDADES_OFICIALES.tarjetas_billeteras){
+    if(_matchEntidad(nombre, t.nombre) && t.telefonos){
+      return t.telefonos.find(x => x.tipo === tipo)?.numero || null;
+    }
+  }
+  return null;
+}
+
+// Aplana ENTIDADES_OFICIALES a un map {nombre: primer_numero} para el system prompt.
+// Mantiene retrocompatibilidad con el formato que el LLM ya conoce.
+function buildOfficialContactsForPrompt(){
+  const map = {};
+  ENTIDADES_OFICIALES.bancos.forEach(b => { map[b.nombre] = b.telefonos?.[0]?.numero || null; });
+  ENTIDADES_OFICIALES.tarjetas_billeteras.forEach(t => {
+    if(t.telefonos?.[0]?.numero) map[t.nombre] = t.telefonos[0].numero;
+    else if(t.url) map[t.nombre] = t.url;
+  });
+  ENTIDADES_OFICIALES.otras_entidades.forEach(o => {
+    if(o.telefono && o.telefono !== 'PENDIENTE') map[o.nombre] = o.telefono;
+  });
+  map['Cibercrimen'] = ENTIDADES_OFICIALES.cibercrimen.telefono;
+  return JSON.stringify(map);
+}
+
+// Devuelve la sección "Contactos detallados por entidad" del prompt, con horarios
+// y tipos alternativos cuando un banco tiene más de un teléfono. Permite al LLM
+// citar el número de horario hábil cuando el contexto lo amerita.
+function buildDetailedContactsForPrompt(){
+  const lines = [];
+  const grupos = [...ENTIDADES_OFICIALES.bancos, ...ENTIDADES_OFICIALES.tarjetas_billeteras];
+  grupos.forEach(g => {
+    if(g.telefonos && g.telefonos.length > 1){
+      const detalle = g.telefonos.map(t => `${t.numero} (${t.etiqueta})`).join('; ');
+      lines.push(`  - ${g.nombre}: ${detalle}`);
+    }
+  });
+  return lines.length ? lines.join('\n') : '  (sin entidades con múltiples canales)';
+}
+
+// Fecha de verificación más antigua entre bancos+tarjetas. null si hay algún pendiente.
+function getFechaVerificacionMasAntigua(){
+  const fechas = [];
+  ENTIDADES_OFICIALES.bancos.forEach(b => fechas.push(b.verificado));
+  ENTIDADES_OFICIALES.tarjetas_billeteras.forEach(t => fechas.push(t.verificado));
+  if(fechas.some(f => !f)) return null;
+  return fechas.sort()[0];
+}
+
+// Renderiza los botones de emergencia en el contenedor con id dado.
+// Reemplaza el fallback estático que existe dentro del div para clientes sin JS.
+function renderEmergencyButtons(containerId){
+  const c = document.getElementById(containerId);
+  if(!c) return;
+  let html = '';
+
+  // BANCOS
+  ENTIDADES_OFICIALES.bancos.forEach(b => {
+    const pendiente = b.verificado === null;
+    const indicador = pendiente
+      ? '<span class="unverified-indicator" title="Número en proceso de verificación">*</span>'
+      : '';
+    if(b.telefonos.length === 1){
+      const t = b.telefonos[0];
+      const telHref = t.numero.replace(/[\s+]/g,'');
+      html += `<a href="tel:${telHref}" class="step-call-btn${pendiente?' unverified':''}">📞 ${b.nombre}: ${t.numero}${indicador}</a>`;
+    } else {
+      const inner = b.telefonos.map(t => {
+        const telHref = t.numero.replace(/[\s+]/g,'');
+        return `<a href="tel:${telHref}" class="step-call-btn bank-group-item">📞 ${t.etiqueta}: ${t.numero}</a>`;
+      }).join('');
+      html += `<div class="bank-group${pendiente?' unverified':''}">
+        <div class="bank-group-title">${b.nombre}${indicador}</div>
+        ${inner}
+      </div>`;
+    }
+  });
+
+  // TARJETAS Y BILLETERAS
+  ENTIDADES_OFICIALES.tarjetas_billeteras.forEach(t => {
+    const pendiente = t.verificado === null;
+    const indicador = pendiente
+      ? '<span class="unverified-indicator" title="Número en proceso de verificación">*</span>'
+      : '';
+    if(t.url){
+      html += `<a href="${t.url}" class="step-call-btn" target="_blank" rel="noopener">📞 ${t.nombre}: ${t.etiqueta}</a>`;
+    } else if(t.telefonos && t.telefonos.length === 1){
+      const tel = t.telefonos[0];
+      const telHref = tel.numero.replace(/[\s+]/g,'');
+      html += `<a href="tel:${telHref}" class="step-call-btn${pendiente?' unverified':''}">📞 ${t.nombre}: ${tel.numero}${indicador}</a>`;
+    }
+  });
+
+  // BCU (de otras_entidades, mantiene comportamiento del legacy)
+  const bcu = ENTIDADES_OFICIALES.otras_entidades.find(o => o.nombre === 'BCU');
+  if(bcu && bcu.telefono && bcu.telefono !== 'PENDIENTE'){
+    html += `<a href="tel:${bcu.telefono.replace(/\s+/g,'')}" class="step-call-btn">📞 BCU: ${bcu.telefono}</a>`;
+  }
+
+  // Footnote de verificación
+  const fechaVerif = getFechaVerificacionMasAntigua();
+  const hayPendientes = !fechaVerif;
+  const fechaTxt = hayPendientes
+    ? 'Algunos números están en proceso de verificación (marcados con <span class="unverified-indicator">*</span>).'
+    : `Números verificados al ${fechaVerif}.`;
+  html += `<div class="verification-footnote">${fechaTxt} Si encontrás un error, <a href="#" onclick="abrirReporte();return false;">reportalo</a>.</div>`;
+
+  c.innerHTML = html;
+}
+
+// Renderiza los 5 bloques de emergencia. Llamado en DOMContentLoaded.
+function renderAllEmergencyBlocks(){
+  ['emergency-buttons-1','emergency-buttons-2','emergency-buttons-3','emergency-buttons-4','emergency-buttons-5']
+    .forEach(renderEmergencyButtons);
+}
+if(document.readyState === 'loading'){
+  document.addEventListener('DOMContentLoaded', renderAllEmergencyBlocks);
+} else {
+  renderAllEmergencyBlocks();
+}
+
 // THREAT DB
 const THREAT_DB={
   fraudulentDomains:["banccorepublica.com.uy","brou-verificacion.com","brou-seguridad.com","itau-uruguay.com","santander-uy-seguro.com","bbva-verificar.com","bancco-republica.com","e-brou.com","mi-brou.net","brou-online.net","itau-seguridad.com","promo-financiera.com","dgi-reembolsos.com","brou-portal.com","itau-seguridad.online","ebrou-login.com","brou-actualizar.com","santander-uy.com"],
@@ -1361,25 +1559,33 @@ const THREAT_DB={
     "udelar.edu.uy","ort.edu.uy","ucu.edu.uy","um.edu.uy","anep.edu.uy",
     "claeh.edu.uy","ude.edu.uy"
   ],
-  recentPatterns:["Fraudes con supuesto reembolso de DGI","Mensajes falsos de Correo Uruguayo","WhatsApp haciéndose pasar por Mercado Pago","SMS de supuesta suspensión de cuenta BROU","Publicidades falsas de premios bancarios en Facebook","Anuncios de inversiones con retorno garantizado"],
-  officialContacts:{"BROU":"1896","Itaú":"1784","Santander":"1900 1234","BBVA":"0800 2382","Scotiabank":"2916 1111","OCA":"2900 3939","ANCAP":"2604 2000","UTE":"0800 1870","OSE":"1952","ANTEL":"109","BPS":"1997","BROU":"1896"}
+  recentPatterns:["Fraudes con supuesto reembolso de DGI","Mensajes falsos de Correo Uruguayo","WhatsApp haciéndose pasar por Mercado Pago","SMS de supuesta suspensión de cuenta BROU","Publicidades falsas de premios bancarios en Facebook","Anuncios de inversiones con retorno garantizado"]
 };
 
-// POLÍTICAS DE COMUNICACIÓN DE ENTIDADES URUGUAYAS
-const ENTIDADES_UY={
-  sucive:{nombre:"SUCIVE",web:"sucive.gub.uy",politica:"SUCIVE no envía ningún tipo de mensaje con enlaces de internet. Si recibís un SMS o email con un link diciendo ser de SUCIVE, es fraude. Consultas solo en sucive.gub.uy o al 2916-3288.",telefono:"2916-3288"},
-  brou:{nombre:"Banco República (BROU)",web:"brou.com.uy",politica:"BROU nunca solicita claves, tokens, contraseñas ni datos de tarjeta por SMS, email, WhatsApp ni llamada telefónica. No envía links para actualizar datos. Operá solo desde ebrou.com.uy o la app oficial.",telefono:"1896"},
-  itau:{nombre:"Itaú",web:"itau.com.uy",politica:"Itaú nunca solicita datos personales, claves ni tokens por email, SMS o llamada. No envía links para verificar cuentas.",telefono:"1784"},
-  santander:{nombre:"Santander",web:"santander.com.uy",politica:"Santander nunca pide claves, tokens ni datos de tarjeta por canales digitales ni telefónicos. No envía links por SMS.",telefono:"1900 1234"},
-  bbva:{nombre:"BBVA",web:"bbva.com.uy",politica:"BBVA nunca solicita información confidencial por email, SMS ni llamada.",telefono:"0800 2382"},
-  bcu:{nombre:"Banco Central del Uruguay",web:"bcu.gub.uy",politica:"El BCU no realiza operaciones comerciales ni envía comunicaciones solicitando pagos o datos personales. Cualquier mensaje pidiendo dinero en nombre del BCU es fraude.",telefono:"1967"},
-  ute:{nombre:"UTE",web:"ute.com.uy",politica:"UTE no solicita pagos ni datos personales por SMS o email con links. Pagos solo por canales oficiales.",telefono:"0800 1930"},
-  antel:{nombre:"Antel",web:"antel.com.uy",politica:"Antel no pide datos personales ni de pago por SMS o email. No envía links para verificar cuentas.",telefono:"0800 2323"},
-  ose:{nombre:"OSE",web:"ose.com.uy",politica:"OSE no solicita datos personales ni pagos a través de links por SMS o email.",telefono:"0800 1871"},
-  bps:{nombre:"BPS",web:"bps.gub.uy",politica:"BPS no solicita datos personales ni pagos por SMS, email ni WhatsApp con links.",telefono:"1997"},
-  correo:{nombre:"Correo Uruguayo",web:"correo.com.uy",politica:"Correo Uruguayo no envía SMS ni emails con links para pagar envíos o liberar paquetes retenidos en aduana.",telefono:"0800 2637"},
-  dgi:{nombre:"DGI",web:"dgi.gub.uy",politica:"La DGI no solicita pagos ni datos personales por SMS, email ni WhatsApp. No envía links para regularizar situaciones fiscales.",telefono:"1344"},
-  mercadolibre:{nombre:"MercadoLibre",web:"mercadolibre.com.uy",politica:"MercadoLibre no contacta por fuera de la plataforma para cerrar ventas ni pide pagos por transferencia directa. Toda comunicación legítima es dentro de la app.",telefono:null}
+// POLÍTICAS DE COMUNICACIÓN DE ENTIDADES URUGUAYAS.
+// Nota: NO contiene teléfonos — vienen de ENTIDADES_OFICIALES (fuente única).
+// detectEntidad() adjunta el teléfono dinámicamente al objeto que devuelve.
+const POLITICAS_ENTIDADES={
+  sucive:{nombre:"SUCIVE",web:"sucive.gub.uy",politica:"SUCIVE no envía ningún tipo de mensaje con enlaces de internet. Si recibís un SMS o email con un link diciendo ser de SUCIVE, es fraude. Consultas solo en sucive.gub.uy."},
+  brou:{nombre:"Banco República (BROU)",web:"brou.com.uy",politica:"BROU nunca solicita claves, tokens, contraseñas ni datos de tarjeta por SMS, email, WhatsApp ni llamada telefónica. No envía links para actualizar datos. Operá solo desde ebrou.com.uy o la app oficial."},
+  itau:{nombre:"Itaú",web:"itau.com.uy",politica:"Itaú nunca solicita datos personales, claves ni tokens por email, SMS o llamada. No envía links para verificar cuentas."},
+  santander:{nombre:"Santander",web:"santander.com.uy",politica:"Santander nunca pide claves, tokens ni datos de tarjeta por canales digitales ni telefónicos. No envía links por SMS."},
+  bbva:{nombre:"BBVA",web:"bbva.com.uy",politica:"BBVA nunca solicita información confidencial por email, SMS ni llamada."},
+  bcu:{nombre:"Banco Central del Uruguay",web:"bcu.gub.uy",politica:"El BCU no realiza operaciones comerciales ni envía comunicaciones solicitando pagos o datos personales. Cualquier mensaje pidiendo dinero en nombre del BCU es fraude."},
+  ute:{nombre:"UTE",web:"ute.com.uy",politica:"UTE no solicita pagos ni datos personales por SMS o email con links. Pagos solo por canales oficiales."},
+  antel:{nombre:"Antel",web:"antel.com.uy",politica:"Antel no pide datos personales ni de pago por SMS o email. No envía links para verificar cuentas."},
+  ose:{nombre:"OSE",web:"ose.com.uy",politica:"OSE no solicita datos personales ni pagos a través de links por SMS o email."},
+  bps:{nombre:"BPS",web:"bps.gub.uy",politica:"BPS no solicita datos personales ni pagos por SMS, email ni WhatsApp con links."},
+  correo:{nombre:"Correo Uruguayo",web:"correo.com.uy",politica:"Correo Uruguayo no envía SMS ni emails con links para pagar envíos o liberar paquetes retenidos en aduana."},
+  dgi:{nombre:"DGI",web:"dgi.gub.uy",politica:"La DGI no solicita pagos ni datos personales por SMS, email ni WhatsApp. No envía links para regularizar situaciones fiscales."},
+  mercadolibre:{nombre:"MercadoLibre",web:"mercadolibre.com.uy",politica:"MercadoLibre no contacta por fuera de la plataforma para cerrar ventas ni pide pagos por transferencia directa. Toda comunicación legítima es dentro de la app."}
+};
+
+// Mapa de clave de política → nombre canónico en ENTIDADES_OFICIALES (para lookup de teléfono).
+const POLITICA_TO_ENTIDAD = {
+  sucive:'SUCIVE', brou:'BROU', itau:'Itaú', santander:'Santander', bbva:'BBVA',
+  bcu:'BCU', ute:'UTE', antel:'ANTEL', ose:'OSE', bps:'BPS', correo:'Correo',
+  dgi:'DGI', mercadolibre:null
 };
 
 function detectEntidad(text){
@@ -1388,6 +1594,9 @@ function detectEntidad(text){
   const matchers=[
     {key:'sucive',     re:/sucive/},
     {key:'brou',       re:/\bbrou\b|banco\s+rep[uú]blica/},
+    // TODO(pr-separado): el \b en JS no considera ú/á como word-char, así que
+    // "Itaú" (con tilde aguda en ú) NO matchea — solo "Itau" o "Itáu". Reemplazar
+    // por lookahead/lookbehind con clase Unicode amplia. Bug pre-existente al refactor.
     {key:'itau',       re:/\bit[aá]u\b/},
     {key:'santander',  re:/santander/},
     {key:'bbva',       re:/\bbbva\b/},
@@ -1401,7 +1610,13 @@ function detectEntidad(text){
     {key:'mercadolibre',re:/mercado\s*libre|mercado\s*pago/},
   ];
   for(const {key,re} of matchers){
-    if(re.test(t))return ENTIDADES_UY[key];
+    if(re.test(t)){
+      const pol = POLITICAS_ENTIDADES[key];
+      if(!pol) return null;
+      const entidadKey = POLITICA_TO_ENTIDAD[key];
+      const telefono = entidadKey ? getTelefonoPorNombre(entidadKey) : null;
+      return { ...pol, telefono };
+    }
   }
   return null;
 }
@@ -1463,7 +1678,7 @@ const DEMO_RESULTS={
       {badge:'🔑 TOKEN',      text:'Solicita tu token digital — el BROU nunca pide el token por SMS'},
       {badge:'📱 SMS',        text:'Canal SMS no oficial: el BROU no envía alertas con links para ingresar datos'},
     ],
-    advice:'🚨 <strong>No ingresés al link.</strong> El BROU nunca te manda un SMS con un link para ingresar tu token. Si recibiste este mensaje, ignoralo y llamá al BROU al <strong>1896</strong> para confirmar el estado de tu cuenta.'
+    advice:`🚨 <strong>No ingresés al link.</strong> El BROU nunca te manda un SMS con un link para ingresar tu token. Si recibiste este mensaje, ignoralo y llamá al BROU al <strong>${getTelefonoTipo('BROU','fraude_hh')||'1996'}</strong> (central de fraude, horario hábil) para confirmar el estado de tu cuenta.`
   },
   whatsapp:{
     verdict:'danger',
@@ -1477,7 +1692,7 @@ const DEMO_RESULTS={
       {badge:'📞 TELÉFONO',     text:'Número sospechoso (099 847 231) — no es un número oficial del banco'},
       {badge:'⚡ URGENCIA',     text:'"Es urgente" — táctica clásica para que no tengas tiempo de verificar'},
     ],
-    advice:'🚨 <strong>No des ningún dato.</strong> Cortá la comunicación inmediatamente. Ningún banco te pide el token por WhatsApp. Si dudás, llamá al Itaú al <strong>1784</strong>.'
+    advice:`🚨 <strong>No des ningún dato.</strong> Cortá la comunicación inmediatamente. Ningún banco te pide el token por WhatsApp. Si dudás, llamá al Itaú al <strong>${getTelefonoTipo('Itaú','unificado')||'1784'}</strong>.`
   },
   safe:{
     verdict:'safe',
@@ -2048,7 +2263,10 @@ BASE DE AMENAZAS ACTUALIZADA (Uruguay):
 - Números de teléfono fraudulentos: ${THREAT_DB.scamPhones.join(', ')}
 - Dominios legítimos verificados: ${THREAT_DB.legitimateDomains.join(', ')}
 - Patrones de fraude activos: ${THREAT_DB.recentPatterns.join('; ')}
-- Teléfonos oficiales de bancos: ${JSON.stringify(THREAT_DB.officialContacts)}
+- Teléfonos oficiales (map plano nombre→primer_teléfono priorizado): ${buildOfficialContactsForPrompt()}
+- Contactos detallados por entidad (canales adicionales por horario o uso específico; usá estos cuando el contexto lo amerite, ej: usuario consulta fuera de emergencia activa):
+${buildDetailedContactsForPrompt()}
+- Entidades discontinuadas en Uruguay (retail): ${ENTIDADES_DISCONTINUADAS_RETAIL_UY.join(', ')}. Si el contenido suplanta una de estas pretendiendo que el usuario tiene cuenta retail con ellas en Uruguay, es señal fuerte de fraude porque ya no operan retail acá — tratar como "danger" salvo que el contexto deje claro que el usuario migró/tenía cuenta histórica.
 ${_entidad?`
 POLÍTICA OFICIAL DE ${_entidad.nombre.toUpperCase()} (entidad mencionada en el contenido):
 ${_entidad.politica}
@@ -2146,7 +2364,7 @@ MARCAS URUGUAYAS CRÍTICAS (referencia para detectar typosquatting):
 
 Las siguientes marcas son las más suplantadas en fraudes en Uruguay. Si el contenido analizado menciona el nombre de una de estas marcas pero el dominio asociado NO es el oficial correspondiente (ver "Dominios legítimos verificados" arriba) ni una variante coherente (subdominios oficiales como portal.X.com.uy, mi.X.com.uy, e-X.com.uy), es typosquatting → "danger".
 
-Bancos: BROU (Banco República), Itaú, Santander, BBVA, Scotiabank, HSBC, Heritage, Banque Total, BHU (Banco Hipotecario), BCU (Banco Central), BSE (Banco de Seguros del Estado), Citibank.
+Bancos: BROU (Banco República), Itaú, Santander, BBVA, Scotiabank, Heritage, Bandes, Banque Total, BHU (Banco Hipotecario), BCU (Banco Central), BSE (Banco de Seguros del Estado).
 Tarjetas y pagos: OCA, Visa, Mastercard, Prex, Passcard, RedPagos, Abitab, MercadoPago.
 E-commerce y servicios: MercadoLibre, PedidosYa, TiendaMia.
 Telecomunicaciones: Antel, Claro, Movistar.
@@ -2276,7 +2494,8 @@ Respondé SOLO con JSON válido (sin markdown, sin backticks):
       model:model,
       max_tokens:1024,
       system:systemPrompt,
-      messages:[{role:'user',content}]
+      messages:[{role:'user',content}],
+      prompt_version:PROMPT_VERSION
     })
   },45000);
 
@@ -2311,7 +2530,8 @@ async function verificarPromocion(textoAnuncio){
       model:'claude-sonnet-4-6',
       max_tokens:256,
       system:'Sos un extractor de datos de anuncios publicitarios. Dado un texto de anuncio, extraé en JSON: empresa (nombre de la empresa mencionada), dominio (dominio oficial probable, ej: "oca.com.uy"), beneficio (descripción corta de la promoción en 5-8 palabras), palabrasClave (array de 2-3 términos clave para buscar en el sitio oficial). Respondé SOLO con JSON válido, sin markdown ni backticks.',
-      messages:[{role:'user',content:`Extraé los datos de este anuncio:\n\n"${textoAnuncio}"`}]
+      messages:[{role:'user',content:`Extraé los datos de este anuncio:\n\n"${textoAnuncio}"`}],
+      prompt_version:PROMPT_VERSION
     })
   },20000);
   if(!r.ok)throw new Error(`Claude extract error ${r.status}`);
@@ -2336,10 +2556,7 @@ async function verificarPromocion(textoAnuncio){
   const matchOficial=itemsOficial.find(item=>kws.some(kw=>(item.title+' '+(item.snippet||'')).toLowerCase().includes(kw)));
   const matchAmplia=itemsAmplia.find(item=>kws.some(kw=>(item.title+' '+(item.snippet||'')).toLowerCase().includes(kw)));
 
-  const contactKey=Object.keys(THREAT_DB.officialContacts).find(k=>
-    extracted.empresa.toLowerCase().includes(k.toLowerCase())||k.toLowerCase().includes(extracted.empresa.toLowerCase())
-  );
-  const telefono=contactKey?THREAT_DB.officialContacts[contactKey]:null;
+  const telefono=getTelefonoPorNombre(extracted.empresa);
   const contactoSufijo=telefono
     ?` Si tenés dudas, llamá directamente al ${telefono}.`
     :` Si tenés dudas, ingresá a ${extracted.dominio} desde tu navegador.`;
@@ -2560,7 +2777,8 @@ const ENTIDADES_WIZ=[
   {key:'Santander',     emoji:'🏦'},
   {key:'BBVA',          emoji:'🏦'},
   {key:'Scotiabank',    emoji:'🏦'},
-  {key:'HSBC',          emoji:'🏦'},
+  {key:'Heritage',      emoji:'🏦'},
+  {key:'Bandes',        emoji:'🏦'},
   {key:'Prex',          emoji:'💳'},
   {key:'OCA',           emoji:'💳'},
   {key:'MiDinero',      emoji:'💰'},
