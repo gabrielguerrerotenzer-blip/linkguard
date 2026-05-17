@@ -53,6 +53,11 @@
   status = 200
 
 [[redirects]]
+  from = "/api/dashboard-reports-list"
+  to   = "/.netlify/functions/dashboard-reports-list"
+  status = 200
+
+[[redirects]]
   from = "/api/lookup"
   to   = "/.netlify/functions/api-lookup"
   status = 200

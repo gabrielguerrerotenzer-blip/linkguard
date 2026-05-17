@@ -1,4 +1,5 @@
 import { neon } from '@neondatabase/serverless';
+import { anonymize } from './lib/anonymize.js';
 
 export const handler = async (event) => {
   const headers = {
@@ -32,14 +33,18 @@ export const handler = async (event) => {
 
     const sql = neon(process.env.NEON_DATABASE_URL);
 
+    // Anonimizar PII (cédulas, teléfonos, emails, tarjetas, cuentas)
+    // antes de persistir. Cumplimiento Ley 18.331.
+    const comentarioAnon = anonymize(comentario);
+
     await sql`
       INSERT INTO feedback (comentario)
-      VALUES (${comentario})
+      VALUES (${comentarioAnon})
     `;
 
     const ip = event.headers['x-nf-client-connection-ip'] ||
                event.headers['x-forwarded-for']?.split(',')[0].trim() || 'unknown';
-    console.log(`[feedback] nuevo comentario ip=${ip} len=${comentario.length}`);
+    console.log(`[feedback] nuevo comentario ip=${ip} len=${comentario.length} anon_diff=${comentario.length !== comentarioAnon.length}`);
 
     return { statusCode: 200, headers, body: JSON.stringify({ ok: true }) };
 
